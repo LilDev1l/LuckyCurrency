@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyCurrency", "LuckyCurre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyCurrencyTestConsole", "LuckyCurrencyTestConsole\LuckyCurrencyTestConsole.csproj", "{6A234E0E-5B87-4090-91E5-5588B50C8EB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyCurrencyTest", "LuckyCurrencyTest\LuckyCurrencyTest.csproj", "{3638EC1F-D7DC-4F88-9B33-D5B2F7A18167}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6A234E0E-5B87-4090-91E5-5588B50C8EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A234E0E-5B87-4090-91E5-5588B50C8EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A234E0E-5B87-4090-91E5-5588B50C8EB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3638EC1F-D7DC-4F88-9B33-D5B2F7A18167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3638EC1F-D7DC-4F88-9B33-D5B2F7A18167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3638EC1F-D7DC-4F88-9B33-D5B2F7A18167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3638EC1F-D7DC-4F88-9B33-D5B2F7A18167}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
