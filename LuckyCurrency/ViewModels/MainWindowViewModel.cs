@@ -18,5 +18,14 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region Торговая пара
+        private string _selectedTab;
+        public string SelectedTab
+        {
+            get => _title;
+            set => Set(ref _selectedTab, value);
+        }
+        #endregion
+
     }
 }
