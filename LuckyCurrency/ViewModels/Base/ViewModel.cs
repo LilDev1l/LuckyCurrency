@@ -20,6 +20,7 @@ namespace LuckyCurrency.ViewModels.Base
         {
             if (Equals(field, value))
                 return false;
+            field = value;
             OnPropertyChanged(PropertyName);
             return true;
         }
