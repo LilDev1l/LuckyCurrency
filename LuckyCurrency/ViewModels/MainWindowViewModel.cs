@@ -22,7 +22,7 @@ namespace LuckyCurrency.ViewModels
         private string _selectedTab;
         public string SelectedTab
         {
-            get => _title;
+            get => _selectedTab;
             set => Set(ref _selectedTab, value);
         }
         #endregion
