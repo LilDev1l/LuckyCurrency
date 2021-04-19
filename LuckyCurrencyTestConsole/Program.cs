@@ -28,12 +28,12 @@ namespace LuckyCurrencyTestConsole
 
             try
             {
-                // Get kline
-                Object result = apiInstance.KlineGet(symbol, interval, from, limit);
+                // Query mark price kline.
+                Object result = apiInstance.KlineMarkPrice(symbol, interval, from, limit);
                 if (result is JObject jo)
                 {
-                    //Console.WriteLine(jo);
-                    List<KlineRes> klines = jo["result"].ToObject<List<KlineRes>>();
+                    Console.WriteLine(jo);
+                    List<MarkPriceKlineInfo> klines = jo["result"].ToObject<List<MarkPriceKlineInfo>>();
                     foreach (var kline in klines)
                     {
                         Console.WriteLine(kline);
