@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
+using Newtonsoft.Json.Linq;
 
 namespace LuckyCurrencyTestConsole
 {
@@ -19,19 +20,6 @@ namespace LuckyCurrencyTestConsole
     {
         public static void Main(string[] args)
         {
-            /*HttpClient client = new HttpClient();
-
-            WebRequest request = WebRequest.Create("https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=1&limit=1&from=1581231260");
-            WebResponse response = request.GetResponseAsync().Result;
-
-            using (Stream stream = response.GetResponseStream())
-            {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    Console.WriteLine(reader.ReadToEnd());
-                }
-            }
-            response.Close();*/
             var apiInstance = new KlineApi();
             var symbol = "BTCUSD";  // string | Contract type.
             var interval = "1";  // string | Kline interval.
@@ -42,25 +30,22 @@ namespace LuckyCurrencyTestConsole
             {
                 // Get kline
                 Object result = apiInstance.KlineGet(symbol, interval, from, limit);
-                Console.WriteLine(result);
+                if (result is JObject jo)
+                {
+                    //Console.WriteLine(jo);
+                    List<KlineRes> klines = jo["result"].ToObject<List<KlineRes>>();
+                    foreach (var kline in klines)
+                    {
+                        Console.WriteLine(kline);
+                    }
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception when calling KlineApi.KlineGet: " + e.Message);
             }
 
-
             Console.Read();
-        }
-
-        public static async void GetCandlesAsync()
-        {
-            var client = new HttpClient();
-            var response = await client.GetStringAsync("https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=1&limit=2&from=1581231260");
-
-            Console.WriteLine(response);
-
-            Object obj = JsonConvert.DeserializeObject<Object>(response);
         }
     }
 }
