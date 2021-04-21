@@ -19,44 +19,55 @@ namespace LuckyCurrencyTest
             InitializeComponent();
 
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
+            SetCultureUS();
 
-            var apiInstanceTime = new CommonApi();
-            var apiInstance = new KlineApi();
-            var timeServerSeconds = (long)((JObject) apiInstanceTime.CommonGetTime())["time_now"].ToObject<double>();
-            var timeServerTick = timeServerSeconds * 10000000;
-            var timeNow = DateTime.Now.Ticks;
-            var timeDuration = timeNow - timeServerTick;
-
-            var symbol = "BTCUSD";  // string | Contract type.
-            var interval = "1";  // string | Kline interval.
-            var from = timeServerSeconds - 200 * 60;  // decimal? | from timestamp.
-            var limit = 200;  // decimal? | Contract type. (optional) 
-
-            try
+            KlineBase klineBase = GetKlineBase("XRPUSD", "1");
+            foreach (var kline in klineBase.Result)
             {
-                // Get kline
-                Object result = apiInstance.KlineGet(symbol, interval, (int)from, limit);
-                if (result is JObject jo)
-                {
-                    //Console.WriteLine(jo);
-                    List<KlineRes> klines = jo.ToObject<KlineBase>().Result;
-                    int i = 0;
-                    foreach (var kline in klines)
-                    {
-                        Console.WriteLine(kline);
-                        Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
-                        ; 
-                        
-                        candles.Add(new Candle(new DateTime((long)kline.OpenTime * 10000000 + timeDuration), double.Parse(kline.Open), double.Parse(kline.High), double.Parse(kline.Low), double.Parse(kline.Close), long.Parse(kline.Volume)));
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception when calling KlineApi.KlineGet: " + e.Message);
+                candles.Add(GetCandleFromKlineRes(kline));
             }
 
             DataContext = candles;
+        }
+
+        public static KlineBase GetKlineBase(string symbol, string interval)
+        {
+            var apiInstance = new KlineApi();
+            long from = GetTimeServerSeconds() - 200 * 60;
+            JObject result = (JObject)apiInstance.KlineGet(symbol, interval, from);
+
+            return result.ToObject<KlineBase>();
+        }
+
+        public static long GetTimeServerSeconds()
+        {
+            var apiInstance = new CommonApi();
+            JObject result = (JObject)apiInstance.CommonGetTime();
+            double TimeServerSeconds = double.Parse(result.ToObject<ServerTime>().TimeNow);
+
+            return (long)TimeServerSeconds;
+        }
+
+        public static long GetTimeDuration()
+        {
+            var timeServerTick = GetTimeServerSeconds() * 10000000;
+            var timeNow = DateTime.Now.Ticks;
+
+            return timeNow - timeServerTick;
+        }
+
+        public static Candle GetCandleFromKlineRes(KlineRes kline)
+        {
+            DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + GetTimeDuration());
+
+            return new Candle(openTime,
+                double.Parse(kline.Open), double.Parse(kline.High), double.Parse(kline.Low),
+                double.Parse(kline.Close), long.Parse(kline.Volume));
+        }
+
+        public static void SetCultureUS()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
         }
     }
 }
