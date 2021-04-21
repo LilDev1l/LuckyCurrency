@@ -153,6 +153,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Candle.cs" />
+    <Compile Include="KlineV2Base.cs" />
+    <Compile Include="KlineV2Res.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
