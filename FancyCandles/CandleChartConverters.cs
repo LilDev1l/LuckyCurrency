@@ -1,5 +1,5 @@
 ﻿/* 
-    Copyright 2021 Dennis Geller.
+    Copyright 2019 Dennis Geller.
 
     This file is part of FancyCandles.
 
@@ -22,111 +22,9 @@ using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Media;
-using FancyPrimitives;
-using System.Linq;
-using System.Reflection;
 
 namespace FancyCandles
 {
-    //*******************************************************************************************************************************************************************
-    class TypeToStaticNamePropertyConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            Type t = (Type)value;
-            PropertyInfo propInfo = t.GetProperty("StaticName", BindingFlags.Public | BindingFlags.Static);
-            return propInfo.GetValue(null, null);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    //*******************************************************************************************************************************************************************
-    class HorizontalMarginToMarginsConverter : DependencyObject, IMultiValueConverter
-    {
-        // values[0] - Thickness LegendMargin
-        // values[1] - HorizontalAlignment LegendHorizontalAlignment
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values.Length < 2 || values[0]==DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue) 
-                return null;
-
-            Thickness legendMargin = (Thickness)values[0];
-            HorizontalAlignment legendHorizontalAlignment = (HorizontalAlignment)values[1];
-
-            if (legendHorizontalAlignment == HorizontalAlignment.Right)
-            {
-                if (targetType == typeof(string))
-                    return legendMargin.Right.ToString();
-                else
-                    return legendMargin.Right;
-            }
-            else
-            {
-                if (targetType == typeof(string))
-                    return legendMargin.Left.ToString();
-                else
-                    return legendMargin.Left;
-            }
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            CandleChartPropertiesWindow parentCandleChartPropertiesWindow = Application.Current.Windows.OfType<CandleChartPropertiesWindow>().FirstOrDefault();
-            CandleChart parentCandleChart = (CandleChart)parentCandleChartPropertiesWindow.DataContext;
-            Thickness oldLegendMargin = parentCandleChart.LegendMargin;
-
-            FancyPrimitives.MyUtility.ParseStringAsDouble(value as string, out double newIndent);
-
-            object[] arr = new object[2];
-            arr[0] = new Thickness(newIndent, oldLegendMargin.Top, newIndent, oldLegendMargin.Bottom);
-            return arr;
-        }
-    }
-    //*******************************************************************************************************************************************************************
-    class VerticalMarginToMarginsConverter : DependencyObject, IMultiValueConverter
-    {
-        // values[0] - Thickness LegendMargin
-        // values[1] - VerticalAlignment LegendVerticalAlignment
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values.Length < 2 || values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
-                return null;
-
-            Thickness legendMargin = (Thickness)values[0];
-            VerticalAlignment legendVerticalAlignment = (VerticalAlignment)values[1];
-
-            if (legendVerticalAlignment == VerticalAlignment.Top)
-            {
-                if (targetType == typeof(string))
-                    return legendMargin.Top.ToString();
-                else
-                    return legendMargin.Top;
-            }
-            else
-            {
-                if (targetType == typeof(string))
-                    return legendMargin.Bottom.ToString();
-                else
-                    return legendMargin.Bottom;
-            }
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            CandleChartPropertiesWindow parentCandleChartPropertiesWindow = Application.Current.Windows.OfType<CandleChartPropertiesWindow>().FirstOrDefault();
-            CandleChart parentCandleChart = (CandleChart)parentCandleChartPropertiesWindow.DataContext;
-            Thickness oldLegendMargin = parentCandleChart.LegendMargin;
-
-            FancyPrimitives.MyUtility.ParseStringAsDouble(value as string, out double newIndent);
-
-            object[] arr = new object[2];
-            arr[0] = new Thickness(oldLegendMargin.Left, newIndent, oldLegendMargin.Right, newIndent);
-            return arr;
-        }
-    }
     //*******************************************************************************************************************************************************************
     class CrossPriceMarginConverter : IMultiValueConverter
     {
@@ -144,6 +42,7 @@ namespace FancyCandles
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
+
     }
     //*******************************************************************************************************************************************************************
     class CrossPriceValueConverter : IMultiValueConverter
@@ -156,7 +55,7 @@ namespace FancyCandles
         // values[5] - int MaxNumberOfDigitsAfterPointInPrice
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length < 6 || (values[0]).GetType() != typeof(Point) || (values[1]).GetType() != typeof(double) || (values[2]).GetType() != typeof(CandleExtremums)
+            if ( values == null || values.Length < 6 || (values[0]).GetType() != typeof(Point) || (values[1]).GetType() != typeof(double) || (values[2]).GetType() != typeof(CandleExtremums)
                  || (values[3]).GetType() != typeof(double) || (values[4]).GetType() != typeof(double) || (values[5]).GetType() != typeof(int))
                 return true;
 
@@ -172,6 +71,7 @@ namespace FancyCandles
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
+
     }
     //*******************************************************************************************************************************************************************
     class CrossVolumeConverter : IMultiValueConverter
@@ -184,7 +84,7 @@ namespace FancyCandles
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null || values.Length < 5 || (values[0]).GetType() != typeof(Point) || (values[1]).GetType() != typeof(double) || (values[2]).GetType() != typeof(CandleExtremums)
-                 || (values[3]).GetType() != typeof(double) || (values[4]).GetType() != typeof(double))
+                 || (values[3]).GetType() != typeof(double) || (values[4]).GetType() != typeof(double) )
                 return (long)0;
 
             Point currentMousePosition = (Point)values[0];
@@ -197,6 +97,7 @@ namespace FancyCandles
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
+
     }
     //*******************************************************************************************************************************************************************
     class VerticalCrossLineVisibilityConverter : IMultiValueConverter
@@ -217,6 +118,7 @@ namespace FancyCandles
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
+
     }
     //*******************************************************************************************************************************************************************
     class CandleDrawingParametersConverter : IMultiValueConverter
@@ -232,6 +134,7 @@ namespace FancyCandles
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
+
     }
     //*******************************************************************************************************************************************************************
     class IntRangeToPointConverter : IValueConverter
@@ -276,6 +179,20 @@ namespace FancyCandles
         }
     }
     //*******************************************************************************************************************************************************************
+    class BrushToColorConverter : IValueConverter
+    {
+        public object Convert(object SolidColorBrush_value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SolidColorBrush brush = (SolidColorBrush)SolidColorBrush_value;
+            return brush.Color;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    //*******************************************************************************************************************************************************************
     class SquareBoolToVisibilityConverter : IMultiValueConverter
     {
         // values[0] - bool bool1
@@ -292,6 +209,7 @@ namespace FancyCandles
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
+
     }
     //*******************************************************************************************************************************************************************
     class BoolToVisibilityConverter : IValueConverter
@@ -338,16 +256,13 @@ namespace FancyCandles
         }
     }
     //*******************************************************************************************************************************************************************
-    class IntRangeCountToNoNegativeConverter : IValueConverter
+    class IntRange_Count_Converter : IValueConverter
     {
         // value - IntRange visibleCandlesRange
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             IntRange visibleCandlesRange = (IntRange)value;
-            int count = visibleCandlesRange.Count;
-            if (count < 0)
-                count = 0;
-            return count;
+            return visibleCandlesRange.Count;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -391,8 +306,8 @@ namespace FancyCandles
         // values[1] - double bottomMargin
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length < 2 || (values[0]).GetType() != typeof(double) || (values[1]).GetType() != typeof(double))
-                return new Thickness(0, 0, 0, 0);
+            if (values == null || values.Length < 2 || (values[0]).GetType()!=typeof(double) || (values[1]).GetType() != typeof(double))
+                return new Thickness(0,0,0,0);
 
             double topMargin = (double)values[0];
             double bottomMargin = (double)values[1];
@@ -403,7 +318,30 @@ namespace FancyCandles
         { throw new NotImplementedException(); }
     }
     //*******************************************************************************************************************************************************************
-    //*******************************************************************************************************************************************************************
-    //*******************************************************************************************************************************************************************
+    /*class BoolToVolumeGridRowHeightConverter : IValueConverter
+    {
+        public object Convert(object bool_value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((bool)bool_value) ? new GridLength(1, GridUnitType.Star) : new GridLength(0.0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class BoolToPriceGridRowHeightConverter : IValueConverter
+    {
+        public object Convert(object bool_value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((bool)bool_value) ? new GridLength(4, GridUnitType.Star) : new GridLength(1,GridUnitType.Auto);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }*/
     //*******************************************************************************************************************************************************************
 }
