@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-namespace LuckyCurrencyTest
+namespace LuckyCurrencyTest.Models
 {
     public class Candle : FancyCandles.ICandle
     {
@@ -23,6 +21,11 @@ namespace LuckyCurrencyTest
             this.L = L;
             this.C = C;
             this.V = V;
+        }
+
+        public override string ToString()
+        {
+            return $"Candle: [t: {t}; O: {O}; H: {H}; L: {L}; C: {C}; V: {V}]";
         }
     }
 }
