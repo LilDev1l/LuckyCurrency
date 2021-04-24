@@ -14,7 +14,7 @@ namespace LuckyCurrencyTest.Models
         public double close { get; set; }
         public double high { get; set; }
         public double low { get; set; }
-        public int volume { get; set; }
+        public double volume { get; set; }
         public double turnover { get; set; }
         public bool confirm { get; set; }
         public long cross_seq { get; set; }

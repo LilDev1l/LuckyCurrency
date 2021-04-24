@@ -16,6 +16,7 @@ using LuckyCurrencyTest;
 using LuckyCurrencyTest.Models;
 using LuckyCurrencyTest.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LuckyCurrencyTest.ViewModels
 {
@@ -48,10 +49,10 @@ namespace LuckyCurrencyTest.ViewModels
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
             Bybit.SetCultureUS();
 
-            KlineBase klineBase = Bybit.GetKlineBase("BTCUSD", "1");
-            foreach (var kline in klineBase.Result)
+            LinearKlineRespBase klineBase = Bybit.GetLinearKlineBase("BTCUSDT", "1");
+            foreach (var kline in ((JArray)klineBase.Result).ToObject<List<LinearKlineResp>>())
             {
-                candles.Add(Bybit.GetCandleFromKlineRes(kline));
+                candles.Add(Bybit.GetCandleFromLinearKlineResp(kline));
             }
 
             Candles = candles;
@@ -63,7 +64,7 @@ namespace LuckyCurrencyTest.ViewModels
 
         public void OnGetNewMessage(string message)
         {
-            if (message.Contains("\"topic\":\"klineV2.1.BTCUSD\""))
+            if (message.Contains("\"topic\":\"candle.1.BTCUSDT\""))
             {
                 Console.WriteLine("New Message: " + message);
 

@@ -18,7 +18,7 @@ namespace LuckyCurrencyTest.Services
     static class Bybit
     {
         public static event Action<string> newMessage;
-        private static Uri uri = new Uri("wss://stream.bybit.com/realtime");
+        private static Uri uri = new Uri("wss://stream.bybit.com/realtime_public");
 
 
         public static void RunBybitAsync()
@@ -32,9 +32,11 @@ namespace LuckyCurrencyTest.Services
             });
             ws.Start();
 
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"klineV2.1.BTCUSD\"]}");
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
             //exitEvent.WaitOne();
         }
+
+        #region Kline
         public static KlineBase GetKlineBase(string symbol, string interval)
         {
             var apiInstance = new KlineApi();
@@ -43,7 +45,42 @@ namespace LuckyCurrencyTest.Services
 
             return result.ToObject<KlineBase>();
         }
+        public static ICandle GetCandleFromKlineRes(KlineRes kline)
+        {
+            DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + 621356075467488324L);
 
+            return new Candle(openTime,
+                double.Parse(kline.Open), double.Parse(kline.High), double.Parse(kline.Low),
+                double.Parse(kline.Close), long.Parse(kline.Volume));
+        }
+        #endregion
+        #region KlineV2 (Websocket)
+        public static ICandle GetCandleFromKlineV2Res(KlineV2Res kline)
+        {
+            DateTime openTime = new DateTime(kline.start * 10000000L + 621356075467488324L);
+
+            return new Candle(openTime, kline.open, kline.high, kline.low, kline.close, (long)kline.volume);
+        }
+        #endregion
+
+        #region LinearKline
+        public static LinearKlineRespBase GetLinearKlineBase(string symbol, string interval)
+        {
+            var apiInstance = new LinearKlineApi();
+            long from = GetTimeServerSeconds() - 200 * 60;
+            JObject result = (JObject)apiInstance.LinearKlineGet(symbol, interval, from);
+
+            return result.ToObject<LinearKlineRespBase>();
+        }
+        public static ICandle GetCandleFromLinearKlineResp(LinearKlineResp kline)
+        {
+            DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + 621356075467488324L);
+
+            return new Candle(openTime, kline.Open.Value, kline.High.Value, kline.Low.Value, kline.Close.Value, (long)kline.Volume.Value);
+        }
+        #endregion
+
+        #region Server
         public static long GetTimeServerSeconds()
         {
             var apiInstance = new CommonApi();
@@ -60,23 +97,7 @@ namespace LuckyCurrencyTest.Services
 
             return timeNow - timeServerTick;
         }
-
-        public static ICandle GetCandleFromKlineRes(KlineRes kline)
-        {
-            DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + 621356075467488324L);
-
-            return new Candle(openTime,
-                double.Parse(kline.Open), double.Parse(kline.High), double.Parse(kline.Low),
-                double.Parse(kline.Close), long.Parse(kline.Volume));
-        }
-
-        public static ICandle GetCandleFromKlineV2Res(KlineV2Res kline)
-        {
-            DateTime openTime = new DateTime(kline.start * 10000000L + 621356075467488324L);
-
-            return new Candle(openTime, kline.open, kline.high, kline.low, kline.close, kline.volume);
-        }
-
+        #endregion
         public static void SetCultureUS()
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
