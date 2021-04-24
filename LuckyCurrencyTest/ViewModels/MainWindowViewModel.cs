@@ -38,7 +38,8 @@ namespace LuckyCurrencyTest.ViewModels
             set => Set(ref candles, value);
         }
 
-        public static long timestamp;
+        public static long timestampOpen;
+        //public object CandlesLock { get; } = new object();
         #endregion
 
         public MainWindowViewModel()
@@ -54,6 +55,7 @@ namespace LuckyCurrencyTest.ViewModels
             }
 
             Candles = candles;
+            //BindingOperations.EnableCollectionSynchronization(Candles, CandlesLock);
 
             Bybit.newMessage += OnGetNewMessage;
             Bybit.RunBybitAsync();
@@ -63,15 +65,21 @@ namespace LuckyCurrencyTest.ViewModels
         {
             if (message.Contains("\"topic\":\"klineV2.1.BTCUSD\""))
             {
-                KlineV2Base klineV2Base = JsonConvert.DeserializeObject<KlineV2Base>(message);
-                if(timestamp == klineV2Base.data[0].timestamp)
-                    return;
+                Console.WriteLine("New Message: " + message);
 
-                timestamp = klineV2Base.data[0].timestamp;
+                KlineV2Base klineV2Base = JsonConvert.DeserializeObject<KlineV2Base>(message);
+
                 if (klineV2Base.data[0].confirm)
                 {
-                    OnChangeLastCandle(klineV2Base.data[0]);
-                    OnAddNewCandle(klineV2Base.data[1]);
+                    if (timestampOpen == klineV2Base.data[1].start)
+                        return;
+                    else
+                    { 
+                        timestampOpen = klineV2Base.data[1].start;
+                        Console.WriteLine($"timestampOpen изменен на ({timestampOpen})");
+                        OnChangeLastCandle(klineV2Base.data[0]);
+                        OnAddNewCandle(klineV2Base.data[1]);
+                    }
                 }
                 else
                 {
@@ -83,18 +91,30 @@ namespace LuckyCurrencyTest.ViewModels
         public void OnChangeLastCandle(KlineV2Res klineV2)
         {
             ICandle candle = Bybit.GetCandleFromKlineV2Res(klineV2);
-            Console.WriteLine("Изменено: " + candle);
-
             int lastCandleCount = Candles.Count - 1;
-            App.Current.Dispatcher.InvokeAsync(() => Candles[lastCandleCount] = candle);
+
+            App.Current.Dispatcher.InvokeAsync(() =>
+            {
+/*                lock (CandlesLock)
+                {*/
+                Candles[lastCandleCount] = candle;
+/*                }*/
+                Console.WriteLine("Изменено: " + candle);
+            });
         }
 
         public void OnAddNewCandle(KlineV2Res klineV2)
         {
             ICandle candle = Bybit.GetCandleFromKlineV2Res(klineV2);
-            Console.WriteLine("Добавлено: " + candle);
 
-            App.Current.Dispatcher.InvokeAsync(() => Candles.Add(candle));
+            App.Current.Dispatcher.InvokeAsync(() =>
+            {
+/*                lock (CandlesLock)
+                {*/
+                Candles.Add(candle);
+/*                }*/
+                Console.WriteLine("Добавлено: " + candle);
+            });
         }
     }
 }
