@@ -1,0 +1,25 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LuckyCurrencyTest.Services.Models
+{
+    class LinearKlineBase
+    {
+        [JsonProperty("ret_code")]
+        public decimal? RetCode { get; set; }
+        [JsonProperty("ret_msg")]
+        public string RetMsg { get; set; }
+        [JsonProperty("ext_code")]
+        public string ExtCode { get; set; }
+        [JsonProperty("ext_info")]
+        public string ExtInfo { get; set; }
+        [JsonProperty("result")]
+        public List<LinearKline> Result { get; set; }
+        [JsonProperty("time_now")]
+        public string TimeNow { get; set; }
+    }
+}

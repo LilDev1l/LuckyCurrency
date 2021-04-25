@@ -94,11 +94,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\Commands\Base\Command.cs" />
+    <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
     <Compile Include="Models\Candle.cs" />
-    <Compile Include="Models\KlineV2Base.cs" />
-    <Compile Include="Models\KlineV2Res.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Services\Bybit.cs" />
+    <Compile Include="Services\Models\LinearKline.cs" />
+    <Compile Include="Services\Models\LinearKlineBase.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="Views\Windows\MainWindow.xaml">

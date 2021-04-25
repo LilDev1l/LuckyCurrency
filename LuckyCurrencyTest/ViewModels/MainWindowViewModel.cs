@@ -17,105 +17,59 @@ using LuckyCurrencyTest.Models;
 using LuckyCurrencyTest.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Globalization;
+using LuckyCurrencyTest.Infrastructure.Commands;
 
 namespace LuckyCurrencyTest.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
         #region Торговая пара
-        private string _selectedTab;
-        public string SelectedTab
+        private ComboBoxItem _selectedPair;
+        public ComboBoxItem SelectedPair
         {
-            get => _selectedTab;
-            set => Set(ref _selectedTab, value);
+            get => _selectedPair;
+            set => Set(ref _selectedPair, value);
         }
         #endregion
 
-        #region Свечки
-        private ObservableCollection<ICandle> candles;
+        #region Таймфрейм
+        private ComboBoxItem _selectedTimeframe;
+        public ComboBoxItem SelectedTimeframe
+        {
+            get => _selectedTimeframe;
+            set => Set(ref _selectedTimeframe, value);
+        }
+        #endregion
+
+        #region Свечи
+        private ObservableCollection<ICandle> _candles;
         public ObservableCollection<ICandle> Candles
         {
-            get => candles;
-            set => Set(ref candles, value);
+            get => _candles;
+            set => Set(ref _candles, value);
         }
-
-        public static long timestampOpen;
-        //public object CandlesLock { get; } = new object();
         #endregion
 
+        #region Команды
+        public ICommand SelectedTabItemCommand { get; }
+        private bool CanSelectedTabItemCommandExecute(object p) => true;
+        private void OnSelectedTabItemCommandExecuted(object p)
+        {
+            Candles = Bybit.GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
+        }
+        #endregion
         public MainWindowViewModel()
         {
+            #region Команды
 
-            ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
-            Bybit.SetCultureUS();
+            SelectedTabItemCommand = new LambdaCommand(OnSelectedTabItemCommandExecuted, CanSelectedTabItemCommandExecute);
 
-            LinearKlineRespBase klineBase = Bybit.GetLinearKlineBase("BTCUSDT", "1");
-            foreach (var kline in ((JArray)klineBase.Result).ToObject<List<LinearKlineResp>>())
-            {
-                candles.Add(Bybit.GetCandleFromLinearKlineResp(kline));
-            }
+            #endregion
 
-            Candles = candles;
-            //BindingOperations.EnableCollectionSynchronization(Candles, CandlesLock);
-
-            Bybit.newMessage += OnGetNewMessage;
-            Bybit.RunBybitAsync();
-        }
-
-        public void OnGetNewMessage(string message)
-        {
-            if (message.Contains("\"topic\":\"candle.1.BTCUSDT\""))
-            {
-                Console.WriteLine("New Message: " + message);
-
-                KlineV2Base klineV2Base = JsonConvert.DeserializeObject<KlineV2Base>(message);
-
-                if (klineV2Base.data[0].confirm)
-                {
-                    if (timestampOpen == klineV2Base.data[1].start)
-                        return;
-                    else
-                    { 
-                        timestampOpen = klineV2Base.data[1].start;
-                        Console.WriteLine($"timestampOpen изменен на ({timestampOpen})");
-                        OnChangeLastCandle(klineV2Base.data[0]);
-                        OnAddNewCandle(klineV2Base.data[1]);
-                    }
-                }
-                else
-                {
-                    OnChangeLastCandle(klineV2Base.data[0]);
-                }
-            }
-        }
-
-        public void OnChangeLastCandle(KlineV2Res klineV2)
-        {
-            ICandle candle = Bybit.GetCandleFromKlineV2Res(klineV2);
-            int lastCandleCount = Candles.Count - 1;
-
-            App.Current.Dispatcher.InvokeAsync(() =>
-            {
-/*                lock (CandlesLock)
-                {*/
-                Candles[lastCandleCount] = candle;
-/*                }*/
-                Console.WriteLine("Изменено: " + candle);
-            });
-        }
-
-        public void OnAddNewCandle(KlineV2Res klineV2)
-        {
-            ICandle candle = Bybit.GetCandleFromKlineV2Res(klineV2);
-
-            App.Current.Dispatcher.InvokeAsync(() =>
-            {
-/*                lock (CandlesLock)
-                {*/
-                Candles.Add(candle);
-/*                }*/
-                Console.WriteLine("Добавлено: " + candle);
-            });
+            Candles = Bybit.GetCandles("BTCUSDT", "1");
         }
     }
 }

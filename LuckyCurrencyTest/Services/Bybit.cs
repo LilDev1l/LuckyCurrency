@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using FancyCandles;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using LuckyCurrencyTest.Models;
+using LuckyCurrencyTest.Services.Models;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
 
@@ -17,69 +19,67 @@ namespace LuckyCurrencyTest.Services
 {
     static class Bybit
     {
-        public static event Action<string> newMessage;
-        private static Uri uri = new Uri("wss://stream.bybit.com/realtime_public");
-
-
-        public static void RunBybitAsync()
-        {
-            //var exitEvent = new ManualResetEvent(false);
-
-            WebsocketClient ws = new WebsocketClient(uri);
-            ws.MessageReceived.Subscribe(message =>
-            {
-                newMessage(message.Text);
-            });
-            ws.Start();
-
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
-            //exitEvent.WaitOne();
-        }
-
-        #region Kline
-        public static KlineBase GetKlineBase(string symbol, string interval)
-        {
-            var apiInstance = new KlineApi();
-            long from = GetTimeServerSeconds() - 200 * 60;
-            JObject result = (JObject) apiInstance.KlineGet(symbol, interval, from);
-
-            return result.ToObject<KlineBase>();
-        }
-        public static ICandle GetCandleFromKlineRes(KlineRes kline)
-        {
-            DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + 621356075467488324L);
-
-            return new Candle(openTime,
-                double.Parse(kline.Open), double.Parse(kline.High), double.Parse(kline.Low),
-                double.Parse(kline.Close), long.Parse(kline.Volume));
-        }
-        #endregion
-        #region KlineV2 (Websocket)
-        public static ICandle GetCandleFromKlineV2Res(KlineV2Res kline)
-        {
-            DateTime openTime = new DateTime(kline.start * 10000000L + 621356075467488324L);
-
-            return new Candle(openTime, kline.open, kline.high, kline.low, kline.close, (long)kline.volume);
-        }
-        #endregion
-
         #region LinearKline
-        public static LinearKlineRespBase GetLinearKlineBase(string symbol, string interval)
+        public static ObservableCollection<ICandle> GetCandles(string symbol, string interval)
+        {
+            SetCultureUS();
+            ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
+            LinearKlineBase klineBase = GetLinearKlineBase(symbol, interval);
+            foreach(var kline in klineBase.Result)
+            {
+                candles.Add(GetCandleFromLinearKline(kline));
+            }
+
+            return candles;
+        }
+        public static long GetIntervalSeconds(string interval)
+        {
+            switch (interval)
+            {
+                case "1":
+                    return 1 * 60;
+                case "3":
+                    return 3 * 60;
+                case "5":
+                    return 5 * 60;
+                case "15":
+                    return 15 * 60;
+                case "30":
+                    return 30 * 60;
+                case "60":
+                    return 60 * 60;
+                case "120":
+                    return 120 * 60;
+                case "240":
+                    return 240 * 60;
+                case "360":
+                    return 360 * 60;
+                case "D":
+                    return 24 * 60 * 60;
+                case "W":
+                    return 7 * 24 * 60 * 60;
+                case "M":
+                    return 30 * 24 * 60 * 60;
+                default:
+                    throw new Exception("Неверный формат интервала");
+            }
+
+        }
+        public static LinearKlineBase GetLinearKlineBase(string symbol, string interval)
         {
             var apiInstance = new LinearKlineApi();
-            long from = GetTimeServerSeconds() - 200 * 60;
+            long from = GetTimeServerSeconds() - 200 * GetIntervalSeconds(interval);
             JObject result = (JObject)apiInstance.LinearKlineGet(symbol, interval, from);
 
-            return result.ToObject<LinearKlineRespBase>();
+            return result.ToObject<LinearKlineBase>();
         }
-        public static ICandle GetCandleFromLinearKlineResp(LinearKlineResp kline)
+        public static ICandle GetCandleFromLinearKline(LinearKline kline)
         {
             DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + 621356075467488324L);
 
             return new Candle(openTime, kline.Open.Value, kline.High.Value, kline.Low.Value, kline.Close.Value, (long)kline.Volume.Value);
         }
         #endregion
-
         #region Server
         public static long GetTimeServerSeconds()
         {
@@ -97,10 +97,10 @@ namespace LuckyCurrencyTest.Services
 
             return timeNow - timeServerTick;
         }
-        #endregion
         public static void SetCultureUS()
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
         }
+        #endregion
     }
 }

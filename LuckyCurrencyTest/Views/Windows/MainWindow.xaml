@@ -5,13 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fc="clr-namespace:FancyCandles;assembly=FancyCandles"
         xmlns:vm="clr-namespace:LuckyCurrencyTest.ViewModels"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:LuckyCurrencyTest"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid>
-        <fc:CandleChart CandlesSource="{Binding Path=Candles}" ChartAreaBackground="DarkGray" LegendText="BTC/USD Bybit 60m"/>
-    </Grid>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <ComboBox SelectedItem="{Binding Path=SelectedPair}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=SelectedTabItemCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ComboBoxItem IsSelected="True" Content="BTCUSDT"/>
+                <ComboBoxItem Content="ETHUSDT"/>
+            </ComboBox>
+            <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=SelectedTabItemCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ComboBoxItem IsSelected="True" Content="1"/>
+                <ComboBoxItem Content="15"/>
+            </ComboBox>
+        </StackPanel>
+        <fc:CandleChart CandlesSource="{Binding Path=Candles}" ChartAreaBackground="DarkGray" LegendText="{Binding Path=SelectedPair.Content}"/>
+    </DockPanel>
 </Window>
