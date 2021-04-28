@@ -99,8 +99,10 @@
     <Compile Include="Models\Candle.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Services\Bybit.cs" />
-    <Compile Include="Services\Models\LinearKline.cs" />
-    <Compile Include="Services\Models\LinearKlineBase.cs" />
+    <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocket.cs" />
+    <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketBase.cs" />
+    <Compile Include="Services\Models\LinearKline\LinearKline.cs" />
+    <Compile Include="Services\Models\LinearKline\LinearKlineBase.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="Views\Windows\MainWindow.xaml">
@@ -143,6 +145,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,6 +9,11 @@
         xmlns:local="clr-namespace:LuckyCurrencyTest"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=RunWebSocketCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -17,19 +22,19 @@
             <ComboBox SelectedItem="{Binding Path=SelectedPair}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=SelectedTabItemCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Path=ChangePairOrTimeframeCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <ComboBoxItem IsSelected="True" Content="BTCUSDT"/>
+                <ComboBoxItem  Content="BTCUSDT" IsSelected="True"/>
                 <ComboBoxItem Content="ETHUSDT"/>
             </ComboBox>
             <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=SelectedTabItemCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Path=ChangePairOrTimeframeCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <ComboBoxItem IsSelected="True" Content="1"/>
+                <ComboBoxItem  Content="1" IsSelected="True"/>
                 <ComboBoxItem Content="15"/>
             </ComboBox>
         </StackPanel>
