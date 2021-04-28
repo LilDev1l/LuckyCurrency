@@ -18,7 +18,6 @@ namespace LuckyCurrencyTest
         public MainWindow()
         {
             InitializeComponent();
-
         }
     }
 }
