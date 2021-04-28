@@ -2,25 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Forms;
-using System.Windows.Threading;
 using FancyCandles;
-using IO.Swagger.Model;
-using LuckyCurrencyTest;
-using LuckyCurrencyTest.Models;
 using LuckyCurrencyTest.Services;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Globalization;
 using LuckyCurrencyTest.Infrastructure.Commands;
+using LuckyCurrencyTest.Services.Models.LinearKlineWebSocket;
 
 namespace LuckyCurrencyTest.ViewModels
 {
@@ -46,6 +36,7 @@ namespace LuckyCurrencyTest.ViewModels
 
         #region Свечи
         private ObservableCollection<ICandle> _candles;
+        private static long _timestampOpen;
         public ObservableCollection<ICandle> Candles
         {
             get => _candles;
@@ -54,22 +45,98 @@ namespace LuckyCurrencyTest.ViewModels
         #endregion
 
         #region Команды
-        public ICommand SelectedTabItemCommand { get; }
-        private bool CanSelectedTabItemCommandExecute(object p) => true;
-        private void OnSelectedTabItemCommandExecuted(object p)
+
+        #region ChangePairOrTimeframeCommand
+        public ICommand ChangePairOrTimeframeCommand { get; }
+        private bool CanChangePairOrTimeframeCommandExecute(object p) => true;
+        private void OnChangePairOrTimeframeCommandExecuted(object p)
         {
             Candles = Bybit.GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
         }
         #endregion
+
+        #region RunWebSocketCommand
+        public ICommand RunWebSocketCommand { get; }
+        private bool CanRunWebSocketCommandExecute(object p) => true;
+        private void OnRunWebSocketCommandExecuted(object p)
+        {
+            
+            Bybit.NewMessage += OnGetNewMessage;
+            Bybit.RunBybitWebSocket();
+        }
+        #endregion
+
+        #endregion
         public MainWindowViewModel()
         {
             #region Команды
-
-            SelectedTabItemCommand = new LambdaCommand(OnSelectedTabItemCommandExecuted, CanSelectedTabItemCommandExecute);
-
+            ChangePairOrTimeframeCommand = new LambdaCommand(OnChangePairOrTimeframeCommandExecuted, CanChangePairOrTimeframeCommandExecute);
+            RunWebSocketCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
             Candles = Bybit.GetCandles("BTCUSDT", "1");
         }
+
+
+        #region NewMessage
+        public void OnGetNewMessage(string message)
+        {
+            string timeframe = null, pair = null;
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                timeframe = SelectedTimeframe.Content.ToString();
+                pair = SelectedPair.Content.ToString();
+            });
+       
+            if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
+            {
+                Console.WriteLine("New Message: " + message);
+                LinearKlineWebSocketBase klineWebSocketBase = JsonConvert.DeserializeObject<LinearKlineWebSocketBase>(message);
+                List<LinearKlineWebSocket> klineWebSocket = klineWebSocketBase.Data;
+
+                if (klineWebSocket[0].Confirm)
+                {
+                    if (_timestampOpen == klineWebSocket[1].Start)
+                        return;
+                    else
+                    {
+                        _timestampOpen = klineWebSocketBase.Data[1].Start;
+                        Console.WriteLine($"timestampOpen изменен на ({_timestampOpen})");
+                        OnChangeLastCandle(klineWebSocket[0]);
+                        OnAddNewCandle(klineWebSocket[1]);
+                    }
+                }
+                else
+                {
+                    OnChangeLastCandle(klineWebSocket[0]);
+                }
+            }
+        }
+
+        public void OnChangeLastCandle(LinearKlineWebSocket klineV2)
+        {
+            ICandle candle = Bybit.GetCandleFromLinearKlineWebSocket(klineV2);
+            int lastCandleCount = Candles.Count - 1;
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Candles[lastCandleCount] = candle;
+                Console.WriteLine("Изменено: " + candle);
+            });
+        }
+
+        public void OnAddNewCandle(LinearKlineWebSocket klineV2)
+        {
+            ICandle candle = Bybit.GetCandleFromLinearKlineWebSocket(klineV2);
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Candles.Add(candle);
+                Console.WriteLine("Добавлено: " + candle);
+            });
+        }
+        #endregion
+
     }
 }

@@ -11,7 +11,8 @@ using FancyCandles;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using LuckyCurrencyTest.Models;
-using LuckyCurrencyTest.Services.Models;
+using LuckyCurrencyTest.Services.Models.LinearKline;
+using LuckyCurrencyTest.Services.Models.LinearKlineWebSocket;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
 
@@ -19,12 +20,49 @@ namespace LuckyCurrencyTest.Services
 {
     static class Bybit
     {
+        private static Uri _uri;
+        private static long _duration; 
+        public static event Action<string> NewMessage;
+
+        #region Статический конструктор
+        static Bybit()
+        {
+            SetCultureUS();
+            _uri = new Uri("wss://stream.bytick.com/realtime_public");
+            _duration = GetTimeDuration();
+        }
+        #endregion
+
+        #region WebSocket
+        public static void RunBybitWebSocket()
+        {
+            WebsocketClient ws = new WebsocketClient(_uri);
+            ws.MessageReceived.Subscribe(message =>
+            {
+                NewMessage(message.Text);
+            });
+            ws.Start();
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.ETHUSDT\"]}");
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.ETHUSDT\"]}");
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.BTCUSDT\"]}");
+        }
+
+        public static ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocket klineWebSocket)
+        {
+            DateTime openTime = new DateTime(klineWebSocket.Start * 10000000L + _duration);
+
+            return new Candle(openTime, klineWebSocket.Open, klineWebSocket.High, klineWebSocket.Low, klineWebSocket.Close, (int)double.Parse(klineWebSocket.Volume));
+        }
+        #endregion
+        
         #region LinearKline
-        public static ObservableCollection<ICandle> GetCandles(string symbol, string interval)
+        public static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
         {
             SetCultureUS();
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
-            LinearKlineBase klineBase = GetLinearKlineBase(symbol, interval);
+            
+            LinearKlineBase klineBase = GetLinearKlineBase(pair, timeframe);
             foreach(var kline in klineBase.Result)
             {
                 candles.Add(GetCandleFromLinearKline(kline));
@@ -32,9 +70,9 @@ namespace LuckyCurrencyTest.Services
 
             return candles;
         }
-        public static long GetIntervalSeconds(string interval)
+        public static long GetIntervalSeconds(string timeframe)
         {
-            switch (interval)
+            switch (timeframe)
             {
                 case "1":
                     return 1 * 60;
@@ -65,29 +103,30 @@ namespace LuckyCurrencyTest.Services
             }
 
         }
-        public static LinearKlineBase GetLinearKlineBase(string symbol, string interval)
+        public static LinearKlineBase GetLinearKlineBase(string pair, string timeframe)
         {
             var apiInstance = new LinearKlineApi();
-            long from = GetTimeServerSeconds() - 200 * GetIntervalSeconds(interval);
-            JObject result = (JObject)apiInstance.LinearKlineGet(symbol, interval, from);
+            long from = GetTimeServerSeconds() - 200 * GetIntervalSeconds(timeframe);
+            JObject result = (JObject)apiInstance.LinearKlineGet(pair, timeframe, from);
 
             return result.ToObject<LinearKlineBase>();
         }
         public static ICandle GetCandleFromLinearKline(LinearKline kline)
         {
-            DateTime openTime = new DateTime((long)kline.OpenTime * 10000000L + 621356075467488324L);
+            DateTime openTime = new DateTime(kline.OpenTime.Value * 10000000L + _duration);
 
             return new Candle(openTime, kline.Open.Value, kline.High.Value, kline.Low.Value, kline.Close.Value, (long)kline.Volume.Value);
         }
         #endregion
+        
         #region Server
         public static long GetTimeServerSeconds()
         {
             var apiInstance = new CommonApi();
             JObject result = (JObject)apiInstance.CommonGetTime();
-            double TimeServerSeconds = double.Parse(result.ToObject<ServerTime>().TimeNow);
+            double timeServerSeconds = double.Parse(result.ToObject<ServerTime>().TimeNow);
 
-            return (long)TimeServerSeconds;
+            return (long)timeServerSeconds;
         }
 
         public static long GetTimeDuration()
