@@ -42,10 +42,11 @@ namespace LuckyCurrencyTest.Services
                 NewMessage(message.Text);
             });
             ws.Start();
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.ETHUSDT\"]}");
+/*            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.ETHUSDT\"]}");
             ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.ETHUSDT\"]}");
             ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.BTCUSDT\"]}");
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.BTCUSDT\"]}");*/
+            ws.Send("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
         }
 
         public static ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocket klineWebSocket)
