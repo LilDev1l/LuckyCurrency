@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Globalization;
 using LuckyCurrencyTest.Infrastructure.Commands;
 using LuckyCurrencyTest.Services.Models.LinearKlineWebSocket;
+using LuckyCurrencyTest.Services.Models.OrderBook;
 
 namespace LuckyCurrencyTest.ViewModels
 {
@@ -43,6 +44,20 @@ namespace LuckyCurrencyTest.ViewModels
             set => Set(ref _candles, value);
         }
         #endregion
+
+        #region Список заявок на продажу
+/*        private List<> _asks;
+        public List<> Asks
+        {
+            get => _asks;
+            set => Set(ref _asks, value);
+        }*/
+        #endregion
+
+        #region Список заявок на покупку
+
+        #endregion
+
 
         #region Команды
 
@@ -111,6 +126,15 @@ namespace LuckyCurrencyTest.ViewModels
                 {
                     OnChangeLastCandle(klineWebSocket[0]);
                 }
+            }
+
+            if (message.Contains($"\"topic\":\"orderBookL2_25.BTCUSDT\""))
+            {
+                Console.WriteLine("New Message: " + message);
+                OrderBookBase orderBookBase = JsonConvert.DeserializeObject<OrderBookBase>(message);
+                Console.WriteLine(orderBookBase);
+                //List<LinearKlineWebSocket> klineWebSocket = klineWebSocketBase.Data;
+
             }
         }
 
