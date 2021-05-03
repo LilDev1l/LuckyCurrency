@@ -18,6 +18,6 @@ namespace LuckyCurrencyTest.Services.Models.OrderBook.OrderBookSnapshot
         [JsonProperty("side")]
         public string Side { get; set; }
         [JsonProperty("size")]
-        public int Size { get; set; }
+        public double Size { get; set; }
     }
 }

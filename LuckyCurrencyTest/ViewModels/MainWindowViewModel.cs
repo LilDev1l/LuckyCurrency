@@ -233,24 +233,38 @@ namespace LuckyCurrencyTest.ViewModels
                 {
                     if (ins.Side.Equals("Sell"))
                     {
-                        if (Asks[Asks.Count - 1].Id < ins.Id)
+                        if(Convert.ToBoolean(Asks.Count))
                         {
-                            Asks.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            if (Asks[Asks.Count - 1].Id < ins.Id)
+                            {
+                                Asks.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            }
+                            else
+                            {
+                                Asks.Insert(Asks.IndexOf(Asks.First(ask => ask.Id > ins.Id)), new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            }
                         }
                         else
                         {
-                            Asks.Insert(Asks.IndexOf(Asks.First(ask => ask.Id > ins.Id)), new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            Asks.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
                         }
                     }
                     else
                     {
-                        if (Bids[Bids.Count - 1].Id > ins.Id)
+                        if (Convert.ToBoolean(Bids.Count))
                         {
-                            Bids.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            if (Bids[Bids.Count - 1].Id > ins.Id)
+                            {
+                                Bids.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            }
+                            else
+                            {
+                                Bids.Insert(Bids.IndexOf(Bids.First(bid => bid.Id < ins.Id)), new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            }
                         }
                         else
                         {
-                            Bids.Insert(Bids.IndexOf(Bids.First(bid => bid.Id < ins.Id)), new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                            Bids.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
                         }
                     }
                 }

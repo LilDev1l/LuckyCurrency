@@ -10,9 +10,9 @@ namespace LuckyCurrencyTest.Models
     {
         public int Id { get; set; }
         public double Price { get; set; }
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
 
-        public OrderBook(int id, double price, int quantity)
+        public OrderBook(int id, double price, double quantity)
         {
             Id = id;
             Price = price;
