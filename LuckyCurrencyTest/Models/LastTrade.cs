@@ -8,13 +8,13 @@ namespace LuckyCurrencyTest.Models
 {
     class LastTrade
     {
-        public int Price { get; set; }
-        public int Size { get; set; }
+        public double Price { get; set; }
+        public double Size { get; set; }
         public DateTime Timestamp { get; set; }
-        public TickDirection Tick_direction { get; set; }
-        public Side Side { get; set; }
+        public string Tick_direction { get; set; }
+        public string Side { get; set; }
 
-        public LastTrade(int price, int size, DateTime timestamp, TickDirection tick_direction, Side side)
+        public LastTrade(double price, double size, DateTime timestamp, string tick_direction, string side)
         {
             Price = price;
             Size = size;

@@ -17,6 +17,7 @@ using LuckyCurrencyTest.Services.Models.OrderBook.OrderBookSnapshot;
 using LuckyCurrencyTest.Services.Models.OrderBook.OrderBookDelta;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using LuckyCurrencyTest.Services.Models.LastTrade;
 
 namespace LuckyCurrencyTest.ViewModels
 {
@@ -68,6 +69,15 @@ namespace LuckyCurrencyTest.ViewModels
         }
         #endregion
 
+        #region Список последних сделок на бирже
+        private ObservableCollection<LastTrade> _lastTrades;
+        public ObservableCollection<LastTrade> LastTrades
+        {
+            get => _lastTrades;
+            set => Set(ref _lastTrades, value);
+        }
+        #endregion
+
         #region Команды
 
         #region ChangePairOrTimeframeCommand
@@ -76,8 +86,12 @@ namespace LuckyCurrencyTest.ViewModels
         private void OnChangePairOrTimeframeCommandExecuted(object p)
         {
             Bybit.ReconnectWebSocket();
+            Asks.Clear();
+            Bids.Clear();
+            LastTrades.Clear();
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
+            Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
             Candles = Bybit.GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
         }
         #endregion
@@ -104,6 +118,7 @@ namespace LuckyCurrencyTest.ViewModels
             Candles = Bybit.GetCandles("BTCUSDT", "1");
             Asks = new ObservableCollection<OrderBook>();
             Bids = new ObservableCollection<OrderBook>();
+            LastTrades = new ObservableCollection<LastTrade>();
         }
 
         #region NewMessage
@@ -115,7 +130,7 @@ namespace LuckyCurrencyTest.ViewModels
                 timeframe = SelectedTimeframe.Content.ToString();
                 pair = SelectedPair.Content.ToString();
             });
-       
+
             if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
             {
                 App.Current.Dispatcher.InvokeAsync(() =>
@@ -128,6 +143,13 @@ namespace LuckyCurrencyTest.ViewModels
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
                     NewOrderBook(message);
+                });
+            }
+            if (message.Contains($"\"topic\":\"trade.{pair}\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewLastTrade(message);
                 });
             }
         }
@@ -182,8 +204,6 @@ namespace LuckyCurrencyTest.ViewModels
             OrderBookBase orderBookBase = JsonConvert.DeserializeObject<OrderBookBase>(message);
             if (orderBookBase.Type.Equals("snapshot"))
             {
-                Asks.Clear();
-                Bids.Clear();
                 OrderBookSnapshot orderBookSnapshots = ((JObject)orderBookBase.Data).ToObject<OrderBookSnapshot>();
                 List<OrderBookData> orderBook2 = orderBookSnapshots.Order_book;
                 foreach (var obs in orderBook2)
@@ -267,6 +287,22 @@ namespace LuckyCurrencyTest.ViewModels
                             Bids.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
                         }
                     }
+                }
+            }
+        }
+        private void NewLastTrade(string message)
+        {
+            Console.WriteLine("New Message: " + message);
+            LastTradeBase lastTradeBase = JsonConvert.DeserializeObject<LastTradeBase>(message);
+            List<LastTradeData> lastTrades = lastTradeBase.Data;
+
+            foreach(var lastTrade in lastTrades) 
+            {
+                LastTrades.Insert(0, new LastTrade(lastTrade.Price, lastTrade.Size, lastTrade.Timestamp, lastTrade.Tick_direction, lastTrade.Side));
+
+                if (LastTrades.Count > 25)
+                {
+                    LastTrades.RemoveAt(LastTrades.Count - 1);
                 }
             }
         }
