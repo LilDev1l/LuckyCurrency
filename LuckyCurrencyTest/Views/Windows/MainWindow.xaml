@@ -54,11 +54,17 @@
                             LegendText="{Binding Path=SelectedPair.Content}"/>
             <Grid Grid.Column="1" Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
                     <RowDefinition Height="30"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <DataGrid Grid.Row="0"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                           Text="Последняя сделка"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <DataGrid Grid.Row="1" Grid.Column="0"
                           ItemsSource="{Binding Asks}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
@@ -68,10 +74,7 @@
                         <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity}"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <TextBlock Grid.Row="1"
-                           Text="Последняя сделка"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <DataGrid Grid.Row="2"
+                <DataGrid Grid.Row="1" Grid.Column="1"
                           ItemsSource="{Binding Bids}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"

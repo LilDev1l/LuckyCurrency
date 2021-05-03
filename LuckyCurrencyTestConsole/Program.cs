@@ -28,12 +28,10 @@ namespace LuckyCurrencyTestConsole
                 });
                 client.Start();
 
-                client.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.ETHUSDT\"]}");
-                client.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.ETHUSDT\"]}");
-                client.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
-                client.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.BTCUSDT\"]}");
+                client.Send("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
                 //exitEvent.WaitOne();
-                Console.Read();
+                Thread.Sleep(10000);
+                client.Stop(System.Net.WebSockets.WebSocketCloseStatus.Empty, "stop");
             }
         }
     }

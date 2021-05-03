@@ -194,7 +194,7 @@ namespace LuckyCurrencyTest.ViewModels
                     }
                     else
                     {
-                        Bids.Add(new OrderBook(obs.Id, double.Parse(obs.Price), obs.Size));
+                        Bids.Insert(0, new OrderBook(obs.Id, double.Parse(obs.Price), obs.Size));
                     }
                 }
             }
@@ -233,11 +233,25 @@ namespace LuckyCurrencyTest.ViewModels
                 {
                     if (ins.Side.Equals("Sell"))
                     {
-                        Asks.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                        if (Asks[Asks.Count - 1].Id < ins.Id)
+                        {
+                            Asks.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                        }
+                        else
+                        {
+                            Asks.Insert(Asks.IndexOf(Asks.First(ask => ask.Id > ins.Id)), new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                        }
                     }
                     else
                     {
-                        Bids.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                        if (Bids[Bids.Count - 1].Id > ins.Id)
+                        {
+                            Bids.Add(new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                        }
+                        else
+                        {
+                            Bids.Insert(Bids.IndexOf(Bids.First(bid => bid.Id < ins.Id)), new OrderBook(ins.Id, double.Parse(ins.Price), ins.Size));
+                        }
                     }
                 }
             }
