@@ -97,9 +97,12 @@
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
     <Compile Include="Models\Candle.cs" />
+    <Compile Include="Models\LastTrade\LastTrade.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\OrderBook.cs" />
     <Compile Include="Services\Bybit.cs" />
+    <Compile Include="Services\Models\LastTrade\LastTradeBase.cs" />
+    <Compile Include="Services\Models\LastTrade\LastTradeData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketBase.cs" />
     <Compile Include="Services\Models\LinearKline\LinearKlineData.cs" />
