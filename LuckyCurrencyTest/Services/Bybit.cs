@@ -20,6 +20,7 @@ namespace LuckyCurrencyTest.Services
 {
     static class Bybit
     {
+        private static WebsocketClient _ws;
         private static Uri _uri;
         private static long _duration; 
         public static event Action<string> NewMessage;
@@ -36,20 +37,27 @@ namespace LuckyCurrencyTest.Services
         #region WebSocket
         public static void RunBybitWebSocket()
         {
-            WebsocketClient ws = new WebsocketClient(_uri);
-            ws.MessageReceived.Subscribe(message =>
+            _ws = new WebsocketClient(_uri);
+            _ws.MessageReceived.Subscribe(message =>
             {
                 NewMessage(message.Text);
             });
-            ws.Start();
-/*            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.ETHUSDT\"]}");
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.ETHUSDT\"]}");
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"candle.15.BTCUSDT\"]}");*/
-            ws.Send("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
+            _ws.Start();
+            SendMessage("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
+            SendMessage("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
+            SendMessage("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
         }
 
-        public static ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocket klineWebSocket)
+        public static void SendMessage(string message)
+        {
+            _ws.Send(message);
+        }
+        public static void ReconnectWebSocket()
+        {
+            _ws.Reconnect();
+        }
+
+        public static ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocketData klineWebSocket)
         {
             DateTime openTime = new DateTime(klineWebSocket.Start * 10000000L + _duration);
 
@@ -112,7 +120,7 @@ namespace LuckyCurrencyTest.Services
 
             return result.ToObject<LinearKlineBase>();
         }
-        public static ICandle GetCandleFromLinearKline(LinearKline kline)
+        public static ICandle GetCandleFromLinearKline(LinearKlineData kline)
         {
             DateTime openTime = new DateTime(kline.OpenTime.Value * 10000000L + _duration);
 

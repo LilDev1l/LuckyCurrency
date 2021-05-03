@@ -2,7 +2,7 @@
 
 namespace LuckyCurrencyTest.Services.Models.LinearKline
 {
-    class LinearKline
+    class LinearKlineData
     {
         [JsonProperty("symbol")]
         public string Symbol { get; set; }

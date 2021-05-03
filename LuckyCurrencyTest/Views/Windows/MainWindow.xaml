@@ -38,6 +38,50 @@
                 <ComboBoxItem Content="15"/>
             </ComboBox>
         </StackPanel>
-        <fc:CandleChart CandlesSource="{Binding Path=Candles}" ChartAreaBackground="DarkGray" LegendText="{Binding Path=SelectedPair.Content}"/>
+        <Grid ShowGridLines="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition  Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <fc:CandleChart CandlesSource="{Binding Path=Candles}"
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            ChartAreaBackground="DarkGray"
+                            LegendText="{Binding Path=SelectedPair.Content}"/>
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <DataGrid Grid.Row="0"
+                          ItemsSource="{Binding Asks}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Цена" Binding="{Binding Path=Price}"/>
+                        <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock Grid.Row="1"
+                           Text="Последняя сделка"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <DataGrid Grid.Row="2"
+                          ItemsSource="{Binding Bids}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Цена" Binding="{Binding Path=Price}"/>
+                        <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Grid>
     </DockPanel>
 </Window>

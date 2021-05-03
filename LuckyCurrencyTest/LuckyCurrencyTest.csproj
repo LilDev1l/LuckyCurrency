@@ -98,11 +98,19 @@
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
     <Compile Include="Models\Candle.cs" />
     <Compile Include="Models\Model.cs" />
+    <Compile Include="Models\OrderBook.cs" />
     <Compile Include="Services\Bybit.cs" />
-    <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocket.cs" />
+    <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketBase.cs" />
-    <Compile Include="Services\Models\LinearKline\LinearKline.cs" />
+    <Compile Include="Services\Models\LinearKline\LinearKlineData.cs" />
     <Compile Include="Services\Models\LinearKline\LinearKlineBase.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookBase.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookDelta\Delete.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookDelta\Insert.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookDelta\OrderBookDelta.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookDelta\Update.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookData.cs" />
+    <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookSnapshot.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="Views\Windows\MainWindow.xaml">
@@ -145,5 +153,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

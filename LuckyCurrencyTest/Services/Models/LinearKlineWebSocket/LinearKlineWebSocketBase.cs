@@ -8,7 +8,7 @@ namespace LuckyCurrencyTest.Services.Models.LinearKlineWebSocket
         [JsonProperty("topic")]
         public string Topic { get; set; }
         [JsonProperty("data")]
-        public List<LinearKlineWebSocket> Data { get; set; }
+        public List<LinearKlineWebSocketData> Data { get; set; }
         [JsonProperty("timestamp_e6")]
         public long Timestamp_e6 { get; set; }
     }

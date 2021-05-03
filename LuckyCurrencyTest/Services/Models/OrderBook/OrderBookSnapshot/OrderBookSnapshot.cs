@@ -7,17 +7,9 @@ using System.Threading.Tasks;
 
 namespace LuckyCurrencyTest.Services.Models.OrderBook.OrderBookSnapshot
 {
-    public class OrderBookSnapshot
+    class OrderBookSnapshot
     {
-        [JsonProperty("price")]
-        public string Price { get; set; }
-        [JsonProperty("symbol")]
-        public string Symbol { get; set; }
-        [JsonProperty("id")]
-        public int Id { get; set; }
-        [JsonProperty("side")]
-        public string Side { get; set; }
-        [JsonProperty("size")]
-        public int Size { get; set; }
+        [JsonProperty("order_book")]
+        public List<OrderBookData> Order_book { get; set; }
     }
 }

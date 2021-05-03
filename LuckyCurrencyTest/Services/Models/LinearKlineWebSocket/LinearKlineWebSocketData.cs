@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace LuckyCurrencyTest.Services.Models.LinearKlineWebSocket
 {
-    public class LinearKlineWebSocket
+    public class LinearKlineWebSocketData
     {
         [JsonProperty("start")]
         public int Start { get; set; }

@@ -14,7 +14,7 @@ namespace LuckyCurrencyTest.Services.Models.LinearKline
         [JsonProperty("ext_info")]
         public string ExtInfo { get; set; }
         [JsonProperty("result")]
-        public List<LinearKline> Result { get; set; }
+        public List<LinearKlineData> Result { get; set; }
         [JsonProperty("time_now")]
         public string TimeNow { get; set; }
     }
