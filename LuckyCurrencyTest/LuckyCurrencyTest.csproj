@@ -41,6 +41,9 @@
     <Reference Include="FancyPrimitives, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FancyCandles.2.0.0\lib\net472\FancyPrimitives.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="IO.Swagger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LuckyCurrencyTestConsole\bin\Debug\IO.Swagger.dll</HintPath>
@@ -97,12 +100,12 @@
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
     <Compile Include="Models\Candle.cs" />
-    <Compile Include="Models\LastTrade.cs" />
+    <Compile Include="Models\Trade.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\OrderBook.cs" />
     <Compile Include="Services\Bybit.cs" />
-    <Compile Include="Services\Models\LastTrade\LastTradeBase.cs" />
-    <Compile Include="Services\Models\LastTrade\LastTradeData.cs" />
+    <Compile Include="Services\Models\Trade\TradeBase.cs" />
+    <Compile Include="Services\Models\Trade\TradeData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketBase.cs" />
     <Compile Include="Services\Models\LinearKline\LinearKlineData.cs" />

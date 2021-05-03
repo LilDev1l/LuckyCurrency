@@ -70,11 +70,11 @@ namespace LuckyCurrencyTest.ViewModels
         #endregion
 
         #region Список последних сделок на бирже
-        private ObservableCollection<LastTrade> _lastTrades;
-        public ObservableCollection<LastTrade> LastTrades
+        private ObservableCollection<Trade> _trades;
+        public ObservableCollection<Trade> Trades
         {
-            get => _lastTrades;
-            set => Set(ref _lastTrades, value);
+            get => _trades;
+            set => Set(ref _trades, value);
         }
         #endregion
 
@@ -88,7 +88,7 @@ namespace LuckyCurrencyTest.ViewModels
             Bybit.ReconnectWebSocket();
             Asks.Clear();
             Bids.Clear();
-            LastTrades.Clear();
+            Trades.Clear();
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
@@ -118,7 +118,7 @@ namespace LuckyCurrencyTest.ViewModels
             Candles = Bybit.GetCandles("BTCUSDT", "1");
             Asks = new ObservableCollection<OrderBook>();
             Bids = new ObservableCollection<OrderBook>();
-            LastTrades = new ObservableCollection<LastTrade>();
+            Trades = new ObservableCollection<Trade>();
         }
 
         #region NewMessage
@@ -298,11 +298,11 @@ namespace LuckyCurrencyTest.ViewModels
 
             foreach(var lastTrade in lastTrades) 
             {
-                LastTrades.Insert(0, new LastTrade(lastTrade.Price, lastTrade.Size, lastTrade.Timestamp, lastTrade.Tick_direction, lastTrade.Side));
+                Trades.Insert(0, new Trade(lastTrade.Price, lastTrade.Size, lastTrade.Timestamp, lastTrade.Tick_direction, lastTrade.Side));
 
-                if (LastTrades.Count > 25)
+                if (Trades.Count > 25)
                 {
-                    LastTrades.RemoveAt(LastTrades.Count - 1);
+                    Trades.RemoveAt(Trades.Count - 1);
                 }
             }
         }

@@ -7,6 +7,7 @@
         xmlns:vm="clr-namespace:LuckyCurrencyTest.ViewModels"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:LuckyCurrencyTest"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <i:Interaction.Triggers>
@@ -17,6 +18,20 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="BuyOrSell">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Trades[0].Side}" Value="Buy">
+                    <Setter Property="fa:ImageAwesome.Icon" Value="chevronup"/>
+                    <Setter Property="fa:ImageAwesome.Foreground" Value="Green"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trades[0].Side}" Value="Sell">
+                    <Setter Property="fa:ImageAwesome.Icon" Value="chevrondown"/>
+                    <Setter Property="fa:ImageAwesome.Foreground" Value="Red"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <ComboBox SelectedItem="{Binding Path=SelectedPair}">
@@ -62,17 +77,21 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                           Text="Последняя сделка"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <fa:ImageAwesome Height="12" Margin="0,0,8,0" Style="{StaticResource BuyOrSell}"/>
+                    <TextBlock Text="{Binding Trades[0].Price, StringFormat={}{0:0.00}}"/>
+                </StackPanel>
                 <DataGrid Grid.Row="1" Grid.Column="0"
                           ItemsSource="{Binding Asks}"
                           AutoGenerateColumns="False"
+                          
                           IsReadOnly="True"
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Цена" Binding="{Binding Path=Price}"/>
-                        <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn Foreground="Red" Header="Цена" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn Foreground="Red" Header="Количество" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <DataGrid Grid.Row="1" Grid.Column="1"
@@ -81,19 +100,31 @@
                           IsReadOnly="True"
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Цена" Binding="{Binding Path=Price}"/>
-                        <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn Foreground="Green" Header="Цена" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn Foreground="Green" Header="Количество" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <DataGrid Grid.Row="2" Grid.ColumnSpan="2"
-                          ItemsSource="{Binding LastTrades}"
+                          ItemsSource="{Binding Trades}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                    <DataGrid.Resources>
+                        <Style x:Key="BuyOrSell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Side}" Value="Sell">
+                                    <Setter Property="DataGridTextColumn.Foreground"  Value="Red"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Side}" Value="Buy">
+                                    <Setter Property="DataGridTextColumn.Foreground"  Value="Green"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Цена" Binding="{Binding Path=Price}"/>
-                        <DataGridTextColumn Header="Количество" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Header="Время" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"/>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Цена" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Количество" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Время" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
