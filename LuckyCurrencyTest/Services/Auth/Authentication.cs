@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrencyTest.Services.Authentication
+namespace LuckyCurrencyTest.Services.Auth
 {
-    static class Auth
+    static class Authentication
     {
         public static string CreateSignature(string secret, string message)
         {

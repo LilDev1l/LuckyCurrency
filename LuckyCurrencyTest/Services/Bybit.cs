@@ -13,9 +13,10 @@ using IO.Swagger.Model;
 using LuckyCurrencyTest.Models;
 using LuckyCurrencyTest.Services.Models.LinearKline;
 using LuckyCurrencyTest.Services.Models.LinearKlineWebSocket;
-using LuckyCurrencyTest.Services.Authentication;
+using LuckyCurrencyTest.Services.Auth;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
+using IO.Swagger.Client;
 
 namespace LuckyCurrencyTest.Services
 {
@@ -25,6 +26,9 @@ namespace LuckyCurrencyTest.Services
         private static WebsocketClient _wsPrivate;
         private static long _duration; 
         public static event Action<string> NewMessage;
+
+        private static string api_key = "QIqhha0rxn2MsE9RVy";
+        private static string secret = "DdG6XxKhIbchVRvEFmFOyazlyRCnqESGA1Pa";
 
         #region Статический конструктор
         static Bybit()
@@ -37,10 +41,8 @@ namespace LuckyCurrencyTest.Services
         #region WebSocket
         public static void RunBybitWebSocket()
         {
-            string api_key = "QIqhha0rxn2MsE9RVy";
-            string secret = "DdG6XxKhIbchVRvEFmFOyazlyRCnqESGA1Pa";
-            long expires = DateTime.Now.Ticks + 5000;
-            string signature = Auth.CreateSignature(secret, "GET/realtime" + expires);
+            long expires = DateTime.Now.Ticks + 1000;
+            string signature = Authentication.CreateSignature(secret, "GET/realtime" + expires);
             _wsPublic = new WebsocketClient(new Uri("wss://stream.bytick.com/realtime_public"));
             _wsPrivate = new WebsocketClient(new Uri($"wss://stream.bytick.com/realtime_private?api_key={api_key}&expires={expires}&signature={signature}"));
             _wsPublic.MessageReceived.Subscribe(message =>
@@ -76,11 +78,12 @@ namespace LuckyCurrencyTest.Services
             return new Candle(openTime, klineWebSocket.Open, klineWebSocket.High, klineWebSocket.Low, klineWebSocket.Close, (int)double.Parse(klineWebSocket.Volume));
         }
         #endregion
-        
+
+        #region HTTP
+
         #region LinearKline
         public static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
         {
-            SetCultureUS();
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
             
             LinearKlineBase klineBase = GetLinearKlineBase(pair, timeframe);
@@ -139,7 +142,22 @@ namespace LuckyCurrencyTest.Services
             return new Candle(openTime, kline.Open.Value, kline.High.Value, kline.Low.Value, kline.Close.Value, (long)kline.Volume.Value);
         }
         #endregion
-        
+        #region CurrentBalance
+        public static CurrentBalance GetCurrentBalance(string coin)
+        {
+            long timestamp = GetTimeServerSeconds() * 1000;
+            Configuration.Default.AddApiKey("api_key", api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&coin={coin}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new WalletApi();
+            Object result = apiInstance.WalletGetBalance(coin);
+            Console.WriteLine(result);
+
+            return null;
+        }
+        #endregion
+
         #region Server
         public static long GetTimeServerSeconds()
         {
@@ -161,6 +179,8 @@ namespace LuckyCurrencyTest.Services
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
         }
+        #endregion
+
         #endregion
     }
 }

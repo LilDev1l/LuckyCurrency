@@ -100,10 +100,11 @@
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
     <Compile Include="Models\Candle.cs" />
+    <Compile Include="Models\CurrentBalance.cs" />
     <Compile Include="Models\Trade.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\OrderBook.cs" />
-    <Compile Include="Services\Authentication\Auth.cs" />
+    <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
     <Compile Include="Services\Models\Trade\TradeBase.cs" />
     <Compile Include="Services\Models\Trade\TradeData.cs" />

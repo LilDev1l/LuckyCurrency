@@ -52,7 +52,7 @@ namespace LuckyCurrencyTest.ViewModels
         #endregion
 
         #region Список заявок на продажу
-        private ObservableCollection<OrderBook> _asks;
+        private ObservableCollection<OrderBook> _asks = new ObservableCollection<OrderBook>();
         public ObservableCollection<OrderBook> Asks
         {
             get => _asks;
@@ -61,7 +61,7 @@ namespace LuckyCurrencyTest.ViewModels
         #endregion
 
         #region Список заявок на покупку
-        private ObservableCollection<OrderBook> _bids;
+        private ObservableCollection<OrderBook> _bids = new ObservableCollection<OrderBook>();
         public ObservableCollection<OrderBook> Bids
         {
             get => _bids;
@@ -70,11 +70,20 @@ namespace LuckyCurrencyTest.ViewModels
         #endregion
 
         #region Список последних сделок на бирже
-        private ObservableCollection<Trade> _trades;
+        private ObservableCollection<Trade> _trades = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> Trades
         {
             get => _trades;
             set => Set(ref _trades, value);
+        }
+        #endregion
+
+        #region Текущий баланс
+        private CurrentBalance _currentBalance;
+        public CurrentBalance CurrentBalance
+        {
+            get => _currentBalance;
+            set => Set(ref _currentBalance, value);
         }
         #endregion
 
@@ -115,9 +124,7 @@ namespace LuckyCurrencyTest.ViewModels
             #endregion
 
             Candles = Bybit.GetCandles("BTCUSDT", "1");
-            Asks = new ObservableCollection<OrderBook>();
-            Bids = new ObservableCollection<OrderBook>();
-            Trades = new ObservableCollection<Trade>();
+            CurrentBalance = Bybit.GetCurrentBalance("USDT");
         }
 
         #region NewMessage
