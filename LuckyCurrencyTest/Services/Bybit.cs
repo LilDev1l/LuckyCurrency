@@ -13,6 +13,7 @@ using IO.Swagger.Model;
 using LuckyCurrencyTest.Models;
 using LuckyCurrencyTest.Services.Models.LinearKline;
 using LuckyCurrencyTest.Services.Models.LinearKlineWebSocket;
+using LuckyCurrencyTest.Services.Authentication;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
 
@@ -20,8 +21,8 @@ namespace LuckyCurrencyTest.Services
 {
     static class Bybit
     {
-        private static WebsocketClient _ws;
-        private static Uri _uri;
+        private static WebsocketClient _wsPublic;
+        private static WebsocketClient _wsPrivate;
         private static long _duration; 
         public static event Action<string> NewMessage;
 
@@ -29,7 +30,6 @@ namespace LuckyCurrencyTest.Services
         static Bybit()
         {
             SetCultureUS();
-            _uri = new Uri("wss://stream.bytick.com/realtime_public");
             _duration = GetTimeDuration();
         }
         #endregion
@@ -37,24 +37,36 @@ namespace LuckyCurrencyTest.Services
         #region WebSocket
         public static void RunBybitWebSocket()
         {
-            _ws = new WebsocketClient(_uri);
-            _ws.MessageReceived.Subscribe(message =>
+            string api_key = "QIqhha0rxn2MsE9RVy";
+            string secret = "DdG6XxKhIbchVRvEFmFOyazlyRCnqESGA1Pa";
+            long expires = DateTime.Now.Ticks + 5000;
+            string signature = Auth.CreateSignature(secret, "GET/realtime" + expires);
+            _wsPublic = new WebsocketClient(new Uri("wss://stream.bytick.com/realtime_public"));
+            _wsPrivate = new WebsocketClient(new Uri($"wss://stream.bytick.com/realtime_private?api_key={api_key}&expires={expires}&signature={signature}"));
+            _wsPublic.MessageReceived.Subscribe(message =>
             {
                 NewMessage(message.Text);
             });
-            _ws.Start();
-            SendMessage("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
+            _wsPrivate.MessageReceived.Subscribe(message =>
+            {
+                NewMessage(message.Text);
+            });
+            _wsPublic.Start();
+            _wsPrivate.Start();
+            //_wsPrivate.Send($"{{\"op\":\"auth\",\"args\":[\"{api_key}\",\"{expires}\",\"{signature}\"]}}");
+            _wsPrivate.Send("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+/*            SendMessage("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
             SendMessage("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
-            SendMessage("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
+            SendMessage("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");*/
         }
 
         public static void SendMessage(string message)
         {
-            _ws.Send(message);
+            _wsPublic.Send(message);
         }
         public static void ReconnectWebSocket()
         {
-            _ws.Reconnect();
+            _wsPublic.Reconnect();
         }
 
         public static ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocketData klineWebSocket)

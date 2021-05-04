@@ -114,7 +114,6 @@ namespace LuckyCurrencyTest.ViewModels
             RunWebSocketCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
             Candles = Bybit.GetCandles("BTCUSDT", "1");
             Asks = new ObservableCollection<OrderBook>();
             Bids = new ObservableCollection<OrderBook>();
@@ -130,28 +129,28 @@ namespace LuckyCurrencyTest.ViewModels
                 timeframe = SelectedTimeframe.Content.ToString();
                 pair = SelectedPair.Content.ToString();
             });
-
-            if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
-            {
-                App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    NewCandle(message);
-                });
-            }
-            if (message.Contains($"\"topic\":\"orderBookL2_25.{pair}\""))
-            {
-                App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    NewOrderBook(message);
-                });
-            }
-            if (message.Contains($"\"topic\":\"trade.{pair}\""))
-            {
-                App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    NewLastTrade(message);
-                });
-            }
+            Console.WriteLine("New Message: " + message);
+            /*            if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
+                        {
+                            App.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                NewCandle(message);
+                            });
+                        }
+                        if (message.Contains($"\"topic\":\"orderBookL2_25.{pair}\""))
+                        {
+                            App.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                NewOrderBook(message);
+                            });
+                        }
+                        if (message.Contains($"\"topic\":\"trade.{pair}\""))
+                        {
+                            App.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                NewLastTrade(message);
+                            });
+                        }*/
         }
         private void NewCandle(string message)
         {

@@ -103,6 +103,7 @@
     <Compile Include="Models\Trade.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\OrderBook.cs" />
+    <Compile Include="Services\Authentication\Auth.cs" />
     <Compile Include="Services\Bybit.cs" />
     <Compile Include="Services\Models\Trade\TradeBase.cs" />
     <Compile Include="Services\Models\Trade\TradeData.cs" />
