@@ -152,7 +152,6 @@ namespace LuckyCurrency.Services
 
             var apiInstance = new WalletApi();
             JObject result = (JObject)apiInstance.WalletGetBalance(coin);
-            Console.WriteLine(result);
 
             return result.ToObject<CurrentBalanceBase>();
         }
