@@ -62,11 +62,12 @@
                 <ColumnDefinition  Width="2*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <fc:CandleChart CandlesSource="{Binding Path=Candles}"
-                            Grid.Column="0"
-                            Grid.Row="0"
+
+            <fc:CandleChart Grid.Column="0" Grid.Row="0"
+                            CandlesSource="{Binding Path=Candles}"
                             ChartAreaBackground="DarkGray"
                             LegendText="{Binding Path=SelectedPair.Content}"/>
+            
             <Grid Grid.Column="1" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
@@ -128,7 +129,23 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            
+
+            <Grid Grid.Row="1" Grid.Column="1">
+                <GroupBox Header="Balance">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="{Binding Path=CurrentBalance.WalletBalance}"/>
+                            <TextBlock>Wallet Balance</TextBlock>
+                        </DockPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="{Binding Path=CurrentBalance.AvailableBalance}"/>
+                            <TextBlock>Available Balance</TextBlock>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

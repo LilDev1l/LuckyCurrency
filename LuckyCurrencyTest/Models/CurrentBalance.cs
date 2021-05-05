@@ -10,5 +10,11 @@ namespace LuckyCurrencyTest.Models
     {
         public double WalletBalance { get; set; }
         public double AvailableBalance { get; set; }
+
+        public CurrentBalance(double walletBalance, double availableBalance)
+        {
+            WalletBalance = walletBalance;
+            AvailableBalance = availableBalance;
+        }
     }
 }

@@ -106,6 +106,10 @@
     <Compile Include="Models\OrderBook.cs" />
     <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
+    <Compile Include="Services\Models\CurrentBalanceWebSocket\CurrentBalanceWSBase.cs" />
+    <Compile Include="Services\Models\CurrentBalanceWebSocket\CurrentBalanceWSData.cs" />
+    <Compile Include="Services\Models\CurrentBalance\CurrentBalanceBase.cs" />
+    <Compile Include="Services\Models\CurrentBalance\CurrentBalanceData.cs" />
     <Compile Include="Services\Models\Trade\TradeBase.cs" />
     <Compile Include="Services\Models\Trade\TradeData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketData.cs" />

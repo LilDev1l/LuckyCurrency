@@ -17,6 +17,7 @@ using LuckyCurrencyTest.Services.Auth;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
 using IO.Swagger.Client;
+using LuckyCurrencyTest.Services.Models.CurrentBalance;
 
 namespace LuckyCurrencyTest.Services
 {
@@ -55,11 +56,10 @@ namespace LuckyCurrencyTest.Services
             });
             _wsPublic.Start();
             _wsPrivate.Start();
-            //_wsPrivate.Send($"{{\"op\":\"auth\",\"args\":[\"{api_key}\",\"{expires}\",\"{signature}\"]}}");
             _wsPrivate.Send("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-/*            SendMessage("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
+            SendMessage("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
             SendMessage("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
-            SendMessage("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");*/
+            SendMessage("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
         }
 
         public static void SendMessage(string message)
@@ -143,7 +143,7 @@ namespace LuckyCurrencyTest.Services
         }
         #endregion
         #region CurrentBalance
-        public static CurrentBalance GetCurrentBalance(string coin)
+        public static CurrentBalanceBase GetCurrentBalanceBase(string coin)
         {
             long timestamp = GetTimeServerSeconds() * 1000;
             Configuration.Default.AddApiKey("api_key", api_key);
@@ -151,10 +151,10 @@ namespace LuckyCurrencyTest.Services
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new WalletApi();
-            Object result = apiInstance.WalletGetBalance(coin);
+            JObject result = (JObject)apiInstance.WalletGetBalance(coin);
             Console.WriteLine(result);
 
-            return null;
+            return result.ToObject<CurrentBalanceBase>();
         }
         #endregion
 

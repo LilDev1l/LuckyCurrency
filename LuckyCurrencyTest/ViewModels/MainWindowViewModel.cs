@@ -18,6 +18,8 @@ using LuckyCurrencyTest.Services.Models.OrderBook.OrderBookDelta;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using LuckyCurrencyTest.Services.Models.LastTrade;
+using LuckyCurrencyTest.Services.Models.CurrentBalance;
+using LuckyCurrencyTest.Services.Models.CurrentBalanceWebSocket;
 
 namespace LuckyCurrencyTest.ViewModels
 {
@@ -124,7 +126,10 @@ namespace LuckyCurrencyTest.ViewModels
             #endregion
 
             Candles = Bybit.GetCandles("BTCUSDT", "1");
-            CurrentBalance = Bybit.GetCurrentBalance("USDT");
+
+            CurrentBalanceBase currentBalanceBase = Bybit.GetCurrentBalanceBase("USDT");
+            CurrentBalanceData currentBalanceData = currentBalanceBase.Result.USDT;
+            CurrentBalance = new CurrentBalance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
         }
 
         #region NewMessage
@@ -136,28 +141,35 @@ namespace LuckyCurrencyTest.ViewModels
                 timeframe = SelectedTimeframe.Content.ToString();
                 pair = SelectedPair.Content.ToString();
             });
-            Console.WriteLine("New Message: " + message);
-            /*            if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
-                        {
-                            App.Current.Dispatcher.InvokeAsync(() =>
-                            {
-                                NewCandle(message);
-                            });
-                        }
-                        if (message.Contains($"\"topic\":\"orderBookL2_25.{pair}\""))
-                        {
-                            App.Current.Dispatcher.InvokeAsync(() =>
-                            {
-                                NewOrderBook(message);
-                            });
-                        }
-                        if (message.Contains($"\"topic\":\"trade.{pair}\""))
-                        {
-                            App.Current.Dispatcher.InvokeAsync(() =>
-                            {
-                                NewLastTrade(message);
-                            });
-                        }*/
+
+            if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewCandle(message);
+                });
+            }
+            if (message.Contains($"\"topic\":\"orderBookL2_25.{pair}\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewOrderBook(message);
+                });
+            }
+            if (message.Contains($"\"topic\":\"trade.{pair}\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewTrade(message);
+                });
+            }
+            if (message.Contains($"\"topic\":\"wallet\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewCurrentBalance(message);
+                });
+            }
         }
         private void NewCandle(string message)
         {
@@ -296,7 +308,7 @@ namespace LuckyCurrencyTest.ViewModels
                 }
             }
         }
-        private void NewLastTrade(string message)
+        private void NewTrade(string message)
         {
             Console.WriteLine("New Message: " + message);
             LastTradeBase lastTradeBase = JsonConvert.DeserializeObject<LastTradeBase>(message);
@@ -311,6 +323,14 @@ namespace LuckyCurrencyTest.ViewModels
                     Trades.RemoveAt(Trades.Count - 1);
                 }
             }
+        }
+        private void NewCurrentBalance(string message)
+        {
+            Console.WriteLine("New Message: " + message);
+            CurrentBalanceWSBase currentBalanceWSBase = JsonConvert.DeserializeObject<CurrentBalanceWSBase>(message);
+            CurrentBalanceWSData currentBalanceWSData  = currentBalanceWSBase.Data[0];
+
+            CurrentBalance = new CurrentBalance(currentBalanceWSData.Wallet_balance, currentBalanceWSData.Available_balance);
         }
         #endregion
     }
