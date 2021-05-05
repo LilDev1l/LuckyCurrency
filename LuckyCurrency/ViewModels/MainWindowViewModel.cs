@@ -20,6 +20,7 @@ using System.Linq;
 using LuckyCurrency.Services.Models.LastTrade;
 using LuckyCurrency.Services.Models.CurrentBalance;
 using LuckyCurrency.Services.Models.CurrentBalanceWebSocket;
+using LuckyCurrency.Services.Models.LinearKline;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -103,7 +104,8 @@ namespace LuckyCurrency.ViewModels
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
             Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
-            Candles = Bybit.GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
+
+            Candles = GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
         }
         #endregion
 
@@ -125,11 +127,36 @@ namespace LuckyCurrency.ViewModels
             RunWebSocketCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
-            Candles = Bybit.GetCandles("BTCUSDT", "1");
+            Candles = GetCandles("BTCUSDT", "1");
+            CurrentBalance = GetCurrentBalance("USDT");
+        }
 
-            CurrentBalanceBase currentBalanceBase = Bybit.GetCurrentBalanceBase("USDT");
+        private static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
+        {
+            ICandle GetCandleFromLinearKline(LinearKlineData kline)
+            {
+                DateTime openTime = new DateTime(kline.OpenTime * 10000000L + Bybit.Duration);
+
+                return new Candle(openTime, kline.Open, kline.High, kline.Low, kline.Close, (long)kline.Volume);
+            }
+
+            LinearKlineBase linearKlineBase = Bybit.GetLinearKlineBase(pair, timeframe);
+            List<LinearKlineData> linearKlineData = linearKlineBase.Result;
+
+            ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
+            foreach (var kline in linearKlineData)
+            {
+                candles.Add(GetCandleFromLinearKline(kline));
+            }
+
+            return candles;
+        }
+        private static CurrentBalance GetCurrentBalance(string coin)
+        {
+            CurrentBalanceBase currentBalanceBase = Bybit.GetCurrentBalanceBase(coin);
             CurrentBalanceData currentBalanceData = currentBalanceBase.Result.USDT;
-            CurrentBalance = new CurrentBalance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
+
+            return new CurrentBalance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
         }
 
         #region NewMessage
@@ -196,24 +223,25 @@ namespace LuckyCurrency.ViewModels
 
             void OnChangeLastCandle(LinearKlineWebSocketData klineV2)
             {
-                ICandle candle = Bybit.GetCandleFromLinearKlineWebSocket(klineV2);
+                ICandle candle = GetCandleFromLinearKlineWebSocket(klineV2);
                 int lastCandleCount = Candles.Count - 1;
-/*
-                App.Current.Dispatcher.Invoke(() =>
-                {*/
-                    Candles[lastCandleCount] = candle;
-                    Console.WriteLine("Изменено: " + candle);
-/*                });*/
+
+                Candles[lastCandleCount] = candle;
+                Console.WriteLine("Изменено: " + candle);
             }
             void OnAddNewCandle(LinearKlineWebSocketData klineV2)
             {
-                ICandle candle = Bybit.GetCandleFromLinearKlineWebSocket(klineV2);
+                ICandle candle = GetCandleFromLinearKlineWebSocket(klineV2);
 
-/*                App.Current.Dispatcher.Invoke(() =>
-                {*/
-                    Candles.Add(candle);
-                    Console.WriteLine("Добавлено: " + candle);
-/*                });*/
+                Candles.Add(candle);
+                Console.WriteLine("Добавлено: " + candle);
+            }
+
+            ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocketData klineWS)
+            {
+                DateTime openTime = new DateTime(klineWS.Start * 10000000L + Bybit.Duration);
+
+                return new Candle(openTime, klineWS.Open, klineWS.High, klineWS.Low, klineWS.Close, (int)double.Parse(klineWS.Volume));
             }
         }
         private void NewOrderBook(string message)

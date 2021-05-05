@@ -7,10 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FancyCandles;
 using IO.Swagger.Api;
-using IO.Swagger.Model;
-using LuckyCurrency.Models;
 using LuckyCurrency.Services.Models.LinearKline;
 using LuckyCurrency.Services.Models.LinearKlineWebSocket;
 using LuckyCurrency.Services.Auth;
@@ -18,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using Websocket.Client;
 using IO.Swagger.Client;
 using LuckyCurrency.Services.Models.CurrentBalance;
+using LuckyCurrency.Services.Models.ServerTime;
 
 namespace LuckyCurrency.Services
 {
@@ -25,7 +23,7 @@ namespace LuckyCurrency.Services
     {
         private static WebsocketClient _wsPublic;
         private static WebsocketClient _wsPrivate;
-        private static long _duration; 
+        public static long Duration { get; set; } 
         public static event Action<string> NewMessage;
 
         private static string api_key = "QIqhha0rxn2MsE9RVy";
@@ -35,7 +33,7 @@ namespace LuckyCurrency.Services
         static Bybit()
         {
             SetCultureUS();
-            _duration = GetTimeDuration();
+            Duration = GetTimeDuration();
         }
         #endregion
 
@@ -70,29 +68,18 @@ namespace LuckyCurrency.Services
         {
             _wsPublic.Reconnect();
         }
-
-        public static ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocketData klineWebSocket)
-        {
-            DateTime openTime = new DateTime(klineWebSocket.Start * 10000000L + _duration);
-
-            return new Candle(openTime, klineWebSocket.Open, klineWebSocket.High, klineWebSocket.Low, klineWebSocket.Close, (int)double.Parse(klineWebSocket.Volume));
-        }
         #endregion
 
         #region HTTP
 
         #region LinearKline
-        public static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
+        public static LinearKlineBase GetLinearKlineBase(string pair, string timeframe)
         {
-            ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
-            
-            LinearKlineBase klineBase = GetLinearKlineBase(pair, timeframe);
-            foreach(var kline in klineBase.Result)
-            {
-                candles.Add(GetCandleFromLinearKline(kline));
-            }
+            var apiInstance = new LinearKlineApi();
+            long from = GetTimeServer(Time.Seconds) - 200 * GetIntervalSeconds(timeframe);
+            JObject result = (JObject)apiInstance.LinearKlineGet(pair, timeframe, from);
 
-            return candles;
+            return result.ToObject<LinearKlineBase>();
         }
         public static long GetIntervalSeconds(string timeframe)
         {
@@ -127,25 +114,11 @@ namespace LuckyCurrency.Services
             }
 
         }
-        public static LinearKlineBase GetLinearKlineBase(string pair, string timeframe)
-        {
-            var apiInstance = new LinearKlineApi();
-            long from = GetTimeServerSeconds() - 200 * GetIntervalSeconds(timeframe);
-            JObject result = (JObject)apiInstance.LinearKlineGet(pair, timeframe, from);
-
-            return result.ToObject<LinearKlineBase>();
-        }
-        public static ICandle GetCandleFromLinearKline(LinearKlineData kline)
-        {
-            DateTime openTime = new DateTime(kline.OpenTime.Value * 10000000L + _duration);
-
-            return new Candle(openTime, kline.Open.Value, kline.High.Value, kline.Low.Value, kline.Close.Value, (long)kline.Volume.Value);
-        }
         #endregion
         #region CurrentBalance
         public static CurrentBalanceBase GetCurrentBalanceBase(string coin)
         {
-            long timestamp = GetTimeServerSeconds() * 1000;
+            long timestamp = GetTimeServer(Time.MiliSeconds);
             Configuration.Default.AddApiKey("api_key", api_key);
             Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&coin={coin}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
@@ -158,18 +131,34 @@ namespace LuckyCurrency.Services
         #endregion
 
         #region Server
-        public static long GetTimeServerSeconds()
+        public enum Time
+        {
+            Seconds,
+            MiliSeconds,
+            Tick
+        }
+        public static long GetTimeServer(Time time)
         {
             var apiInstance = new CommonApi();
             JObject result = (JObject)apiInstance.CommonGetTime();
-            double timeServerSeconds = double.Parse(result.ToObject<ServerTime>().TimeNow);
+            long timeServerSeconds = (long)result.ToObject<ServerTimeData>().Time_now;
 
-            return (long)timeServerSeconds;
+            switch (time)
+            {
+                case Time.Seconds:
+                    return timeServerSeconds;
+                case Time.MiliSeconds:
+                    return timeServerSeconds * 1000;
+                case Time.Tick:
+                    return timeServerSeconds * 10000000;
+                default:
+                    throw new Exception("Неверный формат времени");
+            }
         }
 
         public static long GetTimeDuration()
         {
-            var timeServerTick = GetTimeServerSeconds() * 10000000;
+            var timeServerTick = GetTimeServer(Time.Tick);
             var timeNow = DateTime.Now.Ticks;
 
             return timeNow - timeServerTick;

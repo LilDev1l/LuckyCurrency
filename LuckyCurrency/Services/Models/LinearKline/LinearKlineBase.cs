@@ -6,7 +6,7 @@ namespace LuckyCurrency.Services.Models.LinearKline
     class LinearKlineBase
     {
         [JsonProperty("ret_code")]
-        public decimal? RetCode { get; set; }
+        public decimal RetCode { get; set; }
         [JsonProperty("ret_msg")]
         public string RetMsg { get; set; }
         [JsonProperty("ext_code")]
