@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Services.Models.CurrentBalance
+namespace LuckyCurrency.Services.Models.Balance
 {
-    class CurrentBalanceBase
+    class BalanceBase
     {
         [JsonProperty("ret_code")]
         public int Ret_code { get; set; }

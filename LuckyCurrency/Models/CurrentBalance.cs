@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LuckyCurrency.Models
 {
-    class CurrentBalance
+    class Balance
     {
         public double WalletBalance { get; set; }
         public double AvailableBalance { get; set; }
 
-        public CurrentBalance(double walletBalance, double availableBalance)
+        public Balance(double walletBalance, double availableBalance)
         {
             WalletBalance = walletBalance;
             AvailableBalance = availableBalance;

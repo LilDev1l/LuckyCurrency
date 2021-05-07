@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Services.Models.CurrentBalanceWebSocket
+namespace LuckyCurrency.Services.Models.BalanceWebSocket
 {
-    class CurrentBalanceWSBase
+    class BalanceWSBase
     {
         [JsonProperty("topic")]
         public string Topic { get; set; }
         [JsonProperty("data")]
-        public List<CurrentBalanceWSData> Data { get; set; }
+        public List<BalanceWSData> Data { get; set; }
     }
 }

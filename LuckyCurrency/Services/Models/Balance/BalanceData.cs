@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Services.Models.CurrentBalance
+namespace LuckyCurrency.Services.Models.Balance
 {
     class Result
     {
         [JsonProperty("USDT")]
-        public CurrentBalanceData USDT { get; set; }
+        public BalanceData USDT { get; set; }
     }
-    class CurrentBalanceData
+    class BalanceData
     {
         [JsonProperty("equity")]
         public double Equity { get; set; }

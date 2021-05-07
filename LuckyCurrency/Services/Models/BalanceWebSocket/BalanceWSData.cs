@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Services.Models.CurrentBalanceWebSocket
+namespace LuckyCurrency.Services.Models.BalanceWebSocket
 {
-    class CurrentBalanceWSData
+    class BalanceWSData
     {
         [JsonProperty("wallet_balance")]
         public double Wallet_balance { get; set; }
