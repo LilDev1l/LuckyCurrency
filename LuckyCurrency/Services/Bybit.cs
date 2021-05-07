@@ -14,7 +14,7 @@ using LuckyCurrency.Services.Auth;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
 using IO.Swagger.Client;
-using LuckyCurrency.Services.Models.CurrentBalance;
+using LuckyCurrency.Services.Models.Balance;
 using LuckyCurrency.Services.Models.ServerTime;
 
 namespace LuckyCurrency.Services
@@ -37,8 +37,8 @@ namespace LuckyCurrency.Services
         }
         #endregion
 
-        #region WebSocket
-        public static void RunBybitWebSocket()
+        #region WebSockets
+        public static void RunBybitWS()
         {
             long expires = DateTime.Now.Ticks + 1000;
             string signature = Authentication.CreateSignature(secret, "GET/realtime" + expires);
@@ -54,23 +54,39 @@ namespace LuckyCurrency.Services
             });
             _wsPublic.Start();
             _wsPrivate.Start();
-            _wsPrivate.Send("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-            SendMessage("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
-            SendMessage("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
-            SendMessage("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
+
+            SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
+            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
+            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
         }
 
-        public static void SendMessage(string message)
+        #region public
+        public static void SendPublicWS(string message)
         {
             _wsPublic.Send(message);
         }
-        public static void ReconnectWebSocket()
+        public static void ReconnectPublicWS()
         {
             _wsPublic.Reconnect();
         }
         #endregion
+        #region private
+        public static void SendPrivateWS(string message)
+        {
+            _wsPrivate.Send(message);
+        }
+        public static void ReconnectPrivateWS()
+        {
+            _wsPrivate.Reconnect();
+        }
+        #endregion
+
+        #endregion
 
         #region HTTP
+
+        #region public
 
         #region LinearKline
         public static LinearKlineBase GetLinearKlineBase(string pair, string timeframe)
@@ -115,8 +131,12 @@ namespace LuckyCurrency.Services
 
         }
         #endregion
-        #region CurrentBalance
-        public static CurrentBalanceBase GetCurrentBalanceBase(string coin)
+
+        #endregion
+        #region private
+
+        #region Balance
+        public static BalanceBase GetCurrentBalanceBase(string coin)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
             Configuration.Default.AddApiKey("api_key", api_key);
@@ -126,8 +146,10 @@ namespace LuckyCurrency.Services
             var apiInstance = new WalletApi();
             JObject result = (JObject)apiInstance.WalletGetBalance(coin);
 
-            return result.ToObject<CurrentBalanceBase>();
+            return result.ToObject<BalanceBase>();
         }
+        #endregion
+
         #endregion
 
         #region Server

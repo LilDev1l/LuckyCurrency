@@ -12,7 +12,7 @@
         Title="MainWindow" Height="450" Width="800">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding Path=RunWebSocketCommand}"/>
+            <i:InvokeCommandAction Command="{Binding Path=RunWSCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.DataContext>
@@ -49,8 +49,8 @@
                         <i:InvokeCommandAction Command="{Binding Path=ChangePairOrTimeframeCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <ComboBoxItem  Content="1" IsSelected="True"/>
-                <ComboBoxItem Content="15"/>
+                <ComboBoxItem  Content="1"/>
+                <ComboBoxItem Content="15" IsSelected="True"/>
             </ComboBox>
         </StackPanel>
         <Grid ShowGridLines="True">
@@ -135,12 +135,12 @@
                     <StackPanel>
                         <DockPanel LastChildFill="True">
                             <TextBlock DockPanel.Dock="Right"
-                                       Text="{Binding Path=CurrentBalance.WalletBalance}"/>
+                                       Text="{Binding Path=Balance.WalletBalance}"/>
                             <TextBlock>Wallet Balance</TextBlock>
                         </DockPanel>
                         <DockPanel LastChildFill="True">
                             <TextBlock DockPanel.Dock="Right"
-                                       Text="{Binding Path=CurrentBalance.AvailableBalance}"/>
+                                       Text="{Binding Path=Balance.AvailableBalance}"/>
                             <TextBlock>Available Balance</TextBlock>
                         </DockPanel>
                     </StackPanel>

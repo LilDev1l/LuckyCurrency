@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
 using FancyCandles;
 using LuckyCurrency.Services;
 using Newtonsoft.Json;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Globalization;
 using LuckyCurrency.Infrastructure.Commands;
 using LuckyCurrency.Services.Models.LinearKlineWebSocket;
 using LuckyCurrency.Services.Models.OrderBook;
@@ -18,14 +16,17 @@ using LuckyCurrency.Services.Models.OrderBook.OrderBookDelta;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using LuckyCurrency.Services.Models.LastTrade;
-using LuckyCurrency.Services.Models.CurrentBalance;
-using LuckyCurrency.Services.Models.CurrentBalanceWebSocket;
+using LuckyCurrency.Services.Models.Balance;
+using LuckyCurrency.Services.Models.BalanceWebSocket;
 using LuckyCurrency.Services.Models.LinearKline;
+using LuckyCurrency.Services.Models.Position;
 
 namespace LuckyCurrency.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
+        #region Models
+
         #region Торговая пара
         private ComboBoxItem _selectedPair;
         public ComboBoxItem SelectedPair
@@ -82,12 +83,14 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region Текущий баланс
-        private CurrentBalance _currentBalance;
-        public CurrentBalance CurrentBalance
+        private Balance _balance;
+        public Balance Balance
         {
-            get => _currentBalance;
-            set => Set(ref _currentBalance, value);
+            get => _balance;
+            set => Set(ref _balance, value);
         }
+        #endregion
+
         #endregion
 
         #region Команды
@@ -97,40 +100,44 @@ namespace LuckyCurrency.ViewModels
         private bool CanChangePairOrTimeframeCommandExecute(object p) => true;
         private void OnChangePairOrTimeframeCommandExecuted(object p)
         {
-            Bybit.ReconnectWebSocket();
+            Bybit.ReconnectPublicWS();
             Asks.Clear();
             Bids.Clear();
             Trades.Clear();
-            Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
-            Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
-            Bybit.SendMessage($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
 
             Candles = GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
         }
         #endregion
 
-        #region RunWebSocketCommand
-        public ICommand RunWebSocketCommand { get; }
+        #region RunWSCommand
+        public ICommand RunWSCommand { get; }
         private bool CanRunWebSocketCommandExecute(object p) => true;
         private void OnRunWebSocketCommandExecuted(object p)
         {
-            Bybit.NewMessage += OnGetNewMessage;
-            Bybit.RunBybitWebSocket();
+            Bybit.NewMessage += GetNewMessage;
+            Bybit.RunBybitWS();
         }
         #endregion
 
         #endregion
+
         public MainWindowViewModel()
         {
             #region Команды
             ChangePairOrTimeframeCommand = new LambdaCommand(OnChangePairOrTimeframeCommandExecuted, CanChangePairOrTimeframeCommandExecute);
-            RunWebSocketCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
+            RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
-            Candles = GetCandles("BTCUSDT", "1");
-            CurrentBalance = GetCurrentBalance("USDT");
+            Candles = GetCandles("BTCUSDT", "15");
+            Balance = GetCurrentBalance("USDT");
         }
 
+        #region HTTP
+
+        #region public
         private static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
         {
             ICandle GetCandleFromLinearKline(LinearKlineData kline)
@@ -151,16 +158,23 @@ namespace LuckyCurrency.ViewModels
 
             return candles;
         }
-        private static CurrentBalance GetCurrentBalance(string coin)
+        #endregion
+
+        #region private
+        private static Balance GetCurrentBalance(string coin)
         {
-            CurrentBalanceBase currentBalanceBase = Bybit.GetCurrentBalanceBase(coin);
-            CurrentBalanceData currentBalanceData = currentBalanceBase.Result.USDT;
+            BalanceBase currentBalanceBase = Bybit.GetCurrentBalanceBase(coin);
+            BalanceData currentBalanceData = currentBalanceBase.Result.USDT;
 
-            return new CurrentBalance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
+            return new Balance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
         }
+        #endregion
 
-        #region NewMessage
-        private void OnGetNewMessage(string message)
+        #endregion
+
+        #region WebSockets
+
+        private void GetNewMessage(string message)
         {
             string timeframe = null, pair = null;
             App.Current.Dispatcher.Invoke(() =>
@@ -198,6 +212,8 @@ namespace LuckyCurrency.ViewModels
                 });
             }
         }
+
+        #region public
         private void NewCandle(string message)
         {
             Console.WriteLine("New Message: " + message);
@@ -352,14 +368,19 @@ namespace LuckyCurrency.ViewModels
                 }
             }
         }
+        #endregion
+
+        #region private
         private void NewCurrentBalance(string message)
         {
             Console.WriteLine("New Message: " + message);
-            CurrentBalanceWSBase currentBalanceWSBase = JsonConvert.DeserializeObject<CurrentBalanceWSBase>(message);
-            CurrentBalanceWSData currentBalanceWSData  = currentBalanceWSBase.Data[0];
+            BalanceWSBase currentBalanceWSBase = JsonConvert.DeserializeObject<BalanceWSBase>(message);
+            BalanceWSData currentBalanceWSData  = currentBalanceWSBase.Data[0];
 
-            CurrentBalance = new CurrentBalance(currentBalanceWSData.Wallet_balance, currentBalanceWSData.Available_balance);
+            Balance = new Balance(currentBalanceWSData.Wallet_balance, currentBalanceWSData.Available_balance);
         }
+        #endregion
+
         #endregion
     }
 }

@@ -100,10 +100,10 @@
     </ApplicationDefinition>
     <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
-    <Compile Include="Services\Models\CurrentBalanceWebSocket\CurrentBalanceWSBase.cs" />
-    <Compile Include="Services\Models\CurrentBalanceWebSocket\CurrentBalanceWSData.cs" />
-    <Compile Include="Services\Models\CurrentBalance\CurrentBalanceBase.cs" />
-    <Compile Include="Services\Models\CurrentBalance\CurrentBalanceData.cs" />
+    <Compile Include="Services\Models\BalanceWebSocket\BalanceWSBase.cs" />
+    <Compile Include="Services\Models\BalanceWebSocket\BalanceWSData.cs" />
+    <Compile Include="Services\Models\Balance\BalanceBase.cs" />
+    <Compile Include="Services\Models\Balance\BalanceData.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketBase.cs" />
     <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketData.cs" />
     <Compile Include="Services\Models\LinearKline\LinearKlineBase.cs" />
