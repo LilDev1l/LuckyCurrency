@@ -5,58 +5,56 @@ namespace LuckyCurrency.Services.Models.Position
     class PositionData
     {
         [JsonProperty("user_id")]
-        public int User_id { get; set; }
+        public string user_id { get; set; }
         [JsonProperty("symbol")]
-        public string size { get; set; }
-        [JsonProperty("topic")]
-        public int Size { get; set; }
+        public string Symbol { get; set; }
+        [JsonProperty("size")]
+        public double Size { get; set; }
         [JsonProperty("side")]
         public string Side { get; set; }
         [JsonProperty("position_value")]
-        public string Position_value { get; set; }
+        public double Position_value { get; set; }
         [JsonProperty("entry_price")]
-        public string Entry_price { get; set; }
+        public double Entry_price { get; set; }
         [JsonProperty("liq_price")]
-        public string Liq_price { get; set; }
+        public double Liq_price { get; set; }
         [JsonProperty("bust_price")]
-        public string Bust_price { get; set; }
+        public double Bust_price { get; set; }
         [JsonProperty("leverage")]
-        public string Leverage { get; set; }
+        public double Leverage { get; set; }
         [JsonProperty("order_margin")]
-        public string Order_margin { get; set; }
+        public double Order_margin { get; set; }
         [JsonProperty("position_margin")]
-        public string Position_margin { get; set; }
-        [JsonProperty("available_balance")]
-        public string Available_balance { get; set; }
+        public double Position_margin { get; set; }
+        [JsonProperty("occ_closing_fee")]
+        public double Occ_closing_fee { get; set; }
         [JsonProperty("take_profit")]
-        public string Take_profit { get; set; }
+        public double Take_profit { get; set; }
         [JsonProperty("tp_trigger_by")]
         public string Tp_trigger_by { get; set; }
         [JsonProperty("stop_loss")]
-        public string Stop_loss { get; set; }
+        public double Stop_loss { get; set; }
         [JsonProperty("sl_trigger_by")]
         public string Sl_trigger_by { get; set; }
-        [JsonProperty("realised_pnl")]
-        public string Realised_pnl { get; set; }
         [JsonProperty("trailing_stop")]
-        public string Trailing_stop { get; set; }
-        [JsonProperty("trailing_active")]
-        public string Trailing_active { get; set; }
-        [JsonProperty("wallet_balance")]
-        public string Wallet_balance { get; set; }
-        [JsonProperty("risk_id")]
-        public int Risk_id { get; set; }
-        [JsonProperty("occ_closing_fee")]
-        public string Occ_closing_fee { get; set; }
-        [JsonProperty("occ_funding_fee")]
-        public string Occ_funding_fee { get; set; }
+        public double Trailing_stop { get; set; }
+        [JsonProperty("realised_pnl")]
+        public double Realised_pnl { get; set; }
         [JsonProperty("auto_add_margin")]
-        public int Auto_add_margin { get; set; }
+        public string Auto_add_margin { get; set; }
         [JsonProperty("cum_realised_pnl")]
-        public string Cum_realised_pnl { get; set; }
+        public double Cum_realised_pnl { get; set; }
         [JsonProperty("position_status")]
         public string Position_status { get; set; }
+        [JsonProperty("position_id")]
+        public string Position_id { get; set; }
         [JsonProperty("position_seq")]
-        public int Position_seq { get; set; }
+        public string Position_seq { get; set; }
+        [JsonProperty("adl_rank_indicator")]
+        public string Adl_rank_indicator { get; set; }
+        [JsonProperty("free_qty")]
+        public double Free_qty { get; set; }
+        [JsonProperty("tp_sl_mode")]
+        public string Tp_sl_mode { get; set; }
     }
 }
