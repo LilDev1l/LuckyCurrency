@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using IO.Swagger.Api;
 using LuckyCurrency.Services.Models.LinearKline;
-using LuckyCurrency.Services.Models.LinearKlineWebSocket;
+using LuckyCurrency.Services.Models.LinearKlineWS;
 using LuckyCurrency.Services.Auth;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
 using IO.Swagger.Client;
 using LuckyCurrency.Services.Models.Balance;
 using LuckyCurrency.Services.Models.ServerTime;
+using LuckyCurrency.Services.Models.Position;
 
 namespace LuckyCurrency.Services
 {
@@ -55,10 +56,12 @@ namespace LuckyCurrency.Services
             _wsPublic.Start();
             _wsPrivate.Start();
 
-            SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+/*            SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
             SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
             SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
-            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");
+            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");*/
+
+            SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
         }
 
         #region public
@@ -136,7 +139,7 @@ namespace LuckyCurrency.Services
         #region private
 
         #region Balance
-        public static BalanceBase GetCurrentBalanceBase(string coin)
+        public static BalanceBase GetBalanceBase(string coin)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
             Configuration.Default.AddApiKey("api_key", api_key);
@@ -147,6 +150,22 @@ namespace LuckyCurrency.Services
             JObject result = (JObject)apiInstance.WalletGetBalance(coin);
 
             return result.ToObject<BalanceBase>();
+        }
+        #endregion
+
+        #region Position
+        public static PositionBase GetPositionBase(string symbol)
+        {
+            long timestamp = GetTimeServer(Time.MiliSeconds);
+            Configuration.Default.AddApiKey("api_key", api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new LinearPositionsApi();
+            JObject result = (JObject)apiInstance.LinearPositionsMyPosition(symbol);
+            Console.WriteLine(result);
+
+            return result.ToObject<PositionBase>();
         }
         #endregion
 

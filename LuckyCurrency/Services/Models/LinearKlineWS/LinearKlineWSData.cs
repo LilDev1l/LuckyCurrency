@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace LuckyCurrency.Services.Models.LinearKlineWebSocket
+namespace LuckyCurrency.Services.Models.LinearKlineWS
 {
-    public class LinearKlineWebSocketData
+    public class LinearKlineWSData
     {
         [JsonProperty("start")]
         public int Start { get; set; }

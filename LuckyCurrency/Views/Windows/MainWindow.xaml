@@ -146,6 +146,14 @@
                     </StackPanel>
                 </GroupBox>
             </Grid>
+
+            <TabControl Grid.Row="1" Grid.Column="0">
+                <TabItem Header="Position">
+                    <DataGrid ItemsSource="{Binding Positions}">
+
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
         </Grid>
     </DockPanel>
 </Window>

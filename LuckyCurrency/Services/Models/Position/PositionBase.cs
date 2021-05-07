@@ -1,15 +1,21 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace LuckyCurrency.Services.Models.Position
 {
     class PositionBase
     {
-        [JsonProperty("topic")]
-        public string Topic { get; set; }
-        [JsonProperty("action")]
-        public string Action { get; set; }
-        [JsonProperty("data")]
-        public List<PositionData> Data { get; set; }
+        public int ret_code { get; set; }
+        public string ret_msg { get; set; }
+        public string ext_code { get; set; }
+        public string ext_info { get; set; }
+        public List<PositionData> result { get; set; }
+        public string time_now { get; set; }
+        public int rate_limit_status { get; set; }
+        public long rate_limit_reset_ms { get; set; }
+        public int rate_limit { get; set; }
     }
 }

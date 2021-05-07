@@ -98,14 +98,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Position.cs" />
     <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
-    <Compile Include="Services\Models\BalanceWebSocket\BalanceWSBase.cs" />
-    <Compile Include="Services\Models\BalanceWebSocket\BalanceWSData.cs" />
+    <Compile Include="Services\Models\BalanceWS\BalanceWSBase.cs" />
+    <Compile Include="Services\Models\BalanceWS\BalanceWSData.cs" />
     <Compile Include="Services\Models\Balance\BalanceBase.cs" />
     <Compile Include="Services\Models\Balance\BalanceData.cs" />
-    <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketBase.cs" />
-    <Compile Include="Services\Models\LinearKlineWebSocket\LinearKlineWebSocketData.cs" />
+    <Compile Include="Services\Models\LinearKlineWS\LinearKlineWSBase.cs" />
+    <Compile Include="Services\Models\LinearKlineWS\LinearKlineWSData.cs" />
     <Compile Include="Services\Models\LinearKline\LinearKlineBase.cs" />
     <Compile Include="Services\Models\LinearKline\LinearKlineData.cs" />
     <Compile Include="Services\Models\OrderBook\OrderBookBase.cs" />
@@ -115,6 +116,8 @@
     <Compile Include="Services\Models\OrderBook\OrderBookDelta\Update.cs" />
     <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookData.cs" />
     <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookSnapshot.cs" />
+    <Compile Include="Services\Models\PositionWS\PositionWSBase.cs" />
+    <Compile Include="Services\Models\PositionWS\PositionWSData.cs" />
     <Compile Include="Services\Models\Position\PositionBase.cs" />
     <Compile Include="Services\Models\Position\PositionData.cs" />
     <Compile Include="Services\Models\ServerTime\ServerTimeData.cs" />
@@ -169,5 +172,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

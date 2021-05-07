@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LuckyCurrency.Infrastructure.Commands;
-using LuckyCurrency.Services.Models.LinearKlineWebSocket;
+using LuckyCurrency.Services.Models.LinearKlineWS;
 using LuckyCurrency.Services.Models.OrderBook;
 using LuckyCurrency.Models;
 using LuckyCurrency.Services.Models.OrderBook.OrderBookSnapshot;
@@ -91,6 +91,15 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region Позиция
+        private ObservableCollection<Position> _positions;
+        public ObservableCollection<Position> Positions
+        {
+            get => _positions;
+            set => Set(ref _positions, value);
+        }
+        #endregion
+
         #endregion
 
         #region Команды
@@ -109,6 +118,7 @@ namespace LuckyCurrency.ViewModels
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
 
             Candles = GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
+            Positions = GetPositions(SelectedPair.Content.ToString());
         }
         #endregion
 
@@ -131,8 +141,10 @@ namespace LuckyCurrency.ViewModels
             RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
+            Bybit.GetPositionBase("BTCUSDT");
             Candles = GetCandles("BTCUSDT", "15");
-            Balance = GetCurrentBalance("USDT");
+            Balance = GetBalance("USDT");
+            Positions = GetPositions("BTCUSDT");
         }
 
         #region HTTP
@@ -161,12 +173,25 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region private
-        private static Balance GetCurrentBalance(string coin)
+        private static Balance GetBalance(string coin)
         {
-            BalanceBase currentBalanceBase = Bybit.GetCurrentBalanceBase(coin);
+            BalanceBase currentBalanceBase = Bybit.GetBalanceBase(coin);
             BalanceData currentBalanceData = currentBalanceBase.Result.USDT;
 
             return new Balance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
+        }
+        private static ObservableCollection<Position> GetPositions(string symbol)
+        {
+            PositionBase positionBase = Bybit.GetPositionBase(symbol);
+            List<PositionData> positionData = positionBase.result;
+
+            ObservableCollection<Position> positions = new ObservableCollection<Position>();
+            foreach (var pos in positionData)
+            {
+                positions.Add(new Position(pos.symbol, pos.side, pos.size, pos.position_value, pos.entry_price, pos.liq_price, pos.position_margin, pos.realised_pnl));
+            }
+
+            return positions;
         }
         #endregion
 
@@ -211,14 +236,21 @@ namespace LuckyCurrency.ViewModels
                     NewCurrentBalance(message);
                 });
             }
+            if (message.Contains($"\"topic\":\"position\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewPosition(message);
+                });
+            }
         }
 
         #region public
         private void NewCandle(string message)
         {
             Console.WriteLine("New Message: " + message);
-            LinearKlineWebSocketBase klineWebSocketBase = JsonConvert.DeserializeObject<LinearKlineWebSocketBase>(message);
-            List<LinearKlineWebSocketData> klineWebSocket = klineWebSocketBase.Data;
+            LinearKlineWSBase klineWebSocketBase = JsonConvert.DeserializeObject<LinearKlineWSBase>(message);
+            List<LinearKlineWSData> klineWebSocket = klineWebSocketBase.Data;
 
             if (klineWebSocket[0].Confirm)
             {
@@ -237,7 +269,7 @@ namespace LuckyCurrency.ViewModels
                 OnChangeLastCandle(klineWebSocket[0]);
             }
 
-            void OnChangeLastCandle(LinearKlineWebSocketData klineV2)
+            void OnChangeLastCandle(LinearKlineWSData klineV2)
             {
                 ICandle candle = GetCandleFromLinearKlineWebSocket(klineV2);
                 int lastCandleCount = Candles.Count - 1;
@@ -245,7 +277,7 @@ namespace LuckyCurrency.ViewModels
                 Candles[lastCandleCount] = candle;
                 Console.WriteLine("Изменено: " + candle);
             }
-            void OnAddNewCandle(LinearKlineWebSocketData klineV2)
+            void OnAddNewCandle(LinearKlineWSData klineV2)
             {
                 ICandle candle = GetCandleFromLinearKlineWebSocket(klineV2);
 
@@ -253,7 +285,7 @@ namespace LuckyCurrency.ViewModels
                 Console.WriteLine("Добавлено: " + candle);
             }
 
-            ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWebSocketData klineWS)
+            ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWSData klineWS)
             {
                 DateTime openTime = new DateTime(klineWS.Start * 10000000L + Bybit.Duration);
 
@@ -378,6 +410,23 @@ namespace LuckyCurrency.ViewModels
             BalanceWSData currentBalanceWSData  = currentBalanceWSBase.Data[0];
 
             Balance = new Balance(currentBalanceWSData.Wallet_balance, currentBalanceWSData.Available_balance);
+        }
+        private void NewPosition(string message)
+        {
+            Console.WriteLine("New Message: " + message);
+            PositionWSBase positionBase = JsonConvert.DeserializeObject<PositionWSBase>(message);
+            List<PositionWSData> positionData = positionBase.Data;
+
+            ObservableCollection<Position> positions = new ObservableCollection<Position>();
+            foreach (var pos in positionData)
+            {
+                if (pos.Symbol == SelectedPair.Content.ToString())
+                {
+                    positions.Add(new Position(pos.Symbol, pos.Side, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl));
+                }
+            }
+
+            Positions = positions;
         }
         #endregion
 
