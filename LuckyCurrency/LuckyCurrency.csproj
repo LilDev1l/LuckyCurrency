@@ -115,6 +115,8 @@
     <Compile Include="Services\Models\OrderBook\OrderBookDelta\Update.cs" />
     <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookData.cs" />
     <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookSnapshot.cs" />
+    <Compile Include="Services\Models\Position\PositionBase.cs" />
+    <Compile Include="Services\Models\Position\PositionData.cs" />
     <Compile Include="Services\Models\ServerTime\ServerTimeData.cs" />
     <Compile Include="Services\Models\Trade\TradeBase.cs" />
     <Compile Include="Services\Models\Trade\TradeData.cs" />
