@@ -142,14 +142,14 @@ namespace LuckyCurrency.ViewModels
         {
             Bybit.NewMessage += GetNewMessage;
             Bybit.RunBybitWS();
-/*
+
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
 
-            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");*/
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
             Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-            //Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
             Balance = GetBalance("USDT");
             Positions = GetPositions(SelectedPair.Content.ToString());

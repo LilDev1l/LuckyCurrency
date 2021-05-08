@@ -98,6 +98,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\Commands\CancelOrderCommand.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Services\Auth\Authentication.cs" />

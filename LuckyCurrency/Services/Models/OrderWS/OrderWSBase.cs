@@ -8,7 +8,7 @@ namespace LuckyCurrency.Services.Models.OrderWS
 {
     class OrderWSBase
     {
-        public string topic { get; set; }
+        public string topic { get; set; }   
         public string action { get; set; }
         public List<OrderWSData> data { get; set; }
     }

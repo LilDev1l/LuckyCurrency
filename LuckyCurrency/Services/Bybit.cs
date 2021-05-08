@@ -177,6 +177,19 @@ namespace LuckyCurrency.Services
         }
         #endregion
 
+        #region Cancel Order
+        public static void CancelOrder(string symbol, string orderId)
+        {
+            long timestamp = GetTimeServer(Time.MiliSeconds);
+            Configuration.Default.AddApiKey("api_key", api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&order_id={orderId}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new LinearOrderApi();
+            apiInstance.LinearOrderCancel(symbol: symbol, orderId: orderId);
+        }
+        #endregion
+
         #endregion
 
         #region Server
