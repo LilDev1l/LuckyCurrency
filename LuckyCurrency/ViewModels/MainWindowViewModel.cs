@@ -142,14 +142,14 @@ namespace LuckyCurrency.ViewModels
         {
             Bybit.NewMessage += GetNewMessage;
             Bybit.RunBybitWS();
-/*
+
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
 
-            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");*/
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
             Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-            //Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
             Balance = GetBalance("USDT");
             Positions = GetPositions(SelectedPair.Content.ToString());
@@ -463,13 +463,16 @@ namespace LuckyCurrency.ViewModels
             PositionWSBase positionBase = JsonConvert.DeserializeObject<PositionWSBase>(message);
             List<PositionWSData> positionData = positionBase.Data;
 
+            ObservableCollection<Position> positions = new ObservableCollection<Position>();
             foreach (var pos in positionData)
             {
                 if (pos.Symbol == SelectedPair.Content.ToString())
                 {
-                    Positions[Positions.IndexOf(Positions.First(p => p.Side == pos.Side))] = new Position(pos.Symbol, pos.Side, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl);
+                    positions.Add(new Position(pos.Symbol, pos.Side, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl));
                 }
             }
+
+            Positions = positions;
         }
         private void NewOrder(string message)
         {

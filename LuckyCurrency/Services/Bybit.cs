@@ -172,6 +172,7 @@ namespace LuckyCurrency.Services
 
             var apiInstance = new LinearOrderApi();
             JObject result = (JObject)apiInstance.LinearOrderGetOrders(symbol:symbol, orderStatus:orderStatus);
+            Console.WriteLine(result);
 
             return result.ToObject<OrderBase>();
         }
