@@ -148,8 +148,13 @@
             </Grid>
 
             <TabControl Grid.Row="1" Grid.Column="0">
-                <TabItem Header="Position">
+                <TabItem Header="Positions">
                     <DataGrid ItemsSource="{Binding Positions}">
+
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="Active Orders">
+                    <DataGrid ItemsSource="{Binding Orders}">
 
                     </DataGrid>
                 </TabItem>

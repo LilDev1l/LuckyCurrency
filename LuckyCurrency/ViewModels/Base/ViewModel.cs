@@ -16,8 +16,8 @@ namespace LuckyCurrency.ViewModels.Base
 
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
-
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+/*
             var handlers = PropertyChanged;
             if (handlers == null) return;
 
@@ -30,7 +30,7 @@ namespace LuckyCurrency.ViewModels.Base
                     disp_object.Dispatcher.Invoke(action, this, arg);
                 else
                     action.DynamicInvoke(this, arg);
-            }
+            }*/
         }
         protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string PropertyName = null)
         {

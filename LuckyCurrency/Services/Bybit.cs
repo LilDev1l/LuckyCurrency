@@ -17,6 +17,7 @@ using IO.Swagger.Client;
 using LuckyCurrency.Services.Models.Balance;
 using LuckyCurrency.Services.Models.ServerTime;
 using LuckyCurrency.Services.Models.Position;
+using LuckyCurrency.Services.Models.Order;
 
 namespace LuckyCurrency.Services
 {
@@ -55,13 +56,6 @@ namespace LuckyCurrency.Services
             });
             _wsPublic.Start();
             _wsPrivate.Start();
-
-/*            SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"candle.1.BTCUSDT\"]}");
-            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.BTCUSDT\"]}");
-            SendPublicWS("{\"op\":\"subscribe\",\"args\":[\"trade.BTCUSDT\"]}");*/
-
-            SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
         }
 
         #region public
@@ -163,9 +157,24 @@ namespace LuckyCurrency.Services
 
             var apiInstance = new LinearPositionsApi();
             JObject result = (JObject)apiInstance.LinearPositionsMyPosition(symbol);
-            Console.WriteLine(result);
 
             return result.ToObject<PositionBase>();
+        }
+        #endregion
+
+        #region Orders
+        public static OrderBase GetOrderBase(string symbol, string orderStatus)
+        {
+            long timestamp = GetTimeServer(Time.MiliSeconds);
+            Configuration.Default.AddApiKey("api_key", api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, orderStatus == null ? $"api_key={api_key}&symbol={symbol}&timestamp={timestamp}" : $"api_key={api_key}&order_status={orderStatus}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new LinearOrderApi();
+            JObject result = (JObject)apiInstance.LinearOrderGetOrders(symbol:symbol, orderStatus:orderStatus);
+            Console.WriteLine(result);
+
+            return result.ToObject<OrderBase>();
         }
         #endregion
 

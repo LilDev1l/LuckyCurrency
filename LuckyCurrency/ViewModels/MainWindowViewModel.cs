@@ -20,6 +20,8 @@ using LuckyCurrency.Services.Models.Balance;
 using LuckyCurrency.Services.Models.BalanceWebSocket;
 using LuckyCurrency.Services.Models.LinearKline;
 using LuckyCurrency.Services.Models.Position;
+using LuckyCurrency.Services.Models.OrderWS;
+using LuckyCurrency.Services.Models.Order;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -91,12 +93,21 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region Позиция
+        #region Позиции
         private ObservableCollection<Position> _positions;
         public ObservableCollection<Position> Positions
         {
             get => _positions;
             set => Set(ref _positions, value);
+        }
+        #endregion
+
+        #region Ордера
+        private ObservableCollection<Order> _orders;
+        public ObservableCollection<Order> Orders
+        {
+            get => _orders;
+            set => Set(ref _orders, value);
         }
         #endregion
 
@@ -113,12 +124,14 @@ namespace LuckyCurrency.ViewModels
             Asks.Clear();
             Bids.Clear();
             Trades.Clear();
+
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
             Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
 
             Candles = GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
             Positions = GetPositions(SelectedPair.Content.ToString());
+            Orders = GetOrders(SelectedPair.Content.ToString(), "New");
         }
         #endregion
 
@@ -129,6 +142,18 @@ namespace LuckyCurrency.ViewModels
         {
             Bybit.NewMessage += GetNewMessage;
             Bybit.RunBybitWS();
+
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
+
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+
+            Balance = GetBalance("USDT");
+            Positions = GetPositions(SelectedPair.Content.ToString());
+            Orders = GetOrders(SelectedPair.Content.ToString(), "New");
         }
         #endregion
 
@@ -141,10 +166,7 @@ namespace LuckyCurrency.ViewModels
             RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
-            Bybit.GetPositionBase("BTCUSDT");
             Candles = GetCandles("BTCUSDT", "15");
-            Balance = GetBalance("USDT");
-            Positions = GetPositions("BTCUSDT");
         }
 
         #region HTTP
@@ -192,6 +214,23 @@ namespace LuckyCurrency.ViewModels
             }
 
             return positions;
+        }
+        private static ObservableCollection<Order> GetOrders(string symbol, string orderStatus = null)
+        {
+            OrderBase orderBase = Bybit.GetOrderBase(symbol, orderStatus);
+            OrderPage orderPage = orderBase.result;
+            List<OrderData> orderDatas = orderPage.data;
+
+            ObservableCollection<Order> orders = new ObservableCollection<Order>();
+            if (orderDatas != null)
+            {
+                foreach (var order in orderDatas)
+                {
+                    orders.Add(new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.created_time));
+                }
+            }
+
+            return orders;
         }
         #endregion
 
@@ -241,6 +280,13 @@ namespace LuckyCurrency.ViewModels
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
                     NewPosition(message);
+                });
+            }
+            if (message.Contains($"\"topic\":\"order\""))
+            {
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    NewOrder(message);
                 });
             }
         }
@@ -427,6 +473,25 @@ namespace LuckyCurrency.ViewModels
             }
 
             Positions = positions;
+        }
+        private void NewOrder(string message)
+        {
+            Console.WriteLine("New Message: " + message);
+            OrderWSBase orderWSBase = JsonConvert.DeserializeObject<OrderWSBase>(message);
+            List<OrderWSData> orderWSDatas = orderWSBase.data;
+
+            foreach(var order in orderWSDatas)
+            {
+                if (order.symbol == SelectedPair.Content.ToString())
+                {
+                    if (order.order_status == "New")
+                        Orders.Add(new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.create_time));
+                    if (order.order_status == "Cancelled")
+                    {
+                        Orders?.Remove(Orders.FirstOrDefault(ord => ord.Order_id == order.order_id));
+                    }
+                }
+            }
         }
         #endregion
 
