@@ -31,7 +31,7 @@ namespace LuckyCurrency.ViewModels
 
         #region Торговая пара
         private ComboBoxItem _selectedPair;
-        public ComboBoxItem SelectedPair
+        public ComboBoxItem SelectedSymbol
         {
             get => _selectedPair;
             set => Set(ref _selectedPair, value);
@@ -115,23 +115,32 @@ namespace LuckyCurrency.ViewModels
 
         #region Команды
 
-        #region ChangePairOrTimeframeCommand
-        public ICommand ChangePairOrTimeframeCommand { get; }
-        private bool CanChangePairOrTimeframeCommandExecute(object p) => true;
-        private void OnChangePairOrTimeframeCommandExecuted(object p)
+        #region ChangeSymbolCommand
+        public ICommand ChangeSymbolCommand { get; }
+        private bool CanChangeSymbolCommandExecute(object p) => true;
+        private void OnChangeSymbolCommandExecuted(object p)
         {
             Bybit.ReconnectPublicWS();
             Asks.Clear();
             Bids.Clear();
             Trades.Clear();
 
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedSymbol.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedSymbol.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol.Content}\"]}}");
 
-            Candles = GetCandles(SelectedPair.Content.ToString(), SelectedTimeframe.Content.ToString());
-            Positions = GetPositions(SelectedPair.Content.ToString());
-            Orders = GetOrders(SelectedPair.Content.ToString(), "New");
+            Candles = GetCandles(SelectedSymbol.Content.ToString(), SelectedTimeframe.Content.ToString());
+            Positions = GetPositions(SelectedSymbol.Content.ToString());
+            Orders = GetOrders(SelectedSymbol.Content.ToString(), "New");
+        }
+        #endregion
+        #region ChangeTimeframeCommand
+        public ICommand ChangeTimeframeCommand { get; }
+        private bool CanChangeTimeframeCommandExecute(object p) => true;
+        private void OnChangeTimeframeCommandExecuted(object p)
+        {
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedSymbol.Content}\"]}}");
+            Candles = GetCandles(SelectedSymbol.Content.ToString(), SelectedTimeframe.Content.ToString());
         }
         #endregion
 
@@ -143,17 +152,17 @@ namespace LuckyCurrency.ViewModels
             Bybit.NewMessage += GetNewMessage;
             Bybit.RunBybitWS();
 
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedPair.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedPair.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedPair.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedSymbol.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedSymbol.Content}\"]}}");
+            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol.Content}\"]}}");
 
             Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
             Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
             Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
             Balance = GetBalance("USDT");
-            Positions = GetPositions(SelectedPair.Content.ToString());
-            Orders = GetOrders(SelectedPair.Content.ToString(), "New");
+            Positions = GetPositions(SelectedSymbol.Content.ToString());
+            Orders = GetOrders(SelectedSymbol.Content.ToString(), "New");
         }
         #endregion
 
@@ -162,7 +171,8 @@ namespace LuckyCurrency.ViewModels
         public MainWindowViewModel()
         {
             #region Команды
-            ChangePairOrTimeframeCommand = new LambdaCommand(OnChangePairOrTimeframeCommandExecuted, CanChangePairOrTimeframeCommandExecute);
+            ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
+            ChangeTimeframeCommand = new LambdaCommand(OnChangeTimeframeCommandExecuted, CanChangeTimeframeCommandExecute);
             RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
             #endregion
 
@@ -244,7 +254,7 @@ namespace LuckyCurrency.ViewModels
             App.Current.Dispatcher.Invoke(() =>
             {
                 timeframe = SelectedTimeframe.Content.ToString();
-                pair = SelectedPair.Content.ToString();
+                pair = SelectedSymbol.Content.ToString();
             });
 
             if (message.Contains($"\"topic\":\"candle.{timeframe}.{pair}\""))
@@ -294,7 +304,7 @@ namespace LuckyCurrency.ViewModels
         #region public
         private void NewCandle(string message)
         {
-            Console.WriteLine("New Message: " + message);
+            //Console.WriteLine("New Message: " + message);
             LinearKlineWSBase klineWebSocketBase = JsonConvert.DeserializeObject<LinearKlineWSBase>(message);
             List<LinearKlineWSData> klineWebSocket = klineWebSocketBase.Data;
 
@@ -305,7 +315,7 @@ namespace LuckyCurrency.ViewModels
                 else
                 {
                     _timestampOpen = klineWebSocketBase.Data[1].Start;
-                    Console.WriteLine($"timestampOpen изменен на ({_timestampOpen})");
+                    //Console.WriteLine($"timestampOpen изменен на ({_timestampOpen})");
                     OnChangeLastCandle(klineWebSocket[0]);
                     OnAddNewCandle(klineWebSocket[1]);
                 }
@@ -321,14 +331,14 @@ namespace LuckyCurrency.ViewModels
                 int lastCandleCount = Candles.Count - 1;
 
                 Candles[lastCandleCount] = candle;
-                Console.WriteLine("Изменено: " + candle);
+                //Console.WriteLine("Изменено: " + candle);
             }
             void OnAddNewCandle(LinearKlineWSData klineV2)
             {
                 ICandle candle = GetCandleFromLinearKlineWebSocket(klineV2);
 
                 Candles.Add(candle);
-                Console.WriteLine("Добавлено: " + candle);
+                //Console.WriteLine("Добавлено: " + candle);
             }
 
             ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWSData klineWS)
@@ -340,7 +350,7 @@ namespace LuckyCurrency.ViewModels
         }
         private void NewOrderBook(string message)
         {
-            Console.WriteLine("New Message: " + message);
+            //Console.WriteLine("New Message: " + message);
             OrderBookBase orderBookBase = JsonConvert.DeserializeObject<OrderBookBase>(message);
             if (orderBookBase.Type.Equals("snapshot"))
             {
@@ -432,7 +442,7 @@ namespace LuckyCurrency.ViewModels
         }
         private void NewTrade(string message)
         {
-            Console.WriteLine("New Message: " + message);
+            //Console.WriteLine("New Message: " + message);
             LastTradeBase lastTradeBase = JsonConvert.DeserializeObject<LastTradeBase>(message);
             List<LastTradeData> lastTrades = lastTradeBase.Data;
 
@@ -451,7 +461,7 @@ namespace LuckyCurrency.ViewModels
         #region private
         private void NewCurrentBalance(string message)
         {
-            Console.WriteLine("New Message: " + message);
+            //Console.WriteLine("New Message: " + message);
             BalanceWSBase currentBalanceWSBase = JsonConvert.DeserializeObject<BalanceWSBase>(message);
             BalanceWSData currentBalanceWSData  = currentBalanceWSBase.Data[0];
 
@@ -459,13 +469,13 @@ namespace LuckyCurrency.ViewModels
         }
         private void NewPosition(string message)
         {
-            Console.WriteLine("New Message: " + message);
+            //Console.WriteLine("New Message: " + message);
             PositionWSBase positionBase = JsonConvert.DeserializeObject<PositionWSBase>(message);
             List<PositionWSData> positionData = positionBase.Data;
 
             foreach (var pos in positionData)
             {
-                if (pos.Symbol == SelectedPair.Content.ToString())
+                if (pos.Symbol == SelectedSymbol.Content.ToString())
                 {
                     Positions[Positions.IndexOf(Positions.First(p => p.Side == pos.Side))] = new Position(pos.Symbol, pos.Side, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl);
                 }
@@ -473,13 +483,13 @@ namespace LuckyCurrency.ViewModels
         }
         private void NewOrder(string message)
         {
-            Console.WriteLine("New Message: " + message);
+            //Console.WriteLine("New Message: " + message);
             OrderWSBase orderWSBase = JsonConvert.DeserializeObject<OrderWSBase>(message);
             List<OrderWSData> orderWSDatas = orderWSBase.data;
 
             foreach(var order in orderWSDatas)
             {
-                if (order.symbol == SelectedPair.Content.ToString())
+                if (order.symbol == SelectedSymbol.Content.ToString())
                 {
                     if (order.order_status == "New")
                         Orders.Add(new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.create_time));

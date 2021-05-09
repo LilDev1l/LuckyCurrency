@@ -163,11 +163,15 @@ namespace LuckyCurrency.Services
         #endregion
 
         #region Orders
-        public static OrderBase GetOrderBase(string symbol, string orderStatus)
+        public static OrderBase GetOrderBase(string symbol, string orderStatus = null)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
+            string tempOrderStatus = null;
+            if (orderStatus != null)
+                tempOrderStatus = "&order_status=" + orderStatus;
+            
             Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, orderStatus == null ? $"api_key={api_key}&symbol={symbol}&timestamp={timestamp}" : $"api_key={api_key}&order_status={orderStatus}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}{tempOrderStatus}&symbol={symbol}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearOrderApi();
@@ -187,6 +191,31 @@ namespace LuckyCurrency.Services
 
             var apiInstance = new LinearOrderApi();
             apiInstance.LinearOrderCancel(symbol: symbol, orderId: orderId);
+        }
+        #endregion
+
+        #region Create Order
+        public static void CreateLimitOrder(string side, string symbol, double qty, double price, string time_in_force, bool reduce_only, bool close_on_trigger)
+        {
+            CreateOrder(side: side, symbol: symbol, order_type: "Limit", qty: qty, price: price, time_in_force: time_in_force, reduce_only: reduce_only, close_on_trigger: close_on_trigger);
+        }
+        public static void CreateMarketOrder(string side, string symbol, double qty, string time_in_force, bool reduce_only, bool close_on_trigger)
+        {
+            CreateOrder(side: side, symbol: symbol, order_type: "Market", qty: qty, time_in_force: time_in_force, reduce_only: reduce_only, close_on_trigger: close_on_trigger);
+        }
+        private static void CreateOrder(string side, string symbol, string order_type, double qty, string time_in_force, bool reduce_only, bool close_on_trigger, double? price = null)
+        {
+            long timestamp = GetTimeServer(Time.MiliSeconds);
+            string tempPrice = null;
+            if (price != null)
+                tempPrice = "&price=" + price;
+
+            Configuration.Default.AddApiKey("api_key", api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&close_on_trigger={close_on_trigger}&order_type={order_type}{tempPrice}&qty={qty}&reduce_only={reduce_only}&side={side}&symbol={symbol}&time_in_force={time_in_force}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new LinearOrderApi();
+            apiInstance.LinearOrderNew(side: side, symbol: symbol, orderType: order_type, qty: qty, price: price, timeInForce: time_in_force, reduceOnly: reduce_only, closeOnTrigger: close_on_trigger);
         }
         #endregion
 
