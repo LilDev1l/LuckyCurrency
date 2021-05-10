@@ -10,7 +10,9 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" 
+        Height="550" Width="950"
+        MinHeight="550" MinWidth="950">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding Path=RunWSCommand}"/>
@@ -39,7 +41,8 @@
     </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <ComboBox SelectedItem="{Binding Path=SelectedSymbol}">
+            <ComboBox SelectedItem="{Binding Path=SelectedSymbol}"
+                      IsEnabled="{Binding Flag}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding Path=ChangeSymbolCommand}"/>
@@ -48,7 +51,8 @@
                 <ComboBoxItem  Content="BTCUSDT" IsSelected="True"/>
                 <ComboBoxItem Content="ETHUSDT"/>
             </ComboBox>
-            <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}">
+            <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}"
+                      IsEnabled="{Binding Flag}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding Path=ChangeTimeframeCommand}"/>
@@ -66,6 +70,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition  Width="2*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
 
             <fc:CandleChart Grid.Column="0" Grid.Row="0"
@@ -93,18 +98,29 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
                     <fa:ImageAwesome Height="12" Margin="0,0,8,0" Style="{StaticResource BuyOrSell}"/>
-                    <TextBlock Text="{Binding Trades[0].Price, StringFormat={}{0:0.0000}}"/>
+                    <TextBlock Text="{Binding Trades[0].Price, StringFormat={}{0:0.00}}"/>
                 </StackPanel>
                 <DataGrid Grid.Row="1" Grid.Column="0"
                           ItemsSource="{Binding Asks}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Red" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
-
                     <DataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>
@@ -113,6 +129,8 @@
                             <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Style>
                     </DataGrid.CellStyle>
+
+
                 </DataGrid>
                 <DataGrid Grid.Row="1" Grid.Column="1"
                           ItemsSource="{Binding Bids}"
@@ -121,7 +139,18 @@
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Green" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"/>
+                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
 
                     <DataGrid.CellStyle>
@@ -152,8 +181,30 @@
                     </DataGrid.Resources>
                     <DataGrid.Columns>
                         <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Qty" Width="*" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"/>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Qty" Width="*" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
 
                     <DataGrid.CellStyle>
@@ -167,24 +218,25 @@
                 </DataGrid>
             </Grid>
 
-            <Grid Grid.Row="1" Grid.Column="1">
+            <Grid Grid.Row="1" Grid.Column="2">
                 <GroupBox Header="Balance">
                     <StackPanel>
                         <DockPanel LastChildFill="True">
                             <TextBlock DockPanel.Dock="Right"
                                        Text="{Binding Path=Balance.WalletBalance, StringFormat={}{0:0.0000}}"/>
-                            <TextBlock>Wallet Balance</TextBlock>
+                            <TextBlock>Wallet Bal.</TextBlock>
                         </DockPanel>
                         <DockPanel LastChildFill="True">
                             <TextBlock DockPanel.Dock="Right"
                                        Text="{Binding Path=Balance.AvailableBalance, StringFormat={}{0:0.0000}}"/>
-                            <TextBlock>Available Balance</TextBlock>
+                            <TextBlock>Available Bal.</TextBlock>
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>
             </Grid>
 
-            <TabControl Grid.Row="1" Grid.Column="0">
+            <TabControl Grid.Row="1" Grid.Column="0"
+                        Grid.ColumnSpan="2">
                 <TabItem Header="Positions">
                     <DataGrid ItemsSource="{Binding Positions}"
                               AutoGenerateColumns="False"
@@ -228,7 +280,7 @@
                             <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=Qty, StringFormat={}{0:0.0000}}"/>
                             <DataGridTextColumn Header="Order Price" Width="*" Binding="{Binding Path=Price, StringFormat={}{0:0.0000}}"/>
                             <DataGridTextColumn Header="Order Type" Width="*" Binding="{Binding Path=Order_type}"/>
-                            <DataGridTextColumn Header="Order Time" Width="auto" Binding="{Binding Path=Create_time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                            <DataGridTextColumn Header="Order Time" Width="120" Binding="{Binding Path=Create_time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                             <DataGridTemplateColumn Header="Action" Width="auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate >
@@ -247,6 +299,139 @@
                             </Style>
                         </DataGrid.CellStyle>
                     </DataGrid>
+                </TabItem>
+                <TabItem Header="Closed P&amp;L">
+                    <DataGrid ItemsSource="{Binding PositionsClosePnl}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=symbol}"/>
+                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=side}"/>
+                            <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=qty, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Entry Price" Width="*" Binding="{Binding Path=avg_entry_price, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Exit Price" Width="*" Binding="{Binding Path=avg_exit_price, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Closed P&amp;L" Width="*" Binding="{Binding Path=closed_pnl, StringFormat={}{0:0.00}}"/>
+                            <DataGridTextColumn Header="Exit Type" Width="*" Binding="{Binding Path=exec_type}"/>
+                            <DataGridTextColumn Header="Trade Time" Width="auto" Binding="{Binding Path=created_at, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                        </DataGrid.Columns>
+
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+
+            <TabControl Grid.Row="0" Grid.Column="2">
+                <TabItem Header="Open">
+                    <Grid>
+                        <TabControl>
+                            <TabItem Header="Limit">
+                                <StackPanel>
+                                    <DockPanel LastChildFill="True"
+                                               Height="25">
+                                        <TextBox DockPanel.Dock="Right" Width="50" Text="{Binding PriceOrder}"/>
+                                        <TextBlock DockPanel.Dock="Left"
+                                                   VerticalAlignment="Center">Price Order</TextBlock>
+                                    </DockPanel>
+                                    <DockPanel LastChildFill="True"
+                                               Height="25">
+                                        <TextBox DockPanel.Dock="Right" 
+                                                 Text="{Binding QtyOrder}"
+                                                 Width="50"/>
+                                        <TextBlock DockPanel.Dock="Left"
+                                                   VerticalAlignment="Center">Qty</TextBlock>
+                                    </DockPanel>
+                                    <UniformGrid>
+                                        <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Buy">
+                                            Open Long
+                                        </Button>
+                                        <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Sell">
+                                            Open Short
+                                        </Button>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="Market">
+                                <StackPanel>
+                                    <DockPanel LastChildFill="True"
+                                               Height="25">
+                                        <TextBox DockPanel.Dock="Right" 
+                                                 Text="{Binding QtyOrder}"
+                                                 Width="50"/>
+                                        <TextBlock DockPanel.Dock="Left"
+                                                   VerticalAlignment="Center">Qty</TextBlock>
+                                    </DockPanel>
+                                    <UniformGrid>
+                                        <Button Command="{Binding CreateOpenMarketOrderCommand}" CommandParameter="Buy">
+                                            Open Long
+                                        </Button>
+                                        <Button Command="{Binding CreateOpenMarketOrderCommand}" CommandParameter="Sell">
+                                            Open Short
+                                        </Button>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Close">
+                    <TabControl>
+                        <TabItem Header="Limit">
+                            <StackPanel>
+                                <DockPanel LastChildFill="True"
+                                               Height="25">
+                                    <TextBox DockPanel.Dock="Right" 
+                                             Text="{Binding PriceOrder}"
+                                             Width="50"/>
+                                    <TextBlock DockPanel.Dock="Left"
+                                                   VerticalAlignment="Center">Price Order</TextBlock>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True"
+                                               Height="25">
+                                    <TextBox DockPanel.Dock="Right"
+                                             Text="{Binding QtyOrder}"
+                                             Width="50"/>
+                                    <TextBlock DockPanel.Dock="Left"
+                                                   VerticalAlignment="Center">Qty</TextBlock>
+                                </DockPanel>
+                                <UniformGrid>
+                                    <Button Command="{Binding CreateCloseLimitOrderCommand}" CommandParameter="Sell">
+                                        Close Long
+                                    </Button>
+                                    <Button Command="{Binding CreateCloseLimitOrderCommand}" CommandParameter="Buy">
+                                        Close Short
+                                    </Button>
+                                </UniformGrid>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Market">
+                            <StackPanel>
+                                <DockPanel LastChildFill="True"
+                                               Height="25">
+                                    <TextBox DockPanel.Dock="Right"
+                                             Text="{Binding QtyOrder}"
+                                             Width="50"/>
+                                    <TextBlock DockPanel.Dock="Left"
+                                                   VerticalAlignment="Center">Qty</TextBlock>
+                                </DockPanel>
+                                <UniformGrid>
+                                    <Button Command="{Binding CreateCloseMarketOrderCommand}" CommandParameter="Sell">
+                                        Close Long
+                                    </Button>
+                                    <Button Command="{Binding CreateCloseMarketOrderCommand}" CommandParameter="Buy">
+                                        Close Short
+                                    </Button>
+                                </UniformGrid>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
                 </TabItem>
             </TabControl>
         </Grid>

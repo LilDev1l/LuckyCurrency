@@ -18,6 +18,8 @@ using LuckyCurrency.Services.Models.Balance;
 using LuckyCurrency.Services.Models.ServerTime;
 using LuckyCurrency.Services.Models.Position;
 using LuckyCurrency.Services.Models.Order;
+using LuckyCurrency.Services.Models.Symbol;
+using LuckyCurrency.Services.Models.PositionClosePnl;
 
 namespace LuckyCurrency.Services
 {
@@ -34,7 +36,6 @@ namespace LuckyCurrency.Services
         #region Статический конструктор
         static Bybit()
         {
-            SetCultureUS();
             Duration = GetTimeDuration();
         }
         #endregion
@@ -56,6 +57,16 @@ namespace LuckyCurrency.Services
             });
             _wsPublic.Start();
             _wsPrivate.Start();
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(30000);
+                    SendPublicWS("{\"op\":\"ping\"}");
+                    SendPrivateWS("{\"op\":\"ping\"}");
+                }
+            });
         }
 
         #region public
@@ -66,7 +77,7 @@ namespace LuckyCurrency.Services
         public static void ReconnectPublicWS()
         {
             _wsPublic.Reconnect();
-        }
+        }   
         #endregion
         #region private
         public static void SendPrivateWS(string message)
@@ -126,6 +137,16 @@ namespace LuckyCurrency.Services
                     throw new Exception("Неверный формат интервала");
             }
 
+        }
+        #endregion
+
+        #region Symbol
+        public static SymbolBase GetSymbolBase()
+        {
+            var apiInstance = new SymbolApi();
+            JObject result = (JObject)apiInstance.SymbolGet();
+
+            return result.ToObject<SymbolBase>();
         }
         #endregion
 
@@ -216,6 +237,21 @@ namespace LuckyCurrency.Services
 
             var apiInstance = new LinearOrderApi();
             apiInstance.LinearOrderNew(side: side, symbol: symbol, orderType: order_type, qty: qty, price: price, timeInForce: time_in_force, reduceOnly: reduce_only, closeOnTrigger: close_on_trigger);
+        }
+        #endregion
+
+        #region Positions Close Pnl
+        public static PositionClosePnlBase GetPositionsClosePnl(string symbol)
+        {
+            long timestamp = GetTimeServer(Time.MiliSeconds);
+            Configuration.Default.AddApiKey("api_key", api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new LinearPositionsApi();
+            JObject result = (JObject)apiInstance.LinearPositionsClosePnlRecords(symbol);
+
+            return result.ToObject<PositionClosePnlBase>();
         }
         #endregion
 

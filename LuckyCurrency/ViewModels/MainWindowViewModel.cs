@@ -22,6 +22,10 @@ using LuckyCurrency.Services.Models.LinearKline;
 using LuckyCurrency.Services.Models.Position;
 using LuckyCurrency.Services.Models.OrderWS;
 using LuckyCurrency.Services.Models.Order;
+using LuckyCurrency.Services.Models.Symbol;
+using LuckyCurrency.Services.Models.PositionClosePnl;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -111,36 +115,149 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region Symbols
+        private List<SymbolData> _symbols;
+        public List<SymbolData> Symbols
+        {
+            get => _symbols;
+            set => Set(ref _symbols, value);
+        }
+        #endregion
+
+        #region Price Order
+        private double _priceOrder;
+        public double PriceOrder
+        {
+            get => _priceOrder;
+            set => Set(ref _priceOrder, value);
+        }
+        #endregion
+
+        #region Qty Order
+        private double _qty;
+        public double QtyOrder
+        {
+            get => _qty;
+            set => Set(ref _qty, value);
+        }
+        #endregion
+
+        #region Positions Close Pnl
+        private List<PositionClosePnlData> _positionsClosePnl;
+        public List<PositionClosePnlData> PositionsClosePnl
+        {
+            get => _positionsClosePnl;
+            set => Set(ref _positionsClosePnl, value);
+        }
+        #endregion
+
+        #region Flag
+        private bool _flag;
+        public bool Flag
+        {
+            get => _flag;
+            set => Set(ref _flag, value);
+        }
+        #endregion
+
         #endregion
 
         #region Команды
 
         #region ChangeSymbolCommand
         public ICommand ChangeSymbolCommand { get; }
-        private bool CanChangeSymbolCommandExecute(object p) => true;
+        private bool CanChangeSymbolCommandExecute(object p) => Flag;
         private void OnChangeSymbolCommandExecuted(object p)
         {
-            Bybit.ReconnectPublicWS();
-            Asks.Clear();
-            Bids.Clear();
-            Trades.Clear();
+            Task.Run(() =>
+            {
+                Bybit.ReconnectPublicWS();
 
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedSymbol.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedSymbol.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol.Content}\"]}}");
+                string timeframe = null, symbol = null;
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    timeframe = SelectedTimeframe.Content.ToString();
+                    symbol = SelectedSymbol.Content.ToString();
 
-            Candles = GetCandles(SelectedSymbol.Content.ToString(), SelectedTimeframe.Content.ToString());
-            Positions = GetPositions(SelectedSymbol.Content.ToString());
-            Orders = GetOrders(SelectedSymbol.Content.ToString(), "New");
+                    
+                    Bids.Clear();
+                    Trades.Clear();
+                    Asks.Clear();
+                });
+                
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");
+
+                Candles = GetCandles(symbol, timeframe);
+                Positions = GetPositions(symbol);
+                Orders = GetOrders(symbol, "New");
+                PositionsClosePnl = Bybit.GetPositionsClosePnl(symbol).result.data;
+            });
         }
         #endregion
         #region ChangeTimeframeCommand
         public ICommand ChangeTimeframeCommand { get; }
-        private bool CanChangeTimeframeCommandExecute(object p) => true;
+        private bool CanChangeTimeframeCommandExecute(object p) => Flag;
         private void OnChangeTimeframeCommandExecuted(object p)
         {
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedSymbol.Content}\"]}}");
-            Candles = GetCandles(SelectedSymbol.Content.ToString(), SelectedTimeframe.Content.ToString());
+            Task.Run(() =>
+            {
+                string timeframe = null, symbol = null;
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    timeframe = SelectedTimeframe.Content.ToString();
+                    symbol = SelectedSymbol.Content.ToString();
+                });
+
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+                Candles = GetCandles(symbol, timeframe);
+            });
+        }
+        #endregion
+
+        #region CreateOpenLimitOrderCommand
+        public ICommand CreateOpenLimitOrderCommand { get; }
+        private bool CanCreateOpenLimitOrderCommandExecute(object p) => true;
+        private void OnCreateOpenLimitOrderCommandExecuted(object p)
+        {
+            if (p is string side)
+            {
+                Bybit.CreateLimitOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, PriceOrder, "PostOnly", false, false);
+            }
+        }
+        #endregion
+        #region CreateOpenMarketOrderCommand
+        public ICommand CreateOpenMarketOrderCommand { get; }
+        private bool CanCreateOpenMarketOrderCommandExecute(object p) => true;
+        private void OnCreateOpenMarketOrderCommandExecuted(object p)
+        {
+            if (p is string side)
+            {
+                Bybit.CreateMarketOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, "ImmediateOrCancel", false, false);
+            }
+        }
+        #endregion
+        #region CreateCloseLimitOrderCommand
+        public ICommand CreateCloseLimitOrderCommand { get; }
+        private bool CanCreateCloseLimitOrderCommandExecute(object p) => true;
+        private void OnCreateCloseLimitOrderCommandExecuted(object p)
+        {
+            if (p is string side)
+            {
+                Bybit.CreateLimitOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, PriceOrder, "PostOnly", true, true);
+            }
+        }
+        #endregion
+        #region CreateCloseMarketOrderCommand
+        public ICommand CreateCloseMarketOrderCommand { get; }
+        private bool CanCreateCloseMarketOrderCommandExecute(object p) => true;
+        private void OnCreateCloseMarketOrderCommandExecuted(object p)
+        {
+            if (p is string side)
+            {
+                Bybit.CreateMarketOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, "ImmediateOrCancel", true, true);
+            }
         }
         #endregion
 
@@ -149,20 +266,36 @@ namespace LuckyCurrency.ViewModels
         private bool CanRunWebSocketCommandExecute(object p) => true;
         private void OnRunWebSocketCommandExecuted(object p)
         {
-            Bybit.NewMessage += GetNewMessage;
-            Bybit.RunBybitWS();
+            Task.Run(() =>
+            {
+                string timeframe = null, symbol = null;
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    timeframe = SelectedTimeframe.Content.ToString();
+                    symbol = SelectedSymbol.Content.ToString();
+                });
 
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe.Content}.{SelectedSymbol.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedSymbol.Content}\"]}}");
-            Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol.Content}\"]}}");
+                Candles = GetCandles(symbol, timeframe);
+                Symbols = Bybit.GetSymbolBase().result;
+                Balance = GetBalance("USDT");
+                Positions = GetPositions(symbol);
+                Orders = GetOrders(symbol, "New");
+                PositionsClosePnl = Bybit.GetPositionsClosePnl(symbol).result.data;
 
-            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-            Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+                Bybit.NewMessage += GetNewMessage;
 
-            Balance = GetBalance("USDT");
-            Positions = GetPositions(SelectedSymbol.Content.ToString());
-            Orders = GetOrders(SelectedSymbol.Content.ToString(), "New");
+                Bybit.RunBybitWS();
+
+                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");
+
+                Flag = true;
+            });
         }
         #endregion
 
@@ -174,9 +307,15 @@ namespace LuckyCurrency.ViewModels
             ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
             ChangeTimeframeCommand = new LambdaCommand(OnChangeTimeframeCommandExecuted, CanChangeTimeframeCommandExecute);
             RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
+
+            CreateOpenLimitOrderCommand = new LambdaCommand(OnCreateOpenLimitOrderCommandExecuted, CanCreateOpenLimitOrderCommandExecute);
+            CreateOpenMarketOrderCommand = new LambdaCommand(OnCreateOpenMarketOrderCommandExecuted, CanCreateOpenMarketOrderCommandExecute);
+
+            CreateCloseLimitOrderCommand = new LambdaCommand(OnCreateCloseLimitOrderCommandExecuted, CanCreateCloseLimitOrderCommandExecute);
+            CreateCloseMarketOrderCommand = new LambdaCommand(OnCreateCloseMarketOrderCommandExecuted, CanCreateCloseMarketOrderCommandExecute);
             #endregion
 
-            Candles = GetCandles("BTCUSDT", "15");
+            Bybit.SetCultureUS(); 
         }
 
         #region HTTP
@@ -247,9 +386,9 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region WebSockets
-
         private void GetNewMessage(string message)
         {
+            //Console.WriteLine(message);
             string timeframe = null, pair = null;
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -492,8 +631,8 @@ namespace LuckyCurrency.ViewModels
                 if (order.symbol == SelectedSymbol.Content.ToString())
                 {
                     if (order.order_status == "New")
-                        Orders.Add(new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.create_time));
-                    if (order.order_status == "Cancelled")
+                        Orders.Insert(0, new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.create_time));
+                    if (order.order_status == "Cancelled" || order.order_status == "Filled")
                     {
                         Orders?.Remove(Orders.FirstOrDefault(ord => ord.Order_id == order.order_id));
                     }
