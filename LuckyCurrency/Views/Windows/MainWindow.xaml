@@ -33,6 +33,7 @@
                 </i:Interaction.Triggers>
                 <ComboBoxItem  Content="BTCUSDT" IsSelected="True"/>
                 <ComboBoxItem Content="ETHUSDT"/>
+                <ComboBoxItem Content="BCHUSDT"/>
             </ComboBox>
             <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}"
                       IsEnabled="{Binding Flag}">
@@ -43,6 +44,10 @@
                 </i:Interaction.Triggers>
                 <ComboBoxItem Content="1"/>
                 <ComboBoxItem Content="15" IsSelected="True"/>
+                <ComboBoxItem Content="30"/>
+                <ComboBoxItem Content="1h"/>
+                <ComboBoxItem Content="4h"/>
+                <ComboBoxItem Content="D"/>
             </ComboBox>
         </StackPanel>
         <Grid ShowGridLines="True">

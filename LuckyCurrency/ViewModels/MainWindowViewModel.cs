@@ -210,8 +210,9 @@ namespace LuckyCurrency.ViewModels
                     symbol = SelectedSymbol.Content.ToString();
                 });
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
                 Candles = GetCandles(symbol, timeframe);
+
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
             });
         }
         #endregion
@@ -278,10 +279,10 @@ namespace LuckyCurrency.ViewModels
 
                 Symbols = Bybit.GetSymbolBase().result;
                 Balance = GetBalance("USDT");
-                Positions = GetPositions("BTCUSDT");
-                Orders = GetOrders("BTCUSDT", "New");
-                PositionsClosePnl = GetPositionsClosePnl("BTCUSDT", "Funding");
-                Candles = GetCandles("BTCUSDT", "15");
+                Positions = GetPositions(symbol);
+                Orders = GetOrders(symbol, "New");
+                PositionsClosePnl = GetPositionsClosePnl(symbol, "Funding");
+                Candles = GetCandles(symbol, timeframe);
 
                 Bybit.NewMessage += GetNewMessage;
 
@@ -324,6 +325,39 @@ namespace LuckyCurrency.ViewModels
         #region public
         private static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
         {
+            string ConvertInterval(string timeframeL)
+            {
+                switch (timeframeL)
+                {
+                    case "1":
+                        return "1";
+                    case "3":
+                        return "3";
+                    case "5":
+                        return "5";
+                    case "15":
+                        return "15";
+                    case "30":
+                        return "30";
+                    case "1h":
+                        return "60";
+                    case "2h":
+                        return "120";
+                    case "4h":
+                        return "240";
+                    case "6h":
+                        return "360";
+                    case "D":
+                        return "D";
+                    case "W":
+                        return "W";
+                    case "M":
+                        return "M";
+                    default:
+                        throw new Exception("Неверный формат интервала");
+                }
+
+            }
             ICandle GetCandleFromLinearKline(LinearKlineData kline)
             {
                 DateTime openTime = new DateTime(kline.OpenTime * 10000000L + Bybit.Duration);
@@ -331,7 +365,7 @@ namespace LuckyCurrency.ViewModels
                 return new Candle(openTime, kline.Open, kline.High, kline.Low, kline.Close, (long)kline.Volume);
             }
 
-            LinearKlineBase linearKlineBase = Bybit.GetLinearKlineBase(pair, timeframe);
+            LinearKlineBase linearKlineBase = Bybit.GetLinearKlineBase(pair, ConvertInterval(timeframe));
             List<LinearKlineData> linearKlineData = linearKlineBase.Result;
 
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();

@@ -99,44 +99,45 @@ namespace LuckyCurrency.Services
         #region LinearKline
         public static LinearKlineBase GetLinearKlineBase(string pair, string timeframe)
         {
+            long GetIntervalSeconds(string timeframeL)
+            {
+                switch (timeframeL)
+                {
+                    case "1":
+                        return 1 * 60;
+                    case "3":
+                        return 3 * 60;
+                    case "5":
+                        return 5 * 60;
+                    case "15":
+                        return 15 * 60;
+                    case "30":
+                        return 30 * 60;
+                    case "60":
+                        return 60 * 60;
+                    case "120":
+                        return 120 * 60;
+                    case "240":
+                        return 240 * 60;
+                    case "360":
+                        return 360 * 60;
+                    case "D":
+                        return 24 * 60 * 60;
+                    case "W":
+                        return 7 * 24 * 60 * 60;
+                    case "M":
+                        return 30 * 24 * 60 * 60;
+                    default:
+                        throw new Exception("Неверный формат интервала");
+                }
+
+            }
+
             var apiInstance = new LinearKlineApi();
             long from = GetTimeServer(Time.Seconds) - 200 * GetIntervalSeconds(timeframe);
             JObject result = (JObject)apiInstance.LinearKlineGet(pair, timeframe, from);
 
             return result.ToObject<LinearKlineBase>();
-        }
-        public static long GetIntervalSeconds(string timeframe)
-        {
-            switch (timeframe)
-            {
-                case "1":
-                    return 1 * 60;
-                case "3":
-                    return 3 * 60;
-                case "5":
-                    return 5 * 60;
-                case "15":
-                    return 15 * 60;
-                case "30":
-                    return 30 * 60;
-                case "60":
-                    return 60 * 60;
-                case "120":
-                    return 120 * 60;
-                case "240":
-                    return 240 * 60;
-                case "360":
-                    return 360 * 60;
-                case "D":
-                    return 24 * 60 * 60;
-                case "W":
-                    return 7 * 24 * 60 * 60;
-                case "M":
-                    return 30 * 24 * 60 * 60;
-                default:
-                    throw new Exception("Неверный формат интервала");
-            }
-
         }
         #endregion
 
