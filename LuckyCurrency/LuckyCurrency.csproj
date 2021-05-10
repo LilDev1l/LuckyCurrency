@@ -102,6 +102,7 @@
     <Compile Include="Infrastructure\Commands\ClosePositionCommand.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\PositionClosePnl.cs" />
     <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
     <Compile Include="Services\Models\BalanceWS\BalanceWSBase.cs" />

@@ -25,6 +25,6 @@ namespace LuckyCurrency.Services.Models.PositionClosePnl
         public double closed_pnl { get; set; }
         public int fill_count { get; set; }
         public double leverage { get; set; }
-        public int created_at { get; set; }
+        public long created_at { get; set; }
     }
 }

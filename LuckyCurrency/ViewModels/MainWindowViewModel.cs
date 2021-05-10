@@ -143,8 +143,8 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region Positions Close Pnl
-        private List<PositionClosePnlData> _positionsClosePnl;
-        public List<PositionClosePnlData> PositionsClosePnl
+        private List<PositionClosePnl> _positionsClosePnl;
+        public List<PositionClosePnl> PositionsClosePnl
         {
             get => _positionsClosePnl;
             set => Set(ref _positionsClosePnl, value);
@@ -192,7 +192,7 @@ namespace LuckyCurrency.ViewModels
                 Candles = GetCandles(symbol, timeframe);
                 Positions = GetPositions(symbol);
                 Orders = GetOrders(symbol, "New");
-                PositionsClosePnl = Bybit.GetPositionsClosePnl(symbol).result.data;
+                PositionsClosePnl = GetPositionsClosePnl(symbol, "Trade");
             });
         }
         #endregion
@@ -275,12 +275,13 @@ namespace LuckyCurrency.ViewModels
                     symbol = SelectedSymbol.Content.ToString();
                 });
 
-                Candles = GetCandles(symbol, timeframe);
+
                 Symbols = Bybit.GetSymbolBase().result;
                 Balance = GetBalance("USDT");
-                Positions = GetPositions(symbol);
-                Orders = GetOrders(symbol, "New");
-                PositionsClosePnl = Bybit.GetPositionsClosePnl(symbol).result.data;
+                Positions = GetPositions("BTCUSDT");
+                Orders = GetOrders("BTCUSDT", "New");
+                PositionsClosePnl = GetPositionsClosePnl("BTCUSDT", "Funding");
+                Candles = GetCandles("BTCUSDT", "15");
 
                 Bybit.NewMessage += GetNewMessage;
 
@@ -380,6 +381,23 @@ namespace LuckyCurrency.ViewModels
             }
 
             return orders;
+        }
+        private static List<PositionClosePnl> GetPositionsClosePnl(string symbol, string exec_type = null)
+        {
+            PositionClosePnlBase positionClosePnlBase = Bybit.GetPositionsClosePnlBase(symbol, exec_type);
+            PositionClosePnlPage positionClosePnlPage = positionClosePnlBase.result;
+            List<PositionClosePnlData> positionClosePnlDatas = positionClosePnlPage.data;
+
+            List<PositionClosePnl> positionClosePnls = new List<PositionClosePnl>();
+            if (positionClosePnlDatas != null)
+            {
+                foreach (var posClosePnl in positionClosePnlDatas)
+                {
+                    positionClosePnls.Add(new PositionClosePnl(posClosePnl.symbol, posClosePnl.side == "Buy" ? "Sell" : "Buy", posClosePnl.qty, posClosePnl.avg_entry_price, posClosePnl.avg_exit_price, posClosePnl.closed_pnl, posClosePnl.exec_type, new DateTime(posClosePnl.created_at * 10000000L + Bybit.Duration)));
+                }
+            }
+
+            return positionClosePnls;
         }
         #endregion
 
@@ -644,3 +662,4 @@ namespace LuckyCurrency.ViewModels
         #endregion
     }
 }
+    

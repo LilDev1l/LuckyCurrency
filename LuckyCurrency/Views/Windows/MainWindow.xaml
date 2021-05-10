@@ -21,24 +21,7 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Window.Resources>
-
-        <cmd:CancelOrderCommand x:Key="CancelOrderCommand"/>
-        <cmd:ClosePositionCommand x:Key="ClosePositionCommand"/>
-
-        <Style x:Key="BuyOrSell">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Trades[0].Side}" Value="Buy">
-                    <Setter Property="fa:ImageAwesome.Icon" Value="chevronup"/>
-                    <Setter Property="fa:ImageAwesome.Foreground" Value="Green"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Trades[0].Side}" Value="Sell">
-                    <Setter Property="fa:ImageAwesome.Icon" Value="chevrondown"/>
-                    <Setter Property="fa:ImageAwesome.Foreground" Value="Red"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+    
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <ComboBox SelectedItem="{Binding Path=SelectedSymbol}"
@@ -104,117 +87,44 @@
                           ItemsSource="{Binding Asks}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
+                          CellStyle="{StaticResource DataGridCellRight}">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Red" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                            <DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
-                        </DataGridTextColumn>
+                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
                     </DataGrid.Columns>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Style>
-                    </DataGrid.CellStyle>
-
-
                 </DataGrid>
+                
                 <DataGrid Grid.Row="1" Grid.Column="1"
                           ItemsSource="{Binding Bids}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
+                          CellStyle="{StaticResource DataGridCellRight}">
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Green" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                            <DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
-                        </DataGridTextColumn>
+                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
                     </DataGrid.Columns>
-
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Style>
-                    </DataGrid.CellStyle>
                 </DataGrid>
                 <DataGrid Grid.Row="2" Grid.ColumnSpan="2"
                           ItemsSource="{Binding Trades}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
-                    <DataGrid.Resources>
-                        <Style x:Key="BuyOrSell">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Side}" Value="Sell">
-                                    <Setter Property="DataGridTextColumn.Foreground"  Value="Red"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Side}" Value="Buy">
-                                    <Setter Property="DataGridTextColumn.Foreground"  Value="Green"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.Resources>
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
+                          CellStyle="{StaticResource DataGridCellRight}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Qty" Width="*" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                            <DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSell}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                            <DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment" Value="Right" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
-                        </DataGridTextColumn>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
+                        
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Qty" Width="*" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
+                        
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
                     </DataGrid.Columns>
-
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Style>
-                    </DataGrid.CellStyle>
                 </DataGrid>
             </Grid>
 
@@ -241,7 +151,9 @@
                     <DataGrid ItemsSource="{Binding Positions}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
+                              CellStyle="{StaticResource DataGridCell}">
+                        
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
@@ -258,22 +170,15 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
-
-                        <DataGrid.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Style>
-                        </DataGrid.CellStyle>
                     </DataGrid>
                 </TabItem>
                 <TabItem Header="Active Orders">
                     <DataGrid ItemsSource="{Binding Orders}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
+                              CellStyle="{StaticResource DataGridCell}">
+                        
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
@@ -289,41 +194,24 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
-                        
-                        <DataGrid.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Style>
-                        </DataGrid.CellStyle>
                     </DataGrid>
                 </TabItem>
                 <TabItem Header="Closed P&amp;L">
                     <DataGrid ItemsSource="{Binding PositionsClosePnl}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
+                              CellStyle="{StaticResource DataGridCell}">
+                        
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=symbol}"/>
-                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=side}"/>
-                            <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=qty, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Entry Price" Width="*" Binding="{Binding Path=avg_entry_price, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Exit Price" Width="*" Binding="{Binding Path=avg_exit_price, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Closed P&amp;L" Width="*" Binding="{Binding Path=closed_pnl, StringFormat={}{0:0.00}}"/>
-                            <DataGridTextColumn Header="Exit Type" Width="*" Binding="{Binding Path=exec_type}"/>
-                            <DataGridTextColumn Header="Trade Time" Width="auto" Binding="{Binding Path=created_at, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
+                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
+                            <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=Qty, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Entry Price" Width="*" Binding="{Binding Path=Avg_entry_price, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Exit Price" Width="*" Binding="{Binding Path=Avg_exit_price, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Closed P&amp;L" Width="*" Binding="{Binding Path=Closed_pnl, StringFormat={}{0:0.00}}"/>
+                            <DataGridTextColumn Header="Trade Time" Width="auto" Binding="{Binding Path=Created_at, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                         </DataGrid.Columns>
-
-                        <DataGrid.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </Style>
-                        </DataGrid.CellStyle>
                     </DataGrid>
                 </TabItem>
             </TabControl>

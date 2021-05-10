@@ -241,15 +241,19 @@ namespace LuckyCurrency.Services
         #endregion
 
         #region Positions Close Pnl
-        public static PositionClosePnlBase GetPositionsClosePnl(string symbol)
+        public static PositionClosePnlBase GetPositionsClosePnlBase(string symbol, string exec_type = null)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
+            string tempExec_type = null;
+            if (exec_type != null)
+                tempExec_type = "&exec_type=" + exec_type;
+
             Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}{tempExec_type}&symbol={symbol}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearPositionsApi();
-            JObject result = (JObject)apiInstance.LinearPositionsClosePnlRecords(symbol);
+            JObject result = (JObject)apiInstance.LinearPositionsClosePnlRecords(symbol:symbol, execType: exec_type);
 
             return result.ToObject<PositionClosePnlBase>();
         }
