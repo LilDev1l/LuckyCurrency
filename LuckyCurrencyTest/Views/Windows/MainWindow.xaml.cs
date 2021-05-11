@@ -11,10 +11,12 @@ using IO.Swagger.Model;
 using IO.Swagger.Api;
 using LuckyCurrencyTest.Models;
 
+
 namespace LuckyCurrencyTest
 {
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
