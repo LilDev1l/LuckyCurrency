@@ -146,8 +146,14 @@ namespace LuckyCurrency.Services
         {
             var apiInstance = new SymbolApi();
             JObject result = (JObject)apiInstance.SymbolGet();
+            SymbolBase symbolBase = result.ToObject<SymbolBase>();
+            foreach(var symbol in symbolBase.result)
+            {
+                symbol.lot_size_filter.GetQtyScale();
+                symbol.price_filter.GetRound();
+            }
 
-            return result.ToObject<SymbolBase>();
+            return symbolBase;
         }
         #endregion
 

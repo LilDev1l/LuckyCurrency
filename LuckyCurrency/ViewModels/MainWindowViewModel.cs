@@ -115,15 +115,6 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region Symbols
-        private List<SymbolData> _symbols;
-        public List<SymbolData> Symbols
-        {
-            get => _symbols;
-            set => Set(ref _symbols, value);
-        }
-        #endregion
-
         #region Price Order
         private double _priceOrder;
         public double PriceOrder
@@ -151,13 +142,38 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region Flag
-        private bool _flag;
-        public bool Flag
+        #region CurrentSymbol
+        private SymbolData _currentSymbol;
+        public SymbolData CurrentSymbol
         {
-            get => _flag;
-            set => Set(ref _flag, value);
+            get => _currentSymbol;
+            set => Set(ref _currentSymbol, value);
         }
+        #endregion
+
+        #region WsRun
+        private bool _wsRun;
+        public bool WsRun
+        {
+            get => _wsRun;
+            set => Set(ref _wsRun, value);
+        }
+        #endregion
+
+        #region Поля без привязок
+        public List<SymbolData> Symbols { get; private set; }
+/*        public Dictionary<string, int> rounds = new Dictionary<string, int>
+        {
+            { "BTCUSDT", 0},
+            { "BCHUSDT", 1 },
+            { "ETHUSDT", 1 },
+            { "LTCUSDT", 2 },
+            { "LINKUSDT", 3 },
+            { "XTZUSDT", 3 },
+            { "ADAUSDT", 4 },
+            { "DOTUSDT", 2 },
+            { "UNIUSDT", 4 }
+        };*/
         #endregion
 
         #endregion
@@ -166,12 +182,12 @@ namespace LuckyCurrency.ViewModels
 
         #region ChangeSymbolCommand
         public ICommand ChangeSymbolCommand { get; }
-        private bool CanChangeSymbolCommandExecute(object p) => Flag;
+        private bool CanChangeSymbolCommandExecute(object p) => WsRun;
         private void OnChangeSymbolCommandExecuted(object p)
         {
             Task.Run(() =>
             {
-                Bybit.ReconnectPublicWS();
+                //Bybit.ReconnectPublicWS();
 
                 string timeframe = null, symbol = null;
                 App.Current.Dispatcher.Invoke(() =>
@@ -185,10 +201,11 @@ namespace LuckyCurrency.ViewModels
                     Asks.Clear();
                 });
                 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+/*                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
                 Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");*/
 
+                CurrentSymbol = Symbols.Find(s => s.alias == symbol);
                 Candles = GetCandles(symbol, timeframe);
                 Positions = GetPositions(symbol);
                 Orders = GetOrders(symbol, "New");
@@ -198,7 +215,7 @@ namespace LuckyCurrency.ViewModels
         #endregion
         #region ChangeTimeframeCommand
         public ICommand ChangeTimeframeCommand { get; }
-        private bool CanChangeTimeframeCommandExecute(object p) => Flag;
+        private bool CanChangeTimeframeCommandExecute(object p) => WsRun;
         private void OnChangeTimeframeCommandExecuted(object p)
         {
             Task.Run(() =>
@@ -262,7 +279,21 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region RunWSCommand
+        #region CoercePriceCommand
+        public ICommand CoercePriceCommand { get; }
+        private bool CanCoercePriceCommandExecute(object p) => true;
+        private void OnCoercePriceCommandExecuted(object p)
+        {
+            if ((int)(PriceOrder * 100000) % (int)(CurrentSymbol.price_filter.tick_size * 100000) == 0)
+                return;
+            else
+            {
+                PriceOrder = Math.Round(PriceOrder, CurrentSymbol.price_filter.round);
+            }
+        }
+        #endregion
+
+        #region RunWSCommand 
         public ICommand RunWSCommand { get; }
         private bool CanRunWebSocketCommandExecute(object p) => true;
         private void OnRunWebSocketCommandExecuted(object p)
@@ -278,25 +309,27 @@ namespace LuckyCurrency.ViewModels
 
 
                 Symbols = Bybit.GetSymbolBase().result;
+                CurrentSymbol = Symbols.Find(s => s.alias == symbol);
+
                 Balance = GetBalance("USDT");
                 Positions = GetPositions(symbol);
                 Orders = GetOrders(symbol, "New");
                 PositionsClosePnl = GetPositionsClosePnl(symbol, "Funding");
                 Candles = GetCandles(symbol, timeframe);
 
-                Bybit.NewMessage += GetNewMessage;
+                /*                Bybit.NewMessage += GetNewMessage;
 
-                Bybit.RunBybitWS();
+                                Bybit.RunBybitWS();
 
-                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+                                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+                                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+                                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");
+                                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+                                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
+                                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");*/
 
-                Flag = true;
+                WsRun = true;
             });
         }
         #endregion
@@ -315,6 +348,8 @@ namespace LuckyCurrency.ViewModels
 
             CreateCloseLimitOrderCommand = new LambdaCommand(OnCreateCloseLimitOrderCommandExecuted, CanCreateCloseLimitOrderCommandExecute);
             CreateCloseMarketOrderCommand = new LambdaCommand(OnCreateCloseMarketOrderCommandExecuted, CanCreateCloseMarketOrderCommandExecute);
+
+            CoercePriceCommand = new LambdaCommand(OnCoercePriceCommandExecuted, CanCoercePriceCommandExecute);
             #endregion
 
             Bybit.SetCultureUS(); 
@@ -427,7 +462,7 @@ namespace LuckyCurrency.ViewModels
             {
                 foreach (var posClosePnl in positionClosePnlDatas)
                 {
-                    positionClosePnls.Add(new PositionClosePnl(posClosePnl.symbol, posClosePnl.side == "Buy" ? "Sell" : "Buy", posClosePnl.qty, posClosePnl.avg_entry_price, posClosePnl.avg_exit_price, posClosePnl.closed_pnl, posClosePnl.exec_type, new DateTime(posClosePnl.created_at * 10000000L + Bybit.Duration)));
+                    positionClosePnls.Add(new PositionClosePnl(posClosePnl.symbol, posClosePnl.side == "Buy" ? "Short" : "Long", posClosePnl.qty, posClosePnl.avg_entry_price, posClosePnl.avg_exit_price, posClosePnl.closed_pnl, posClosePnl.exec_type, new DateTime(posClosePnl.created_at * 10000000L + Bybit.Duration)));
                 }
             }
 

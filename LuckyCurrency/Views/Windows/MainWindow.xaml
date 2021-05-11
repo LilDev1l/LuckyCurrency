@@ -9,6 +9,7 @@
         xmlns:local="clr-namespace:LuckyCurrency"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="550" Width="950"
@@ -25,7 +26,7 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <ComboBox SelectedItem="{Binding Path=SelectedSymbol}"
-                      IsEnabled="{Binding Flag}">
+                      IsEnabled="{Binding WsRun}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding Path=ChangeSymbolCommand}"/>
@@ -34,9 +35,15 @@
                 <ComboBoxItem  Content="BTCUSDT" IsSelected="True"/>
                 <ComboBoxItem Content="ETHUSDT"/>
                 <ComboBoxItem Content="BCHUSDT"/>
+                <ComboBoxItem Content="LTCUSDT"/>
+                <ComboBoxItem Content="LINKUSDT"/>
+                <ComboBoxItem Content="XTZUSDT"/>
+                <ComboBoxItem Content="ADAUSDT"/>
+                <ComboBoxItem Content="DOTUSDT"/>
+                <ComboBoxItem Content="UNIUSDT"/>
             </ComboBox>
             <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}"
-                      IsEnabled="{Binding Flag}">
+                      IsEnabled="{Binding WsRun}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding Path=ChangeTimeframeCommand}"/>
@@ -58,7 +65,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition  Width="2*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
             <fc:CandleChart Grid.Column="0" Grid.Row="0"
@@ -229,15 +236,35 @@
                                 <StackPanel>
                                     <DockPanel LastChildFill="True"
                                                Height="25">
-                                        <TextBox DockPanel.Dock="Right" Width="50" Text="{Binding PriceOrder}"/>
+                                        <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding PriceOrder}" CultureInfo="en-US"
+                                                            Minimum="{Binding CurrentSymbol.price_filter.min_price}"
+                                                            Maximum="{Binding CurrentSymbol.price_filter.max_price}"
+                                                            Increment="{Binding CurrentSymbol.price_filter.tick_size}"
+                                                            FormatString="{Binding CurrentSymbol.price_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="ValueChanged">
+                                                    <i:InvokeCommandAction Command="{Binding Path=CoercePriceCommand}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </xctk:DecimalUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Price Order</TextBlock>
                                     </DockPanel>
                                     <DockPanel LastChildFill="True"
                                                Height="25">
-                                        <TextBox DockPanel.Dock="Right" 
-                                                 Text="{Binding QtyOrder}"
-                                                 Width="50"/>
+                                        <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                                            Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
+                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="ValueChanged">
+                                                    <i:InvokeCommandAction Command="{Binding Path=CoerceQtyCommandCommand}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </xctk:DecimalUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                     </DockPanel>
@@ -255,9 +282,14 @@
                                 <StackPanel>
                                     <DockPanel LastChildFill="True"
                                                Height="25">
-                                        <TextBox DockPanel.Dock="Right" 
-                                                 Text="{Binding QtyOrder}"
-                                                 Width="50"/>
+                                        <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                                            Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
+                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            DefaultValue="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                        </xctk:DecimalUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                     </DockPanel>
@@ -280,17 +312,31 @@
                             <StackPanel>
                                 <DockPanel LastChildFill="True"
                                                Height="25">
-                                    <TextBox DockPanel.Dock="Right" 
-                                             Text="{Binding PriceOrder}"
-                                             Width="50"/>
+                                    <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding PriceOrder}" CultureInfo="en-US"
+                                                            Minimum="{Binding CurrentSymbol.price_filter.min_price}"
+                                                            Maximum="{Binding CurrentSymbol.price_filter.max_price}"
+                                                            Increment="{Binding CurrentSymbol.price_filter.tick_size}"
+                                                            FormatString="{Binding CurrentSymbol.price_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="ValueChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=CoercePriceCommand}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </xctk:DecimalUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Price Order</TextBlock>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True"
                                                Height="25">
-                                    <TextBox DockPanel.Dock="Right"
-                                             Text="{Binding QtyOrder}"
-                                             Width="50"/>
+                                    <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                                            Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
+                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            DefaultValue="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                    </xctk:DecimalUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                 </DockPanel>
@@ -308,9 +354,14 @@
                             <StackPanel>
                                 <DockPanel LastChildFill="True"
                                                Height="25">
-                                    <TextBox DockPanel.Dock="Right"
-                                             Text="{Binding QtyOrder}"
-                                             Width="50"/>
+                                    <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                                            Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
+                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            DefaultValue="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
+                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                    </xctk:DecimalUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                 </DockPanel>
