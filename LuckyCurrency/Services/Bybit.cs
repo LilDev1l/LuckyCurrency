@@ -210,7 +210,7 @@ namespace LuckyCurrency.Services
         #endregion
 
         #region Cancel Order
-        public static void CancelOrder(string symbol, string orderId)
+        public static OrderBase CancelOrder(string symbol, string orderId)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
             Configuration.Default.AddApiKey("api_key", api_key);
@@ -218,20 +218,22 @@ namespace LuckyCurrency.Services
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearOrderApi();
-            apiInstance.LinearOrderCancel(symbol: symbol, orderId: orderId);
+            JObject result = (JObject)apiInstance.LinearOrderCancel(symbol: symbol, orderId: orderId);
+
+            return result.ToObject<OrderBase>();
         }
         #endregion
 
         #region Create Order
-        public static void CreateLimitOrder(string side, string symbol, double qty, double price, string time_in_force, bool reduce_only, bool close_on_trigger)
+        public static OrderBase CreateLimitOrder(string side, string symbol, double qty, double price, string time_in_force, bool reduce_only, bool close_on_trigger)
         {
-            CreateOrder(side: side, symbol: symbol, order_type: "Limit", qty: qty, price: price, time_in_force: time_in_force, reduce_only: reduce_only, close_on_trigger: close_on_trigger);
+            return CreateOrder(side: side, symbol: symbol, order_type: "Limit", qty: qty, price: price, time_in_force: time_in_force, reduce_only: reduce_only, close_on_trigger: close_on_trigger);
         }
-        public static void CreateMarketOrder(string side, string symbol, double qty, string time_in_force, bool reduce_only, bool close_on_trigger)
+        public static OrderBase CreateMarketOrder(string side, string symbol, double qty, string time_in_force, bool reduce_only, bool close_on_trigger)
         {
-            CreateOrder(side: side, symbol: symbol, order_type: "Market", qty: qty, time_in_force: time_in_force, reduce_only: reduce_only, close_on_trigger: close_on_trigger);
+            return CreateOrder(side: side, symbol: symbol, order_type: "Market", qty: qty, time_in_force: time_in_force, reduce_only: reduce_only, close_on_trigger: close_on_trigger);
         }
-        private static void CreateOrder(string side, string symbol, string order_type, double qty, string time_in_force, bool reduce_only, bool close_on_trigger, double? price = null)
+        private static OrderBase CreateOrder(string side, string symbol, string order_type, double qty, string time_in_force, bool reduce_only, bool close_on_trigger, double? price = null)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
             string tempPrice = null;
@@ -243,7 +245,9 @@ namespace LuckyCurrency.Services
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearOrderApi();
-            apiInstance.LinearOrderNew(side: side, symbol: symbol, orderType: order_type, qty: qty, price: price, timeInForce: time_in_force, reduceOnly: reduce_only, closeOnTrigger: close_on_trigger);
+            JObject result = (JObject)apiInstance.LinearOrderNew(side: side, symbol: symbol, orderType: order_type, qty: qty, price: price, timeInForce: time_in_force, reduceOnly: reduce_only, closeOnTrigger: close_on_trigger);
+
+            return result.ToObject<OrderBase>();
         }
         #endregion
 

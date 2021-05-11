@@ -26,12 +26,33 @@ using LuckyCurrency.Services.Models.Symbol;
 using LuckyCurrency.Services.Models.PositionClosePnl;
 using System.Threading;
 using System.Threading.Tasks;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Position;
+using ToastNotifications.Messages;
 
 namespace LuckyCurrency.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
         #region Models
+
+        #region Уведомления
+        public Notifier Notifier { get; set; } = new Notifier(cfg =>
+         {
+             cfg.PositionProvider = new WindowPositionProvider(
+                 parentWindow: App.Current.MainWindow,
+                 corner: Corner.BottomRight,
+                 offsetX: 10,
+                 offsetY: 10);
+
+             cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                 notificationLifetime: TimeSpan.FromSeconds(3),
+                 maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+             cfg.Dispatcher = App.Current.Dispatcher;
+         });
+        #endregion
 
         #region Торговая пара
         private ComboBoxItem _selectedPair;
@@ -187,7 +208,7 @@ namespace LuckyCurrency.ViewModels
         {
             Task.Run(() =>
             {
-                //Bybit.ReconnectPublicWS();
+                Bybit.ReconnectPublicWS();
 
                 string timeframe = null, symbol = null;
                 App.Current.Dispatcher.Invoke(() =>
@@ -200,10 +221,10 @@ namespace LuckyCurrency.ViewModels
                     Trades.Clear();
                     Asks.Clear();
                 });
-                
-/*                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
                 Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");*/
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");
 
                 CurrentSymbol = Symbols.Find(s => s.alias == symbol);
                 Candles = GetCandles(symbol, timeframe);
@@ -241,7 +262,19 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                Bybit.CreateLimitOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, PriceOrder, "PostOnly", false, false);
+                OrderBase orderBase = Bybit.CreateLimitOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, PriceOrder, "PostOnly", false, false);
+                if(orderBase.ret_code == 0)
+                {
+                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                    if(orderData.side == "Buy")
+                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be bought at {orderData.price} price.");
+                    else
+                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be sold at {orderData.price} price.");
+                }
+                else
+                {
+                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                }
             }
         }
         #endregion
@@ -252,7 +285,19 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                Bybit.CreateMarketOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, "ImmediateOrCancel", false, false);
+                OrderBase orderBase = Bybit.CreateMarketOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, "ImmediateOrCancel", false, false);
+                if (orderBase.ret_code == 0)
+                {
+                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                    if (orderData.side == "Buy")
+                        Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    else
+                        Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                }
+                else
+                {
+                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                }
             }
         }
         #endregion
@@ -263,7 +308,19 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                Bybit.CreateLimitOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, PriceOrder, "PostOnly", true, true);
+                OrderBase orderBase = Bybit.CreateLimitOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, PriceOrder, "PostOnly", true, true);
+                if (orderBase.ret_code == 0)
+                {
+                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                    if (orderData.side == "Buy")
+                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be bought at {orderData.price} price.");
+                    else
+                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be sold at {orderData.price} price.");
+                }
+                else
+                {
+                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                }
             }
         }
         #endregion
@@ -274,7 +331,69 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                Bybit.CreateMarketOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, "ImmediateOrCancel", true, true);
+                OrderBase orderBase = Bybit.CreateMarketOrder(side, SelectedSymbol.Content.ToString(), QtyOrder, "ImmediateOrCancel", true, true);
+                if (orderBase.ret_code == 0)
+                {
+                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                    if (orderData.side == "Buy")
+                        Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    else
+                        Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                }
+                else
+                {
+                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                }
+            }
+        }
+        #endregion
+        #region CancelOrderCommand
+        public ICommand CancelOrderCommand { get; }
+        private bool CanCancelOrderCommandExecute(object p) => true;
+        private void OnCancelOrderCommandExecuted(object p)
+        {
+            if (p is Order order)
+            {
+                OrderBase orderBase = Bybit.CancelOrder(order.Symbol, order.Order_id);
+                if (orderBase.ret_code == 0)
+                {
+                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                    Notifier.ShowSuccess($"Cancelled Successfully");
+                }
+                else
+                {
+                    Notifier.ShowError($"{orderBase.ret_msg}");
+                }
+            }
+        }
+        #endregion
+        #region ClosePositionCommand
+        public ICommand ClosePositionCommand { get; }
+        private bool CanClosePositionCommandExecute(object p)
+        {
+            if (p is Position position)
+            {
+                return position.Size != 0;
+            }
+            return false;
+        }
+        private void OnClosePositionCommandExecuted(object p)
+        {
+            if (p is Position position)
+            {
+                OrderBase orderBase = Bybit.CreateMarketOrder(position.Side == "Long" ? "Sell" : "Buy", position.Symbol, position.Size, "GoodTillCancel", true, true);
+                if (orderBase.ret_code == 0)
+                {
+                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                    if (orderData.side == "Buy")
+                        Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    else
+                        Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                }
+                else
+                {
+                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                }
             }
         }
         #endregion
@@ -314,20 +433,20 @@ namespace LuckyCurrency.ViewModels
                 Balance = GetBalance("USDT");
                 Positions = GetPositions(symbol);
                 Orders = GetOrders(symbol, "New");
-                PositionsClosePnl = GetPositionsClosePnl(symbol, "Funding");
+                PositionsClosePnl = GetPositionsClosePnl(symbol, "Trade");
                 Candles = GetCandles(symbol, timeframe);
 
-                /*                Bybit.NewMessage += GetNewMessage;
+                Bybit.NewMessage += GetNewMessage;
 
-                                Bybit.RunBybitWS();
+                Bybit.RunBybitWS();
 
-                                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-                                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-                                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
-                                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
-                                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
-                                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");*/
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{timeframe}.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{symbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{symbol}\"]}}");
 
                 WsRun = true;
             });
@@ -345,9 +464,10 @@ namespace LuckyCurrency.ViewModels
 
             CreateOpenLimitOrderCommand = new LambdaCommand(OnCreateOpenLimitOrderCommandExecuted, CanCreateOpenLimitOrderCommandExecute);
             CreateOpenMarketOrderCommand = new LambdaCommand(OnCreateOpenMarketOrderCommandExecuted, CanCreateOpenMarketOrderCommandExecute);
-
             CreateCloseLimitOrderCommand = new LambdaCommand(OnCreateCloseLimitOrderCommandExecuted, CanCreateCloseLimitOrderCommandExecute);
             CreateCloseMarketOrderCommand = new LambdaCommand(OnCreateCloseMarketOrderCommandExecuted, CanCreateCloseMarketOrderCommandExecute);
+            CancelOrderCommand = new LambdaCommand(OnCancelOrderCommandExecuted, CanCancelOrderCommandExecute);
+            ClosePositionCommand = new LambdaCommand(OnClosePositionCommandExecuted, CanClosePositionCommandExecute);
 
             CoercePriceCommand = new LambdaCommand(OnCoercePriceCommandExecuted, CanCoercePriceCommandExecute);
             #endregion
@@ -429,7 +549,7 @@ namespace LuckyCurrency.ViewModels
             ObservableCollection<Position> positions = new ObservableCollection<Position>();
             foreach (var pos in positionData)
             {
-                positions.Add(new Position(pos.symbol, pos.side, pos.size, pos.position_value, pos.entry_price, pos.liq_price, pos.position_margin, pos.realised_pnl));
+                positions.Add(new Position(pos.symbol, pos.side == "Buy" ? "Long" : "Short", pos.size, pos.position_value, pos.entry_price, pos.liq_price, pos.position_margin, pos.realised_pnl));
             }
 
             return positions;
@@ -437,7 +557,7 @@ namespace LuckyCurrency.ViewModels
         private static ObservableCollection<Order> GetOrders(string symbol, string orderStatus = null)
         {
             OrderBase orderBase = Bybit.GetOrderBase(symbol, orderStatus);
-            OrderPage orderPage = orderBase.result;
+            OrderPage orderPage = ((JObject)orderBase.result).ToObject<OrderPage>();
             List<OrderData> orderDatas = orderPage.data;
 
             ObservableCollection<Order> orders = new ObservableCollection<Order>();
@@ -701,9 +821,10 @@ namespace LuckyCurrency.ViewModels
 
             foreach (var pos in positionData)
             {
+                string longOrShort = pos.Side == "Buy" ? "Long" : "Short";
                 if (pos.Symbol == SelectedSymbol.Content.ToString())
                 {
-                    Positions[Positions.IndexOf(Positions.First(p => p.Side == pos.Side))] = new Position(pos.Symbol, pos.Side, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl);
+                    Positions[Positions.IndexOf(Positions.First(p => p.Side == longOrShort))] = new Position(pos.Symbol, longOrShort, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl);
                 }
             }
         }
@@ -728,7 +849,7 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #endregion
+        #endregion  
     }
 }
     

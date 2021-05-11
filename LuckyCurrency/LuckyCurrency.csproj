@@ -119,8 +119,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Infrastructure\Commands\CancelOrderCommand.cs" />
-    <Compile Include="Infrastructure\Commands\ClosePositionCommand.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\PositionClosePnl.cs" />
@@ -143,6 +141,7 @@
     <Compile Include="Services\Models\OrderBook\OrderBookSnapshot\OrderBookSnapshot.cs" />
     <Compile Include="Services\Models\OrderWS\OrderWSBase.cs" />
     <Compile Include="Services\Models\OrderWS\OrderWSData.cs" />
+    <Compile Include="Services\Models\Order\OrderCloseData.cs" />
     <Compile Include="Services\Models\Order\OrderBase.cs" />
     <Compile Include="Services\Models\Order\OrderData.cs" />
     <Compile Include="Services\Models\Order\OrderPage.cs" />

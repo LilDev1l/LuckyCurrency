@@ -177,7 +177,7 @@
                             <DataGridTemplateColumn Header="Action" Width="auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Command="{StaticResource ClosePositionCommand}" CommandParameter="{Binding}">Close</Button>
+                                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=DataGrid}, Path=DataContext.ClosePositionCommand}" CommandParameter="{Binding}">Close</Button>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -201,7 +201,7 @@
                             <DataGridTemplateColumn Header="Action" Width="auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate >
-                                        <Button Command="{StaticResource CancelOrderCommand}" CommandParameter="{Binding}">Cancel</Button>
+                                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=DataGrid}, Path=DataContext.CancelOrderCommand}" CommandParameter="{Binding}">Cancel</Button>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

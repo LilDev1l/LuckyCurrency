@@ -40,7 +40,6 @@ namespace LuckyCurrencyTest.ViewModels
             notifier.ShowSuccess("Success");
             notifier.ShowWarning("Warning");
             notifier.ShowError("Error");
-
         }
         #endregion
 
