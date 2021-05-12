@@ -1,4 +1,5 @@
-﻿using LuckyCurrency.Infrastructure.Commands;
+﻿using LuckyCurrency.Hasher;
+using LuckyCurrency.Infrastructure.Commands;
 using LuckyCurrency.Models.DB;
 using LuckyCurrency.Services;
 using LuckyCurrency.ViewModels.Base;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace LuckyCurrency.ViewModels.Autorization
@@ -15,7 +17,6 @@ namespace LuckyCurrency.ViewModels.Autorization
     class RegistrationViewModel : ViewModel
     {
         private const string DUPLICATE_USER_DATA = "Пользаватель с таким именем или логином уже существует!!!";
-        private const string PASSWORDS_NOT_EQUEL = "Пароли не совпадают!!!";
         private const string FIELDS_EMPTY = "Заполнены не все поля!!!";
 
         private UnitOfWork _dbWorker;
@@ -36,16 +37,25 @@ namespace LuckyCurrency.ViewModels.Autorization
         public string Password
         {
             get => _password;
-            set => Set(ref _password, value);
+            set => Set(ref _password, PasswordHasher.GetHash(value));
         }
         #endregion
 
-        #region RepeatPassword
-        private string _repeatPassword;
-        public string RepeatPassword
+        #region PublicAPI_Key
+        private string _publicAPI_Key;
+        public string PublicAPI_Key
         {
-            get => _repeatPassword;
-            set => Set(ref _repeatPassword, value);
+            get => _publicAPI_Key;
+            set => Set(ref _publicAPI_Key, value);
+        }
+        #endregion
+
+        #region PrivateAPI_Key
+        private string _privateAPI_Key;
+        public string PrivateAPI_Key
+        {
+            get => _privateAPI_Key;
+            set => Set(ref _privateAPI_Key, value);
         }
         #endregion
 
@@ -96,27 +106,40 @@ namespace LuckyCurrency.ViewModels.Autorization
         {
             if (IsFieldNotEmpty())
             {
-                if (IsRepeatPasswordEquals())
+                if (DuplicateCheck())
                 {
-                    if (DuplicateCheck())
+                    User user = new User()
                     {
-                        User user = new User()
-                        {
-                            Login = this.Login,
-                            Password = this.Password
-                        };
-                        _dbWorker.Users.Create(user);
-                        _dbWorker.Save();
-                        SwitchTo(new Login());
-                    }
-                    else
+                        Login = this.Login,
+                        Password = this.Password
+                    };
+                    _dbWorker.Users.Create(user);
+                    _dbWorker.Save();
+
+                    Account account = new Account()
                     {
-                        InfoMessage = DUPLICATE_USER_DATA;
-                    }
+                        Id = user.Id,
+                        User = user
+                    };
+                    _dbWorker.Accounts.Create(account);
+                    _dbWorker.Save();
+
+                    API_Key apiKey = new API_Key()
+                    {
+                        Id = account.Id,
+                        PublicKey = this.PublicAPI_Key,
+                        SecretKey = this.PrivateAPI_Key,
+                        Account = account
+                    };
+                    _dbWorker.API_Keys.Create(apiKey);
+                    _dbWorker.Save();
+
+                    SwitchTo(new Login());
+                    MessageBox.Show("Add Account");
                 }
                 else
                 {
-                    InfoMessage = PASSWORDS_NOT_EQUEL;
+                    InfoMessage = DUPLICATE_USER_DATA;
                 }
             }
             else
@@ -127,13 +150,7 @@ namespace LuckyCurrency.ViewModels.Autorization
 
         private bool IsFieldNotEmpty()
         {
-            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password)
-                   && !string.IsNullOrEmpty(RepeatPassword);
-        }
-
-        private bool IsRepeatPasswordEquals()
-        {
-            return Password == RepeatPassword;
+            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
         }
 
         private bool DuplicateCheck()

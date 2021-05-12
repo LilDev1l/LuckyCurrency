@@ -36,13 +36,6 @@ namespace LuckyCurrency.Views.Autorization
                 ((RegistrationViewModel)this.DataContext).Password = PasswordBox.Password;
             }
         }
-
-        private void RepeatPasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (this.DataContext != null)
-            {
-                ((RegistrationViewModel)this.DataContext).RepeatPassword = RepeatPasswordBox.Password;
-            }
-        }
+       
     }
 }

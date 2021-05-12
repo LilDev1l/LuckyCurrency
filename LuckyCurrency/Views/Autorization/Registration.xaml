@@ -8,7 +8,7 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="Registration" Height="420" Width="340">
+        Title="Registration" Height="450" Width="340">
 
     <Window.DataContext>
         <vm:RegistrationViewModel/>
@@ -21,33 +21,36 @@
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    Margin="0 15" >
+                    Margin="0 15"
+                    Width="210">
             <TextBlock FontSize="32" Margin="0 15" HorizontalAlignment="Center">LuckyCurrency</TextBlock>
             <TextBlock FontSize="12"  HorizontalAlignment="Center" Text="{Binding InfoMessage}"></TextBlock>
             <StackPanel Margin="0 10" >
-                <TextBlock>Логин</TextBlock>
-                <TextBox x:Name="LoginBox" Text="{Binding Login, Mode=TwoWay}"></TextBox>
+                <TextBlock>Login</TextBlock>
+                <TextBox Text="{Binding Login}"></TextBox>
             </StackPanel>
             <StackPanel Margin="0 10">
-                <TextBlock>Пароль</TextBlock>
+                <TextBlock>Password</TextBlock>
                 <PasswordBox x:Name="PasswordBox" PasswordChanged="PasswordBox_OnPasswordChanged" ></PasswordBox>
             </StackPanel>
             <StackPanel Margin="0 10">
-                <TextBlock>Повторите пароль</TextBlock>
-                <PasswordBox x:Name="RepeatPasswordBox" PasswordChanged="RepeatPasswordBox_OnPasswordChanged"></PasswordBox>
+                <TextBlock>Public API Key</TextBlock>
+                <TextBox Text="{Binding PublicAPI_Key}"></TextBox>
+            </StackPanel>
+            <StackPanel Margin="0 10">
+                <TextBlock>Private API Key</TextBlock>
+                <TextBox Text="{Binding PrivateAPI_Key}"></TextBox>
             </StackPanel>
 
-            <Button x:Name="EnterButton" 
-                    Margin="0 10"
-                    Command="{Binding RegistrationCommand}"
-                    >
+            <Button Margin="0 10"
+                    Command="{Binding RegistrationCommand}">
                 <Button.Content>
-                    <TextBlock>Регистрация</TextBlock>
+                    <TextBlock>Create account</TextBlock>
                 </Button.Content>
             </Button>
             <StackPanel Margin="0 5">
                 <Button Command="{Binding SwitchToLoginCommand}">
-                    <TextBlock>Войти</TextBlock>
+                    <TextBlock>Sign in</TextBlock>
                 </Button>
             </StackPanel>
         </StackPanel>

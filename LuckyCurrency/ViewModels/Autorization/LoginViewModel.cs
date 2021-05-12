@@ -34,7 +34,7 @@ namespace LuckyCurrency.ViewModels.Autorization
         public string Password
         {
             get => _password;
-            set => Set(ref _password, value);
+            set => Set(ref _password, PasswordHasher.GetHash(value));
         }
         #endregion
 
@@ -87,12 +87,10 @@ namespace LuckyCurrency.ViewModels.Autorization
         {
             if (IsFieldsNotEmpty())
             {
-                string passwordHash = PasswordHasher.GetHash(Password);
-                var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == passwordHash);
+                var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == Password);
                 if (user != null)
                 {
                     SwitchTo(GetMainWindow(_dbWorker.API_Keys.Get(user.Id)));
-                    Close();
                 }
                 else
                 {
