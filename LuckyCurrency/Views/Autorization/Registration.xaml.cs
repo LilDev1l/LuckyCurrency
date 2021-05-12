@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuckyCurrency.ViewModels.Autorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,22 @@ namespace LuckyCurrency.Views.Autorization
         public Registration()
         {
             InitializeComponent();
+        }
+
+        private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext != null)
+            {
+                ((RegistrationViewModel)this.DataContext).Password = PasswordBox.Password;
+            }
+        }
+
+        private void RepeatPasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext != null)
+            {
+                ((RegistrationViewModel)this.DataContext).RepeatPassword = RepeatPasswordBox.Password;
+            }
         }
     }
 }
