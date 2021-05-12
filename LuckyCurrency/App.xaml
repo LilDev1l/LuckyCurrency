@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LuckyCurrency"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:cnv="clr-namespace:LuckyCurrency.Converter"
              xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              StartupUri="Views/Autorization/Login.xaml">
@@ -13,7 +14,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
+            <cnv:ValuesToObject x:Key="ValuesToObject"/>
+
             <Style x:Key="BuyOrSell">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Trades[0].Side}" Value="Buy">

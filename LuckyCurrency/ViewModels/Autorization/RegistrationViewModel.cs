@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace LuckyCurrency.ViewModels.Autorization
@@ -77,6 +78,11 @@ namespace LuckyCurrency.ViewModels.Autorization
         private bool CanRegistrationCommandExecute(object p) => true;
         private void OnRegistrationCommandExecuted(object p)
         {
+            var values = (object[])p;
+            var password = values[0] as PasswordBox;
+            var privateKey = values[1] as PasswordBox;
+            Password = password.Password;
+            PrivateAPI_Key = privateKey.Password;
             Registration();
         }
         #endregion
