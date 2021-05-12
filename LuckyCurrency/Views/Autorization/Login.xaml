@@ -10,10 +10,6 @@
         mc:Ignorable="d"
         Title="Login" Height="450" Width="340">
 
-    <Window.DataContext>
-        <vm:LoginViewModel/>
-    </Window.DataContext>
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -31,7 +27,7 @@
             </StackPanel>
             <StackPanel Margin="0 10">
                 <TextBlock>Password</TextBlock>
-                <PasswordBox x:Name="PasswordBox" ></PasswordBox>
+                <PasswordBox x:Name="PasswordBox"></PasswordBox>
             </StackPanel>
             <Button x:Name="EnterButton" 
                     Margin="0 15"
