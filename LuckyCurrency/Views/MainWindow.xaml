@@ -20,10 +20,6 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
-
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <ComboBox SelectedItem="{Binding Path=SelectedSymbol}"

@@ -6,7 +6,7 @@
              xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              DispatcherUnhandledException="Application_DispatcherUnhandledException"
-             StartupUri="Views/MainWindow.xaml">
+             StartupUri="Views/Autorization/Login.xaml">
 
     <Application.Resources>
         <ResourceDictionary>

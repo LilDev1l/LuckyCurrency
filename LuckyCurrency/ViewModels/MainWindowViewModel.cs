@@ -456,7 +456,7 @@ namespace LuckyCurrency.ViewModels
 
         #endregion
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(API_Key api_key)
         {
             #region Команды
             ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
@@ -474,8 +474,8 @@ namespace LuckyCurrency.ViewModels
             #endregion
 
             Bybit.SetCultureUS();
-/*            Bybit.SetAPI_Key(api_key.PublicKey);
-            Bybit.SetAPI_Key(api_key.SecretKey);*/
+            Bybit.SetAPI_Key(api_key.PublicKey);
+            Bybit.SetSecret_Key(api_key.SecretKey);
         }
 
         #region HTTP

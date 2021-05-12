@@ -16,7 +16,9 @@ namespace LuckyCurrency.ViewModels.Autorization
 {
     class AutorizationViewModel : ViewModel
     {
-        private UnitOfWork dbWorker;
+        private UnitOfWork _dbWorker;
+
+        #region Models
 
         #region Login
         private string _login;
@@ -43,6 +45,8 @@ namespace LuckyCurrency.ViewModels.Autorization
             get => _infoMessage;
             set => Set(ref _infoMessage, value);
         }
+        #endregion
+
         #endregion
 
         #region Команды
@@ -76,7 +80,7 @@ namespace LuckyCurrency.ViewModels.Autorization
             SwitchToRegistrationCommand = new LambdaCommand(OnSwitchToRegistrationCommandExecuted, CanSwitchToRegistrationCommandExecute);
             #endregion
 
-            dbWorker = new UnitOfWork();
+            _dbWorker = new UnitOfWork();
         }
 
         private void LoginFunc()
@@ -84,10 +88,10 @@ namespace LuckyCurrency.ViewModels.Autorization
             if (IsFieldsNotEmpty())
             {
                 string passwordHash = PasswordHasher.GetHash(Password);
-                var user = dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == passwordHash);
+                var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == passwordHash);
                 if (user != null)
                 {
-                    SwitchTo(GetMainWindow(dbWorker.API_Keys.Get(user.Id)));
+                    SwitchTo(GetMainWindow(_dbWorker.API_Keys.Get(user.Id)));
                 }
                 else
                 {
@@ -105,12 +109,10 @@ namespace LuckyCurrency.ViewModels.Autorization
             return !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(Login);
         }
 
-        //factory methods for window
-        private MainWindow GetMainWindow(API_Key apy_key)
+        private MainWindow GetMainWindow(API_Key api_key)
         {
-            MainWindow clientMainWindow = new MainWindow();
-            //MainWindowViewModel clientMainViewModel = new MainWindowViewModel(apy_key);
-            //clientMainWindow.DataContext = clientMainViewModel;
+            MainWindow clientMainWindow = new MainWindow(api_key);
+
             return clientMainWindow;
         }
     }
