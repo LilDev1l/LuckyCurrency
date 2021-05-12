@@ -14,10 +14,10 @@ using System.Windows.Input;
 
 namespace LuckyCurrency.ViewModels.Autorization
 {
-    class AutorizationViewModel : ViewModel
+    class LoginViewModel : ViewModel
     {
         private UnitOfWork _dbWorker;
-
+        
         #region Models
 
         #region Login
@@ -67,13 +67,13 @@ namespace LuckyCurrency.ViewModels.Autorization
         private bool CanSwitchToRegistrationCommandExecute(object p) => true;
         private void OnSwitchToRegistrationCommandExecuted(object p)
         {
-            //SwitchTo(new Registration());
+            SwitchTo(new Registration());
         }
         #endregion
 
         #endregion
 
-        public AutorizationViewModel()
+        public LoginViewModel()
         {
             #region Команды
             LoginCommand = new LambdaCommand(OnLoginCommandExecuted, CanLoginCommandExecute);
@@ -92,6 +92,7 @@ namespace LuckyCurrency.ViewModels.Autorization
                 if (user != null)
                 {
                     SwitchTo(GetMainWindow(_dbWorker.API_Keys.Get(user.Id)));
+                    Close();
                 }
                 else
                 {

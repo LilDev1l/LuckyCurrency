@@ -22,6 +22,7 @@ namespace LuckyCurrency
         public MainWindow(API_Key api_key)
         {
             DataContext = new MainWindowViewModel(api_key);
+
             InitializeComponent();
         }
     }

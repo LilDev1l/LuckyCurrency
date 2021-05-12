@@ -180,7 +180,7 @@
     <Compile Include="Services\Models\Trade\TradeData.cs" />
     <Compile Include="Services\UnitOfWork.cs" />
     <Compile Include="Services\UserRepository.cs" />
-    <Compile Include="ViewModels\Autorization\AutorizationViewModel.cs" />
+    <Compile Include="ViewModels\Autorization\LoginViewModel.cs" />
     <Compile Include="ViewModels\Autorization\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

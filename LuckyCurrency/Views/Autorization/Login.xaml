@@ -11,7 +11,7 @@
         Title="Login" Height="420" Width="340">
 
     <Window.DataContext>
-        <vm:AutorizationViewModel/>
+        <vm:LoginViewModel/>
     </Window.DataContext>
     
     <Grid>

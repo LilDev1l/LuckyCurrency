@@ -5,8 +5,8 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             DispatcherUnhandledException="Application_DispatcherUnhandledException"
              StartupUri="Views/Autorization/Login.xaml">
+    <!--dispatcherunhandledexception="application_dispatcherunhandledexception"-->
 
     <Application.Resources>
         <ResourceDictionary>

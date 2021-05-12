@@ -23,6 +23,10 @@ namespace LuckyCurrency.Views.Autorization
         public Registration()
         {
             InitializeComponent();
+
+            RegistrationViewModel vm = new RegistrationViewModel();
+            DataContext = vm;
+            vm.Close = new Action(this.Close);
         }
 
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
