@@ -1,0 +1,51 @@
+﻿<Window x:Class="LuckyCurrency.Views.Autorization.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LuckyCurrency.Views.Autorization"
+        xmlns:vm="clr-namespace:LuckyCurrency.ViewModels.Autorization"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Login" Height="420" Width="340">
+
+    <Window.DataContext>
+        <vm:AutorizationViewModel/>
+    </Window.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="0 15" >
+            <TextBlock FontSize="32" Margin="0 15" HorizontalAlignment="Center">LuckyCurrency</TextBlock>
+            <TextBlock FontSize="12"  HorizontalAlignment="Center" Text="{Binding InfoMessage}"></TextBlock>
+            <StackPanel Margin="0 10" >
+                <TextBlock>Логин</TextBlock>
+                <TextBox x:Name="LoginBox" Text="{Binding Login}"></TextBox>
+            </StackPanel>
+            <StackPanel Margin="0 10">
+                <TextBlock>Пароль</TextBlock>
+                <PasswordBox x:Name="PasswordBox" ></PasswordBox>
+            </StackPanel>
+            <Button x:Name="EnterButton" 
+                    Margin="0 15"
+                    Command="{Binding LoginCommand }"
+                    CommandParameter="{Binding ElementName=PasswordBox}"
+                    >
+                <Button.Content>
+                    <TextBlock>Войти</TextBlock>
+                </Button.Content>
+            </Button>
+            <StackPanel Margin="0 5">
+                <Button Command="{Binding SwitchToRegistrationCommand}">
+                    <TextBlock>Регистрация</TextBlock>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

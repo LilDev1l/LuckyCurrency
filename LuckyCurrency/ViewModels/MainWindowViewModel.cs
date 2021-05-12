@@ -30,6 +30,7 @@ using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
 using ToastNotifications.Messages;
+using LuckyCurrency.Models.DB;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -472,7 +473,9 @@ namespace LuckyCurrency.ViewModels
             CoercePriceCommand = new LambdaCommand(OnCoercePriceCommandExecuted, CanCoercePriceCommandExecute);
             #endregion
 
-            Bybit.SetCultureUS(); 
+            Bybit.SetCultureUS();
+/*            Bybit.SetAPI_Key(api_key.PublicKey);
+            Bybit.SetAPI_Key(api_key.SecretKey);*/
         }
 
         #region HTTP

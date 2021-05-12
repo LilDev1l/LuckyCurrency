@@ -5,7 +5,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             StartupUri="Views/Windows/MainWindow.xaml">
+             StartupUri="Views/MainWindow.xaml">
 
     <Application.Resources>
         <ResourceDictionary>

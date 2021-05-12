@@ -30,8 +30,17 @@ namespace LuckyCurrency.Services
         public static long Duration { get; set; } 
         public static event Action<string> NewMessage;
 
-        private static string api_key = "QIqhha0rxn2MsE9RVy";
-        private static string secret = "DdG6XxKhIbchVRvEFmFOyazlyRCnqESGA1Pa";
+        private static string _api_key = "QIqhha0rxn2MsE9RVy";
+        private static string _secret_key = "DdG6XxKhIbchVRvEFmFOyazlyRCnqESGA1Pa";
+
+        public static void SetAPI_Key(string api_key)
+        {
+            _api_key = api_key;
+        }
+        public static void SetSecret_Key(string secret_key)
+        {
+            _secret_key = secret_key;
+        }
 
         #region Статический конструктор
         static Bybit()
@@ -44,9 +53,9 @@ namespace LuckyCurrency.Services
         public static void RunBybitWS()
         {
             long expires = DateTime.Now.Ticks + 1000;
-            string signature = Authentication.CreateSignature(secret, "GET/realtime" + expires);
+            string signature = Authentication.CreateSignature(_secret_key, "GET/realtime" + expires);
             _wsPublic = new WebsocketClient(new Uri("wss://stream.bytick.com/realtime_public"));
-            _wsPrivate = new WebsocketClient(new Uri($"wss://stream.bytick.com/realtime_private?api_key={api_key}&expires={expires}&signature={signature}"));
+            _wsPrivate = new WebsocketClient(new Uri($"wss://stream.bytick.com/realtime_private?_api_key={_api_key}&expires={expires}&signature={signature}"));
             _wsPublic.MessageReceived.Subscribe(message =>
             {
                 NewMessage(message.Text);
@@ -164,8 +173,8 @@ namespace LuckyCurrency.Services
         public static BalanceBase GetBalanceBase(string coin)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
-            Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&coin={coin}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("_api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"_api_key={_api_key}&coin={coin}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new WalletApi();
@@ -179,8 +188,8 @@ namespace LuckyCurrency.Services
         public static PositionBase GetPositionBase(string symbol)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
-            Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("_api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"_api_key={_api_key}&symbol={symbol}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearPositionsApi();
@@ -198,8 +207,8 @@ namespace LuckyCurrency.Services
             if (orderStatus != null)
                 tempOrderStatus = "&order_status=" + orderStatus;
             
-            Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}{tempOrderStatus}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("_api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"_api_key={_api_key}{tempOrderStatus}&symbol={symbol}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearOrderApi();
@@ -213,8 +222,8 @@ namespace LuckyCurrency.Services
         public static OrderBase CancelOrder(string symbol, string orderId)
         {
             long timestamp = GetTimeServer(Time.MiliSeconds);
-            Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&order_id={orderId}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("_api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"_api_key={_api_key}&order_id={orderId}&symbol={symbol}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearOrderApi();
@@ -240,8 +249,8 @@ namespace LuckyCurrency.Services
             if (price != null)
                 tempPrice = "&price=" + price;
 
-            Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}&close_on_trigger={close_on_trigger}&order_type={order_type}{tempPrice}&qty={qty}&reduce_only={reduce_only}&side={side}&symbol={symbol}&time_in_force={time_in_force}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("_api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"_api_key={_api_key}&close_on_trigger={close_on_trigger}&order_type={order_type}{tempPrice}&qty={qty}&reduce_only={reduce_only}&side={side}&symbol={symbol}&time_in_force={time_in_force}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearOrderApi();
@@ -259,8 +268,8 @@ namespace LuckyCurrency.Services
             if (exec_type != null)
                 tempExec_type = "&exec_type=" + exec_type;
 
-            Configuration.Default.AddApiKey("api_key", api_key);
-            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(secret, $"api_key={api_key}{tempExec_type}&symbol={symbol}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("_api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"_api_key={_api_key}{tempExec_type}&symbol={symbol}&timestamp={timestamp}"));
             Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
 
             var apiInstance = new LinearPositionsApi();
