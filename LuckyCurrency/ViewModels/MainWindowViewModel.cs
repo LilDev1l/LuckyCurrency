@@ -31,6 +31,7 @@ using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
 using ToastNotifications.Messages;
 using LuckyCurrency.Models.DB;
+using System.Windows;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -41,8 +42,15 @@ namespace LuckyCurrency.ViewModels
         #region Уведомления
         public Notifier Notifier { get; set; } = new Notifier(cfg =>
          {
+             Window window = null;
+             foreach(var win in App.Current.Windows)
+             {
+                 if (win is MainWindow main)
+                     window = main;
+             }
+
              cfg.PositionProvider = new WindowPositionProvider(
-                 parentWindow: App.Current.MainWindow,
+                 parentWindow: window,
                  corner: Corner.BottomRight,
                  offsetX: 10,
                  offsetY: 10);
