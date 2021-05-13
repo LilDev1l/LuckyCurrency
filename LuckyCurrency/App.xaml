@@ -14,8 +14,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <cnv:ValuesToObject x:Key="ValuesToObject"/>
+            
+            <cnv:TemplateConverter x:Key="TemplateConverter"/>
 
             <Style x:Key="BuyOrSell">
                 <Style.Triggers>

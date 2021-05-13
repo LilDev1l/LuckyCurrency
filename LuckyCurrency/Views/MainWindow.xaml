@@ -76,7 +76,7 @@
                 </fc:CandleChart.LegendText>
             </fc:CandleChart>
 
-            <Grid Grid.Column="1" Grid.Row="0">
+            <Grid Grid.Column="1" Grid.Row="0" Height="332" VerticalAlignment="Bottom">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="2*"/>
@@ -100,9 +100,25 @@
                           CellStyle="{StaticResource DataGridCellRight}">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Foreground="Red" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
+                        <DataGridTextColumn Foreground="Red" Header="Price" Width="auto">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <Binding Path="Price"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*"  
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <Binding Path="Quantity"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
                 
@@ -114,9 +130,25 @@
                           CellStyle="{StaticResource DataGridCellRight}">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Foreground="Green" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*" Binding="{Binding Path=Quantity, StringFormat={}{0:0.00}}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
+                        <DataGridTextColumn Foreground="Green" Header="Price" Width="auto">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <Binding Path="Price"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <Binding Path="Quantity"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
                 <DataGrid Grid.Row="2" Grid.ColumnSpan="2"
@@ -126,10 +158,26 @@
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
                           CellStyle="{StaticResource DataGridCellRight}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Price" Width="auto" Binding="{Binding Path=Price, StringFormat={}{0:0.00}}"/>
-                        
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Qty" Width="*" Binding="{Binding Path=Size, StringFormat={}{0:0.00}}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Price" Width="auto">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <Binding Path="Price"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Qty" Width="*"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <Binding Path="Size"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
                         
                         <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
@@ -166,10 +214,34 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
-                            <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=Size, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Qty" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Size"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Path=Position_value, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Entry Price" Width="*" Binding="{Binding Path=Entry_price, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Liq. Price" Width="*" Binding="{Binding Path=Liq_price, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Entry Price" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Entry_price"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Liq. Price" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Liq_price"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Position Margin" Width="auto" Binding="{Binding Path=Position_margin, StringFormat={}{0:0.0000}}"/>
                             <DataGridTemplateColumn Header="Action" Width="auto">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -191,8 +263,24 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
-                            <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=Qty, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Order Price" Width="*" Binding="{Binding Path=Price, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Qty" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Qty"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Order Price" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Price"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Order Type" Width="*" Binding="{Binding Path=Order_type}"/>
                             <DataGridTextColumn Header="Order Time" Width="120" Binding="{Binding Path=Create_time, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                             <DataGridTemplateColumn Header="Action" Width="auto">
@@ -215,10 +303,34 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
-                            <DataGridTextColumn Header="Qty" Width="*" Binding="{Binding Path=Qty, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Entry Price" Width="*" Binding="{Binding Path=Avg_entry_price, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Exit Price" Width="*" Binding="{Binding Path=Avg_exit_price, StringFormat={}{0:0.0000}}"/>
-                            <DataGridTextColumn Header="Closed P&amp;L" Width="*" Binding="{Binding Path=Closed_pnl, StringFormat={}{0:0.00}}"/>
+                            <DataGridTextColumn Header="Qty" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Qty"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Entry Price" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Avg_entry_price"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Exit Price" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                        <Binding Path="Avg_exit_price"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.price_scale"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Closed P&amp;L" Width="*" Binding="{Binding Path=Closed_pnl, StringFormat={}{0:0.0000}}"/>
                             <DataGridTextColumn Header="Trade Time" Width="auto" Binding="{Binding Path=Created_at, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -256,11 +368,6 @@
                                                             Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
                                                             FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
                                                             Style="{StaticResource DecimalUpDownStyle1}">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="ValueChanged">
-                                                    <i:InvokeCommandAction Command="{Binding Path=CoerceQtyCommandCommand}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
                                         </xctk:DecimalUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>

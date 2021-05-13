@@ -5,9 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace LuckyCurrency.Converter
 {
+    public class ValuesToObjectExtension : MarkupExtension
+    {
+        public override object ProvideValue(IServiceProvider serviceProvider)
+            => new ValuesToObject();
+    }
+
     class ValuesToObject : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)

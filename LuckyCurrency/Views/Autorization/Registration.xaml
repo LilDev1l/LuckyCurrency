@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cnv="clr-namespace:LuckyCurrency.Converter"
         xmlns:local="clr-namespace:LuckyCurrency.Views.Autorization"
         xmlns:vm="clr-namespace:LuckyCurrency.ViewModels.Autorization"
         ResizeMode="NoResize"
@@ -41,7 +42,7 @@
             <Button Margin="0 10"
                     Command="{Binding RegistrationCommand}">
                 <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource ValuesToObject}">
+                    <MultiBinding Converter="{cnv:ValuesToObject}">
                         <Binding ElementName="PasswordBox"/>
                         <Binding ElementName="PrivateAPI_Key"/>
                     </MultiBinding>
