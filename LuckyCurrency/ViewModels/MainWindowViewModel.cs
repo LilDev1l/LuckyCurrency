@@ -291,7 +291,14 @@ namespace LuckyCurrency.ViewModels
                 }
                 else
                 {
-                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                    if (orderBase.ret_code == 130021)
+                    {
+                        Notifier.ShowError($"Order submission failed\n\norder cost not available");
+                    }
+                    else
+                    {
+                        Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                    }
                 }
             }
         }
