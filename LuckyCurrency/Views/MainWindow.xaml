@@ -30,7 +30,7 @@
                         <i:InvokeCommandAction Command="{Binding Path=ChangeSymbolCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <ComboBoxItem Content="BTCUSDT" IsSelected="True"/>
+                <ComboBoxItem Content="BTCUSDT"/>
                 <ComboBoxItem Content="ETHUSDT"/>
                 <ComboBoxItem Content="BCHUSDT"/>
                 <ComboBoxItem Content="LTCUSDT"/>
@@ -49,7 +49,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <ComboBoxItem Content="1"/>
-                <ComboBoxItem Content="15" IsSelected="True"/>
+                <ComboBoxItem Content="15"/>
                 <ComboBoxItem Content="30"/>
                 <ComboBoxItem Content="1h"/>
                 <ComboBoxItem Content="4h"/>
@@ -211,13 +211,25 @@
                 <GroupBox Header="Balance">
                     <StackPanel>
                         <DockPanel LastChildFill="True">
-                            <TextBlock DockPanel.Dock="Right"
-                                       Text="{Binding Path=Balance.WalletBalance, StringFormat={}{0:0.0000}}"/>
+                            <TextBlock DockPanel.Dock="Right">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:0.0000} {1}">
+                                        <Binding Path="Balance.WalletBalance"/>
+                                        <Binding Path="CurrentSymbol.quote_currency"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                             <TextBlock>Wallet Bal.</TextBlock>
                         </DockPanel>
                         <DockPanel LastChildFill="True">
-                            <TextBlock DockPanel.Dock="Right"
-                                       Text="{Binding Path=Balance.AvailableBalance, StringFormat={}{0:0.0000}}"/>
+                            <TextBlock DockPanel.Dock="Right">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:0.0000} {1}">
+                                        <Binding Path="Balance.AvailableBalance"/>
+                                        <Binding Path="CurrentSymbol.quote_currency"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                             <TextBlock>Available Bal.</TextBlock>
                         </DockPanel>
                     </StackPanel>

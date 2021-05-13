@@ -67,7 +67,7 @@ namespace LuckyCurrency.ViewModels
         private string _selectedSymbol = "BTCUSDT";
         public string SelectedSymbol
         {
-            get => SelectedSymbol;
+            get => _selectedSymbol;
             set => Set(ref _selectedSymbol, value);
         }
         #endregion
