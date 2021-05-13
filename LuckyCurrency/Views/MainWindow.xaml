@@ -76,7 +76,7 @@
                 </fc:CandleChart.LegendText>
             </fc:CandleChart>
 
-            <Grid Grid.Column="1" Grid.Row="0" Height="332" VerticalAlignment="Bottom">
+            <Grid Grid.Column="1" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="2*"/>
