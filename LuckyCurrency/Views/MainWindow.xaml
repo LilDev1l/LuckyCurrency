@@ -22,14 +22,15 @@
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <ComboBox SelectedItem="{Binding Path=SelectedSymbol}"
+            <ComboBox SelectedValuePath="Content"
+                      SelectedValue="{Binding Path=SelectedSymbol}"
                       IsEnabled="{Binding WsRun}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding Path=ChangeSymbolCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <ComboBoxItem  Content="BTCUSDT" IsSelected="True"/>
+                <ComboBoxItem Content="BTCUSDT" IsSelected="True"/>
                 <ComboBoxItem Content="ETHUSDT"/>
                 <ComboBoxItem Content="BCHUSDT"/>
                 <ComboBoxItem Content="LTCUSDT"/>
@@ -39,7 +40,8 @@
                 <ComboBoxItem Content="DOTUSDT"/>
                 <ComboBoxItem Content="UNIUSDT"/>
             </ComboBox>
-            <ComboBox SelectedItem="{Binding Path=SelectedTimeframe}"
+            <ComboBox SelectedValuePath="Content"
+                      SelectedValue="{Binding Path=SelectedTimeframe}"
                       IsEnabled="{Binding WsRun}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
