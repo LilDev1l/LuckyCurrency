@@ -1,11 +1,12 @@
-﻿using LuckyCurrency.Models.DB;
+﻿using LuckyCurrency.Data.Repositories;
+using LuckyCurrency.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Services
+namespace LuckyCurrency.Data
 {
     class UnitOfWork : IDisposable
     {

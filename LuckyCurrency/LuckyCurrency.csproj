@@ -139,11 +139,11 @@
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\PositionClosePnl.cs" />
-    <Compile Include="Services\AccountRepository.cs" />
-    <Compile Include="Services\API_KeyRepository.cs" />
+    <Compile Include="Data\Repositories\AccountRepository.cs" />
+    <Compile Include="Data\Repositories\API_KeyRepository.cs" />
     <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
-    <Compile Include="Services\IDataService.cs" />
+    <Compile Include="Data\IDataService.cs" />
     <Compile Include="Services\Models\BalanceWS\BalanceWSBase.cs" />
     <Compile Include="Services\Models\BalanceWS\BalanceWSData.cs" />
     <Compile Include="Services\Models\Balance\BalanceBase.cs" />
@@ -180,8 +180,8 @@
     <Compile Include="Services\Models\Symbol\SymbolData.cs" />
     <Compile Include="Services\Models\Trade\TradeBase.cs" />
     <Compile Include="Services\Models\Trade\TradeData.cs" />
-    <Compile Include="Services\UnitOfWork.cs" />
-    <Compile Include="Services\UserRepository.cs" />
+    <Compile Include="Data\UnitOfWork.cs" />
+    <Compile Include="Data\Repositories\UserRepository.cs" />
     <Compile Include="ViewModels\Autorization\LoginViewModel.cs" />
     <Compile Include="ViewModels\Autorization\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
@@ -247,9 +247,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

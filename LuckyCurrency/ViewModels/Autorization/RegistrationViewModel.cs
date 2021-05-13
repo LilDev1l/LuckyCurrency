@@ -1,4 +1,5 @@
-﻿using LuckyCurrency.Hasher;
+﻿using LuckyCurrency.Data;
+using LuckyCurrency.Hasher;
 using LuckyCurrency.Infrastructure.Commands;
 using LuckyCurrency.Models.DB;
 using LuckyCurrency.Services;

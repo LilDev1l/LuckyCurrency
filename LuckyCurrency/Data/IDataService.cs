@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Services
+namespace LuckyCurrency.Data
 {
     interface IDataService<T>
     {
