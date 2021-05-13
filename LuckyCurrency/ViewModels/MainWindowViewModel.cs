@@ -64,16 +64,16 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region Торговая пара
-        private string _selectedPair;
+        private string _selectedSymbol = "BTCUSDT";
         public string SelectedSymbol
         {
-            get => _selectedPair;
-            set => Set(ref _selectedPair, value);
+            get => SelectedSymbol;
+            set => Set(ref _selectedSymbol, value);
         }
         #endregion
 
         #region Таймфрейм
-        private string _selectedTimeframe;
+        private string _selectedTimeframe = "15";
         public string SelectedTimeframe
         {
             get => _selectedTimeframe;

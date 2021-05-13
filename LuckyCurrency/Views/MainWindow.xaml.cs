@@ -21,9 +21,11 @@ namespace LuckyCurrency
     {
         public MainWindow(API_Key api_key)
         {
-            DataContext = new MainWindowViewModel(api_key);
-
             InitializeComponent();
+
+            MainWindowViewModel vm = new MainWindowViewModel(api_key);
+            DataContext = vm;
+            vm.Close = new Action(this.Close);
         }
     }
 }
