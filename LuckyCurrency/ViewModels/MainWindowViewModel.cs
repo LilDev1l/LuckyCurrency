@@ -854,6 +854,15 @@ namespace LuckyCurrency.ViewModels
                     if (order.order_status == "Cancelled" || order.order_status == "Filled")
                     {
                         Orders?.Remove(Orders.FirstOrDefault(ord => ord.Order_id == order.order_id));
+
+                        if(order.order_status == "Filled" && order.order_type == "Limit")
+                        {
+                            if (order.side == "Buy")
+                                Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {order.qty} {CurrentSymbol.base_currency} contracts at {order.price} price.");
+                            else
+                                Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {order.qty} {CurrentSymbol.base_currency} contracts at {order.price} price.");
+
+                        }
                     }
                 }
             }
