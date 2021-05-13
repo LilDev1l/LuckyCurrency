@@ -90,7 +90,14 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
                     <fa:ImageAwesome Height="12" Margin="0,0,8,0" Style="{StaticResource BuyOrSell}"/>
-                    <TextBlock Text="{Binding Trades[0].Price, StringFormat={}{0:0.00}}"/>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <Binding Path="LastTrade.Price"/>
+                                <Binding Path="CurrentSymbol.price_scale"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
                 <DataGrid Grid.Row="1" Grid.Column="0"
                           ItemsSource="{Binding Asks}"

@@ -109,12 +109,21 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region Список последних сделок на бирже
+        #region Trades
         private ObservableCollection<Trade> _trades = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> Trades
         {
             get => _trades;
             set => Set(ref _trades, value);
+        }
+        #endregion
+
+        #region LastTrade
+        private Trade _trade;
+        public Trade LastTrade
+        {
+            get => _trade;
+            set => Set(ref _trade, value);
         }
         #endregion
 
@@ -803,9 +812,11 @@ namespace LuckyCurrency.ViewModels
             LastTradeBase lastTradeBase = JsonConvert.DeserializeObject<LastTradeBase>(message);
             List<LastTradeData> lastTrades = lastTradeBase.Data;
 
-            foreach(var lastTrade in lastTrades) 
+            foreach(var lastTradeData in lastTrades) 
             {
-                Trades.Insert(0, new Trade(lastTrade.Price, lastTrade.Size, lastTrade.Timestamp, lastTrade.Tick_direction, lastTrade.Side));
+                Trade lastTrade = new Trade(lastTradeData.Price, lastTradeData.Size, lastTradeData.Timestamp, lastTradeData.Tick_direction, lastTradeData.Side);
+                LastTrade = lastTrade;
+                Trades.Insert(0, lastTrade);
 
                 if (Trades.Count > 25)
                 {
