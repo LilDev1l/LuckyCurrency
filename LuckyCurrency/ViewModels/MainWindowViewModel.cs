@@ -249,6 +249,25 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region SelectedPriceCommand
+        public ICommand SelectedPriceCommand { get; }
+        private bool CanSelectedPriceCommandExecute(object p)
+        {
+            if (p is DataGrid d && d.SelectedItem != null)
+                return true;
+            else
+                return false;
+        }
+        private void OnSelectedPriceCommandExecuted(object p)
+        {
+            if (p is DataGrid d)
+            {
+                PriceOrder = ((OrderBook)d.SelectedItem).Price;
+                d.UnselectAll();
+            }
+        }
+        #endregion
+
         #region CreateOpenLimitOrderCommand
         public ICommand CreateOpenLimitOrderCommand { get; }
         private bool CanCreateOpenLimitOrderCommandExecute(object p) => true;
@@ -454,6 +473,8 @@ namespace LuckyCurrency.ViewModels
             ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
             ChangeTimeframeCommand = new LambdaCommand(OnChangeTimeframeCommandExecuted, CanChangeTimeframeCommandExecute);
             RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
+
+            SelectedPriceCommand = new LambdaCommand(OnSelectedPriceCommandExecuted, CanSelectedPriceCommandExecute);
 
             CreateOpenLimitOrderCommand = new LambdaCommand(OnCreateOpenLimitOrderCommandExecuted, CanCreateOpenLimitOrderCommandExecute);
             CreateOpenMarketOrderCommand = new LambdaCommand(OnCreateOpenMarketOrderCommandExecuted, CanCreateOpenMarketOrderCommandExecute);

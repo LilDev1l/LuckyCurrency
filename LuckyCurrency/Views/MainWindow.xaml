@@ -72,8 +72,8 @@
                             ChartAreaBackground="DarkGray">
                 <fc:CandleChart.LegendText>
                     <MultiBinding StringFormat="{}{0}/{1}">
-                        <Binding Path="SelectedSymbol.Content"/>
-                        <Binding Path="SelectedTimeframe.Content"/>
+                        <Binding Path="SelectedSymbol"/>
+                        <Binding Path="SelectedTimeframe"/>
                     </MultiBinding>
                 </fc:CandleChart.LegendText>
             </fc:CandleChart>
@@ -101,12 +101,19 @@
                         </TextBlock.Text>
                     </TextBlock>
                 </StackPanel>
-                <DataGrid Grid.Row="1" Grid.Column="0"
+                <DataGrid x:Name="DataGrid"
+                          Grid.Row="1" Grid.Column="0"
                           ItemsSource="{Binding Asks}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
                           CellStyle="{StaticResource DataGridCellRight}">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=SelectedPriceCommand}" CommandParameter="{Binding ., RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Red" Header="Price" Width="auto">
@@ -137,6 +144,12 @@
                           IsReadOnly="True"
                           VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
                           CellStyle="{StaticResource DataGridCellRight}">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=SelectedPriceCommand}" CommandParameter="{Binding ., RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Green" Header="Price" Width="auto">
