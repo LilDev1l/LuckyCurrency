@@ -388,8 +388,7 @@
                         <TabControl>
                             <TabItem Header="Limit">
                                 <StackPanel>
-                                    <DockPanel LastChildFill="True"
-                                               Height="25">
+                                    <DockPanel Height="25">
                                         <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding PriceOrder}" CultureInfo="en-US"
                                                             Minimum="{Binding CurrentSymbol.price_filter.min_price}"
                                                             Maximum="{Binding CurrentSymbol.price_filter.max_price}"
@@ -405,8 +404,7 @@
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Price Order</TextBlock>
                                     </DockPanel>
-                                    <DockPanel LastChildFill="True"
-                                               Height="25">
+                                    <DockPanel Height="25">
                                         <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
@@ -416,6 +414,19 @@
                                         </xctk:DecimalUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
+                                    </DockPanel>
+                                    <DockPanel Height="25">
+                                        <TextBlock DockPanel.Dock="Right" 
+                                                   VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource OrderValue}">
+                                                    <Binding Path="PriceOrder"/>
+                                                    <Binding Path="QtyOrder"/>
+                                                    <Binding Path="CurrentSymbol.quote_currency"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                     </DockPanel>
                                     <UniformGrid>
                                         <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Buy">
@@ -429,8 +440,7 @@
                             </TabItem>
                             <TabItem Header="Market">
                                 <StackPanel>
-                                    <DockPanel LastChildFill="True"
-                                               Height="25">
+                                    <DockPanel Height="25">
                                         <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
@@ -441,6 +451,19 @@
                                         </xctk:DecimalUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
+                                    </DockPanel>
+                                    <DockPanel Height="25">
+                                        <TextBlock DockPanel.Dock="Right" 
+                                                   VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource OrderValue}">
+                                                    <Binding Path="LastTrade.Price"/>
+                                                    <Binding Path="QtyOrder"/>
+                                                    <Binding Path="CurrentSymbol.quote_currency"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                     </DockPanel>
                                     <UniformGrid>
                                         <Button Command="{Binding CreateOpenMarketOrderCommand}" CommandParameter="Buy">
@@ -459,8 +482,7 @@
                     <TabControl>
                         <TabItem Header="Limit">
                             <StackPanel>
-                                <DockPanel LastChildFill="True"
-                                               Height="25">
+                                <DockPanel Height="25">
                                     <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding PriceOrder}" CultureInfo="en-US"
                                                             Minimum="{Binding CurrentSymbol.price_filter.min_price}"
                                                             Maximum="{Binding CurrentSymbol.price_filter.max_price}"
@@ -476,8 +498,7 @@
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Price Order</TextBlock>
                                 </DockPanel>
-                                <DockPanel LastChildFill="True"
-                                               Height="25">
+                                <DockPanel Height="25">
                                     <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
@@ -488,6 +509,19 @@
                                     </xctk:DecimalUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
+                                </DockPanel>
+                                <DockPanel Height="25">
+                                    <TextBlock DockPanel.Dock="Right" 
+                                                   VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource OrderValue}">
+                                                <Binding Path="PriceOrder"/>
+                                                <Binding Path="QtyOrder"/>
+                                                <Binding Path="CurrentSymbol.quote_currency"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                 </DockPanel>
                                 <UniformGrid>
                                     <Button Command="{Binding CreateCloseLimitOrderCommand}" CommandParameter="Sell">
@@ -501,8 +535,7 @@
                         </TabItem>
                         <TabItem Header="Market">
                             <StackPanel>
-                                <DockPanel LastChildFill="True"
-                                               Height="25">
+                                <DockPanel Height="25">
                                     <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
@@ -513,6 +546,19 @@
                                     </xctk:DecimalUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
+                                </DockPanel>
+                                <DockPanel Height="25">
+                                    <TextBlock DockPanel.Dock="Right" 
+                                                   VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource OrderValue}">
+                                                <Binding Path="LastTrade.Price"/>
+                                                <Binding Path="QtyOrder"/>
+                                                <Binding Path="CurrentSymbol.quote_currency"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                 </DockPanel>
                                 <UniformGrid>
                                     <Button Command="{Binding CreateCloseMarketOrderCommand}" CommandParameter="Sell">

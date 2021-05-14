@@ -129,6 +129,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\OrderValue.cs" />
     <Compile Include="Converter\TemplateConverter.cs" />
     <Compile Include="Converter\ValuesToObject.cs" />
     <Compile Include="Hasher\PasswordHasher.cs" />

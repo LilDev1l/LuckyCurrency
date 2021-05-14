@@ -16,6 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
             
             <cnv:TemplateConverter x:Key="TemplateConverter"/>
+            <cnv:OrderValue x:Key="OrderValue"/>
 
             <Style x:Key="BuyOrSell">
                 <Style.Triggers>
