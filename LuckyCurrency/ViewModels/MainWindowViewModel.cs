@@ -442,7 +442,7 @@ namespace LuckyCurrency.ViewModels
         private bool CanCoercePriceCommandExecute(object p) => true;
         private void OnCoercePriceCommandExecuted(object p)
         {
-            if ((int)(PriceOrder * 100000) % (int)(CurrentSymbol.price_filter.tick_size * 100000) == 0)
+            if ((int)(PriceOrder * 10000) % (int)(CurrentSymbol.price_filter.tick_size * 10000) == 0)
                 return;
             else
             {
