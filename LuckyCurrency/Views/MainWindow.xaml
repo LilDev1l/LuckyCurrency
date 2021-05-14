@@ -12,8 +12,8 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="MainWindow" 
-        Height="550" Width="950"
-        MinHeight="550" MinWidth="950">
+        Height="550" Width="1100"
+        MinHeight="550" MinWidth="1100">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding Path=RunWSCommand}"/>
@@ -21,8 +21,15 @@
     </i:Interaction.Triggers>
 
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <ComboBox SelectedValuePath="Content"
+        <Grid DockPanel.Dock="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <ComboBox Grid.Row="0" 
+                      SelectedValuePath="Content"
                       SelectedValue="{Binding Path=SelectedSymbol}"
                       IsEnabled="{Binding WsRun}">
                 <i:Interaction.Triggers>
@@ -40,7 +47,8 @@
                 <ComboBoxItem Content="DOTUSDT"/>
                 <ComboBoxItem Content="UNIUSDT"/>
             </ComboBox>
-            <ComboBox SelectedValuePath="Content"
+            <ComboBox Grid.Row="1"
+                      SelectedValuePath="Content"
                       SelectedValue="{Binding Path=SelectedTimeframe}"
                       IsEnabled="{Binding WsRun}">
                 <i:Interaction.Triggers>
@@ -55,7 +63,9 @@
                 <ComboBoxItem Content="4h"/>
                 <ComboBoxItem Content="D"/>
             </ComboBox>
-        </StackPanel>
+            <Button Grid.Row="2" VerticalAlignment="Bottom"
+                    Command="{Binding SwitchToLoginCommand}">Log Out</Button>
+        </Grid>
         <Grid ShowGridLines="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>

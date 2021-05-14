@@ -32,6 +32,7 @@ using ToastNotifications.Position;
 using ToastNotifications.Messages;
 using LuckyCurrency.Models.DB;
 using System.Windows;
+using LuckyCurrency.Views.Autorization;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -246,6 +247,15 @@ namespace LuckyCurrency.ViewModels
 
                 Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{SelectedSymbol}\"]}}");
             });
+        }
+        #endregion
+
+        #region SwitchToLoginCommand
+        public ICommand SwitchToLoginCommand { get; }
+        private bool CanSwitchToLoginCommandExecute(object p) => true;
+        private void OnSwitchToLoginCommandExecuted(object p)
+        {
+            SwitchTo(new Login());
         }
         #endregion
 
@@ -473,6 +483,8 @@ namespace LuckyCurrency.ViewModels
             ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
             ChangeTimeframeCommand = new LambdaCommand(OnChangeTimeframeCommandExecuted, CanChangeTimeframeCommandExecute);
             RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
+
+            SwitchToLoginCommand = new LambdaCommand(OnSwitchToLoginCommandExecuted, CanSwitchToLoginCommandExecute);
 
             SelectedPriceCommand = new LambdaCommand(OnSelectedPriceCommandExecuted, CanSelectedPriceCommandExecute);
 
