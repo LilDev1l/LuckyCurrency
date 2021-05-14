@@ -14,10 +14,11 @@ using LuckyCurrency.Models.DB;
 using System.Linq;
 using LuckyCurrency.Hasher;
 using LuckyCurrency.ViewModels;
+using MahApps.Metro.Controls;
 
 namespace LuckyCurrency
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow(API_Key api_key)
         {
