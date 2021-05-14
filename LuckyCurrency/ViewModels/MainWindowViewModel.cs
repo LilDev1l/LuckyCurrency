@@ -40,6 +40,15 @@ namespace LuckyCurrency.ViewModels
     {
         #region Models
 
+        #region Title
+        private string _title = "LuckyCurrency";
+        public string Title
+        {
+            get => _title;
+            set => Set(ref _title, value);
+        }
+        #endregion
+
         #region Уведомления
         public Notifier Notifier { get; set; } = new Notifier(cfg =>
          {

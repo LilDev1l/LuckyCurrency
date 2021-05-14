@@ -25,6 +25,15 @@ namespace LuckyCurrency.ViewModels.Autorization
 
         #region Models
 
+        #region Title
+        private string _title = "LuckyCurrency";
+        public string Title
+        {
+            get => _title;
+            set => Set(ref _title, value);
+        }
+        #endregion
+
         #region Login
         private string _login;
         public string Login

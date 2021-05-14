@@ -11,7 +11,8 @@
         xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="{Binding Title}" 
+        WindowStartupLocation="CenterScreen"
         Height="550" Width="1100"
         MinHeight="550" MinWidth="1100">
     <i:Interaction.Triggers>

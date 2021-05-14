@@ -8,7 +8,7 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="340">
+        Title="{Binding Title}" Height="450" Width="340">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,7 +19,7 @@
                     VerticalAlignment="Top"
                     Margin="0 15"
                     Width="210">
-            <TextBlock FontSize="32" Margin="0 15" HorizontalAlignment="Center">LuckyCurrency</TextBlock>
+            <TextBlock FontSize="32" Margin="0 15" HorizontalAlignment="Center" Text="{Binding Title}"/>
             <TextBlock FontSize="12"  HorizontalAlignment="Center" Text="{Binding InfoMessage}"></TextBlock>
             <StackPanel Margin="0 10" >
                 <TextBlock>Login</TextBlock>
