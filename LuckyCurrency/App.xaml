@@ -18,6 +18,15 @@
             <cnv:TemplateConverter x:Key="TemplateConverter"/>
             <cnv:OrderValue x:Key="OrderValue"/>
 
+            <Style x:Key="IsMouseOver"
+                   TargetType="fa:ImageAwesome">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="Gray"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="BuyOrSell">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding LastTrade.Side}" Value="Buy">

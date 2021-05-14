@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -61,6 +62,23 @@ namespace LuckyCurrency.ViewModels.Autorization
 
         #region Команды
 
+        #region CloseCommand
+        public ICommand CloseCommand { get; }
+        private bool CanCloseCommandExecute(object p) => true;
+        private void OnCloseCommandExecuted(object p)
+        {
+            App.Current.MainWindow.Close();
+        }
+        #endregion
+        #region MinimizedCommand
+        public ICommand MinimizedCommand { get; }
+        private bool CanMinimizedCommandExecute(object p) => true;
+        private void OnMinimizedCommandExecuted(object p)
+        {
+            App.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
+        #endregion
+
         #region LoginCommand
         public ICommand LoginCommand { get; }
         private bool CanLoginCommandExecute(object p) => true;
@@ -86,6 +104,9 @@ namespace LuckyCurrency.ViewModels.Autorization
         public LoginViewModel()
         {
             #region Команды
+            CloseCommand = new LambdaCommand(OnCloseCommandExecuted, CanCloseCommandExecute);
+            MinimizedCommand = new LambdaCommand(OnMinimizedCommandExecuted, CanMinimizedCommandExecute);
+
             LoginCommand = new LambdaCommand(OnLoginCommandExecuted, CanLoginCommandExecute);
             SwitchToRegistrationCommand = new LambdaCommand(OnSwitchToRegistrationCommandExecuted, CanSwitchToRegistrationCommandExecute);
             #endregion
