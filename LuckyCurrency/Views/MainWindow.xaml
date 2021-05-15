@@ -137,8 +137,9 @@
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*"  
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}">
+                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
+                                            CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource TemplateConverter}">
                                     <Binding Path="Quantity"/>
@@ -154,8 +155,7 @@
                           ItemsSource="{Binding Bids}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
-                          CellStyle="{StaticResource DataGridCellRight}">
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
@@ -164,7 +164,7 @@
                     </i:Interaction.Triggers>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Foreground="Green" Header="Price" Width="auto">
+                        <DataGridTextColumn Foreground="Green" Header="Price">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource TemplateConverter}">
                                     <Binding Path="Price"/>
@@ -174,7 +174,8 @@
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
                         <DataGridTextColumn Foreground="Green" Header="Qty" Width="*"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}">
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
+                                            CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource TemplateConverter}">
                                     <Binding Path="Quantity"/>
@@ -189,8 +190,7 @@
                           ItemsSource="{Binding Trades}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
-                          CellStyle="{StaticResource DataGridCellRight}">
+                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                     <DataGrid.Columns>
                         <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Price" Width="auto">
                             <DataGridTextColumn.Binding>
@@ -203,7 +203,8 @@
                         </DataGridTextColumn>
 
                         <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Qty" Width="*"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}">
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
+                                            CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource TemplateConverter}">
                                     <Binding Path="Size"/>
@@ -214,7 +215,8 @@
                         </DataGridTextColumn>
                         
                         <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"/>
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
+                                            CellStyle="{StaticResource DataGridCellRight}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -254,8 +256,7 @@
                     <DataGrid ItemsSource="{Binding Positions}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
-                              CellStyle="{StaticResource DataGridCell}">
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
@@ -303,8 +304,7 @@
                     <DataGrid ItemsSource="{Binding Orders}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
-                              CellStyle="{StaticResource DataGridCell}">
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
@@ -343,8 +343,7 @@
                     <DataGrid ItemsSource="{Binding PositionsClosePnl}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
-                              CellStyle="{StaticResource DataGridCell}">
+                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
