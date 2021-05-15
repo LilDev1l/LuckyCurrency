@@ -7,6 +7,7 @@
         xmlns:vm="clr-namespace:LuckyCurrency.ViewModels.Autorization"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         ResizeMode="NoResize"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen"
@@ -63,11 +64,14 @@
             <TextBlock FontSize="12"  HorizontalAlignment="Center" Text="{Binding InfoMessage}"></TextBlock>
             <StackPanel Margin="0 10" >
                 <TextBlock>Login</TextBlock>
-                <TextBox x:Name="LoginBox" Text="{Binding Login}"></TextBox>
+                <TextBox x:Name="LoginBox" 
+                         Text="{Binding Login}"
+                         mah:TextBoxHelper.ClearTextButton="True"/>
             </StackPanel>
             <StackPanel Margin="0 0 0 10">
                 <TextBlock>Password</TextBlock>
-                <PasswordBox x:Name="PasswordBox"></PasswordBox>
+                <PasswordBox x:Name="PasswordBox"
+                             Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"></PasswordBox>
             </StackPanel>
             <Button x:Name="EnterButton" 
                     Margin="0 15"
