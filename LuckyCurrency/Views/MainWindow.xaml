@@ -67,7 +67,7 @@
             <Button Grid.Row="2" VerticalAlignment="Bottom"
                     Command="{Binding SwitchToLoginCommand}">Log Out</Button>
         </Grid>
-        <Grid ShowGridLines="True">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="*"/>
@@ -251,7 +251,8 @@
 
             <TabControl Grid.Row="1" Grid.Column="0"
                         Grid.ColumnSpan="2">
-                <TabItem Header="Positions">
+                <TabItem Header="Positions"
+                         Margin="0 10 0 0">
                     <DataGrid ItemsSource="{Binding Positions}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
@@ -299,7 +300,18 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
-                <TabItem Header="Active Orders">
+                <TabItem>
+                    <TabItem.Header>
+                        <mah:Badged BadgePlacementMode="TopRight"
+                                    Badge="{Binding CountOrder}"
+                                    Margin="0 15 7 0">
+                            
+                            <TextBlock Text="Active Orders"
+                                       Margin="0 -5 0 0"
+                                       Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:ContentControlEx}}, Path=(TextElement.Foreground)}"
+                                       FontSize="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:ContentControlEx}}, Path=(TextElement.FontSize)}"/>
+                        </mah:Badged>
+                    </TabItem.Header>
                     <DataGrid ItemsSource="{Binding Orders}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
@@ -338,7 +350,8 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
-                <TabItem Header="Closed P&amp;L">
+                <TabItem Header="Closed P&amp;L"
+                         Margin="0 10 0 0">
                     <DataGrid ItemsSource="{Binding PositionsClosePnl}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"

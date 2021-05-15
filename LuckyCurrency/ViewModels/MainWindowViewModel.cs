@@ -164,6 +164,15 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region CountOrder
+        private int _countOrder;
+        public int CountOrder
+        {
+            get => _countOrder;
+            set => Set(ref _countOrder, value);
+        }
+        #endregion
+
         #region Price Order
         private double _priceOrder;
         public double PriceOrder
@@ -398,7 +407,6 @@ namespace LuckyCurrency.ViewModels
                 OrderBase orderBase = Bybit.CancelOrder(order.Symbol, order.Order_id);
                 if (orderBase.ret_code == 0)
                 {
-                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
                     Notifier.ShowSuccess($"Cancelled Successfully");
                 }
                 else
@@ -503,7 +511,7 @@ namespace LuckyCurrency.ViewModels
         #region HTTP
 
         #region public
-        private static ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
+        private ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
         {
             string ConvertInterval(string timeframeL)
             {
@@ -559,14 +567,14 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region private
-        private static Balance GetBalance(string coin)
+        private Balance GetBalance(string coin)
         {
             BalanceBase currentBalanceBase = Bybit.GetBalanceBase(coin);
             BalanceData currentBalanceData = currentBalanceBase.Result.USDT;
 
             return new Balance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
         }
-        private static ObservableCollection<Position> GetPositions(string symbol)
+        private ObservableCollection<Position> GetPositions(string symbol)
         {
             PositionBase positionBase = Bybit.GetPositionBase(symbol);
             List<PositionData> positionData = positionBase.result;
@@ -579,7 +587,7 @@ namespace LuckyCurrency.ViewModels
 
             return positions;
         }
-        private static ObservableCollection<Order> GetOrders(string symbol, string orderStatus = null)
+        private ObservableCollection<Order> GetOrders(string symbol, string orderStatus = null)
         {
             OrderBase orderBase = Bybit.GetOrderBase(symbol, orderStatus);
             OrderPage orderPage = ((JObject)orderBase.result).ToObject<OrderPage>();
@@ -593,6 +601,7 @@ namespace LuckyCurrency.ViewModels
                     orders.Add(new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.created_time));
                 }
             }
+            CountOrder = orders.Count;
 
             return orders;
         }
@@ -860,10 +869,15 @@ namespace LuckyCurrency.ViewModels
                 if (order.symbol == SelectedSymbol)
                 {
                     if (order.order_status == "New")
+                    {
                         Orders.Insert(0, new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.create_time));
+                        CountOrder++;
+                    }
+
                     if (order.order_status == "Cancelled" || order.order_status == "Filled")
                     {
                         Orders?.Remove(Orders.FirstOrDefault(ord => ord.Order_id == order.order_id));
+                        CountOrder--;
 
                         if(order.order_status == "Filled" && order.order_type == "Limit")
                         {
