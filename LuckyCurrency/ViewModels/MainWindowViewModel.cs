@@ -62,12 +62,12 @@ namespace LuckyCurrency.ViewModels
              cfg.PositionProvider = new WindowPositionProvider(
                  parentWindow: window,
                  corner: Corner.BottomRight,
-                 offsetX: 10,
-                 offsetY: 10);
+                 offsetX: 5,
+                 offsetY: 0);
 
              cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
                  notificationLifetime: TimeSpan.FromSeconds(3),
-                 maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+                 maximumNotificationCount: MaximumNotificationCount.FromCount(3));
 
              cfg.Dispatcher = App.Current.Dispatcher;
          });
