@@ -238,6 +238,8 @@ namespace LuckyCurrency.ViewModels
                 Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol}\"]}}");
 
                 CurrentSymbol = Symbols.Find(s => s.alias == SelectedSymbol);
+                PriceOrder = CurrentSymbol.price_filter.min_price;
+                QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
                 Candles = GetCandles(SelectedSymbol, SelectedTimeframe);
                 Positions = GetPositions(SelectedSymbol);
                 Orders = GetOrders(SelectedSymbol, "New");
@@ -437,20 +439,6 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region CoercePriceCommand
-        public ICommand CoercePriceCommand { get; }
-        private bool CanCoercePriceCommandExecute(object p) => true;
-        private void OnCoercePriceCommandExecuted(object p)
-        {
-            if ((int)(PriceOrder * 10000) % (int)(CurrentSymbol.price_filter.tick_size * 10000) == 0)
-                return;
-            else
-            {
-                PriceOrder = Math.Round(PriceOrder, CurrentSymbol.price_filter.round);
-            }
-        }
-        #endregion
-
         #region RunWSCommand 
         public ICommand RunWSCommand { get; }
         private bool CanRunWebSocketCommandExecute(object p) => true;
@@ -460,6 +448,8 @@ namespace LuckyCurrency.ViewModels
             {
                 Symbols = Bybit.GetSymbolBase().result;
                 CurrentSymbol = Symbols.Find(s => s.alias == SelectedSymbol);
+                PriceOrder = CurrentSymbol.price_filter.min_price;
+                QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
 
                 Balance = GetBalance("USDT");
                 Positions = GetPositions(SelectedSymbol);
@@ -503,8 +493,6 @@ namespace LuckyCurrency.ViewModels
             CreateCloseMarketOrderCommand = new LambdaCommand(OnCreateCloseMarketOrderCommandExecuted, CanCreateCloseMarketOrderCommandExecute);
             CancelOrderCommand = new LambdaCommand(OnCancelOrderCommandExecuted, CanCancelOrderCommandExecute);
             ClosePositionCommand = new LambdaCommand(OnClosePositionCommandExecuted, CanClosePositionCommandExecute);
-
-            CoercePriceCommand = new LambdaCommand(OnCoercePriceCommandExecuted, CanCoercePriceCommandExecute);
             #endregion
 
             Bybit.SetCultureUS();

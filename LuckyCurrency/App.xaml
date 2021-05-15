@@ -70,8 +70,9 @@
                 <Setter Property="HorizontalContentAlignment" Value="Right" />
             </Style>
 
-            <Style x:Key="DecimalUpDownStyle1" TargetType="{x:Type mah:NumericUpDown}">
+            <Style x:Key="NumericUpDown" TargetType="{x:Type mah:NumericUpDown}">
                 <Setter Property="TextAlignment" Value="Left"/>
+                <Setter Property="Width" Value="120"/>
             </Style>
         </ResourceDictionary>
 
