@@ -389,7 +389,7 @@
                             <TabItem Header="Limit" Width="100">
                                 <StackPanel>
                                     <DockPanel Height="25">
-                                        <mah:NumericUpDown DockPanel.Dock="Right" Width="80" Value="{Binding PriceOrder}"
+                                        <mah:NumericUpDown DockPanel.Dock="Right" Width="120" Value="{Binding PriceOrder}"
                                                             Minimum="{Binding CurrentSymbol.price_filter.min_price}"
                                                             Maximum="{Binding CurrentSymbol.price_filter.max_price}"
                                                             Interval="{Binding CurrentSymbol.price_filter.tick_size}"
@@ -405,13 +405,13 @@
                                                    VerticalAlignment="Center">Price Order</TextBlock>
                                     </DockPanel>
                                     <DockPanel Height="25">
-                                        <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                        <mah:NumericUpDown DockPanel.Dock="Right" Width="120" Value="{Binding QtyOrder}"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
-                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
-                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
-                                                            >
-                                        </xctk:DecimalUpDown>
+                                                            Interval="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            StringFormat="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                        </mah:NumericUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                     </DockPanel>
@@ -441,14 +441,13 @@
                             <TabItem Header="Market" Width="100">
                                 <StackPanel>
                                     <DockPanel Height="25">
-                                        <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                        <mah:NumericUpDown DockPanel.Dock="Right" Width="120" Value="{Binding QtyOrder}"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
-                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
-                                                            DefaultValue="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
-                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
-                                                            >
-                                        </xctk:DecimalUpDown>
+                                                            Interval="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            StringFormat="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                        </mah:NumericUpDown>
                                         <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                     </DockPanel>
@@ -483,30 +482,29 @@
                         <TabItem Header="Limit" Width="100">
                             <StackPanel>
                                 <DockPanel Height="25">
-                                    <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding PriceOrder}" CultureInfo="en-US"
+                                    <mah:NumericUpDown DockPanel.Dock="Right" Width="120" Value="{Binding PriceOrder}"
                                                             Minimum="{Binding CurrentSymbol.price_filter.min_price}"
                                                             Maximum="{Binding CurrentSymbol.price_filter.max_price}"
-                                                            Increment="{Binding CurrentSymbol.price_filter.tick_size}"
-                                                            FormatString="{Binding CurrentSymbol.price_scale, StringFormat={}F{0}}"
-                                                            >
+                                                            Interval="{Binding CurrentSymbol.price_filter.tick_size}"
+                                                            StringFormat="{Binding CurrentSymbol.price_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="ValueChanged">
                                                 <i:InvokeCommandAction Command="{Binding Path=CoercePriceCommand}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
-                                    </xctk:DecimalUpDown>
+                                    </mah:NumericUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Price Order</TextBlock>
                                 </DockPanel>
                                 <DockPanel Height="25">
-                                    <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                    <mah:NumericUpDown DockPanel.Dock="Right" Width="120" Value="{Binding QtyOrder}"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
-                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
-                                                            DefaultValue="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
-                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
-                                                            >
-                                    </xctk:DecimalUpDown>
+                                                            Interval="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            StringFormat="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                    </mah:NumericUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                 </DockPanel>
@@ -536,14 +534,13 @@
                         <TabItem Header="Market" Width="100">
                             <StackPanel>
                                 <DockPanel Height="25">
-                                    <xctk:DecimalUpDown DockPanel.Dock="Right" Width="80" Value="{Binding QtyOrder}" CultureInfo="en-US"
+                                    <mah:NumericUpDown DockPanel.Dock="Right" Width="120" Value="{Binding QtyOrder}"
                                                             Minimum="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
                                                             Maximum="{Binding CurrentSymbol.lot_size_filter.max_trading_qty}"
-                                                            Increment="{Binding CurrentSymbol.lot_size_filter.qty_step}"
-                                                            DefaultValue="{Binding CurrentSymbol.lot_size_filter.min_trading_qty}"
-                                                            FormatString="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
-                                                            >
-                                    </xctk:DecimalUpDown>
+                                                            Interval="{Binding CurrentSymbol.lot_size_filter.qty_step}"
+                                                            StringFormat="{Binding CurrentSymbol.lot_size_filter.qty_scale, StringFormat={}F{0}}"
+                                                            Style="{StaticResource DecimalUpDownStyle1}">
+                                    </mah:NumericUpDown>
                                     <TextBlock DockPanel.Dock="Left"
                                                    VerticalAlignment="Center">Qty</TextBlock>
                                 </DockPanel>
