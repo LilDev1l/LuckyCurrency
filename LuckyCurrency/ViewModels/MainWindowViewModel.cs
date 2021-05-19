@@ -73,15 +73,6 @@ namespace LuckyCurrency.ViewModels
          });
         #endregion
 
-        #region Торговая пара
-        private string _selectedSymbol = "BTCUSDT";
-        public string SelectedSymbol
-        {
-            get => _selectedSymbol;
-            set => Set(ref _selectedSymbol, value);
-        }
-        #endregion
-
         #region Таймфрейм
         private string _selectedTimeframe = "15";
         public string SelectedTimeframe
@@ -247,17 +238,16 @@ namespace LuckyCurrency.ViewModels
                     Asks.Clear();
                 });
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{SelectedSymbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedSymbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
 
-                CurrentSymbol = Symbols.Find(s => s.alias == SelectedSymbol);
                 PriceOrder = CurrentSymbol.price_filter.min_price;
                 QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
-                Candles = GetCandles(SelectedSymbol, SelectedTimeframe);
-                Positions = GetPositions(SelectedSymbol);
-                Orders = GetOrders(SelectedSymbol, "New");
-                PositionsClosePnl = GetPositionsClosePnl(SelectedSymbol, "Trade");
+                Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
+                Positions = GetPositions(CurrentSymbol.alias);
+                Orders = GetOrders(CurrentSymbol.alias, "New");
+                PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
             });
         }
         #endregion
@@ -268,9 +258,9 @@ namespace LuckyCurrency.ViewModels
         {
             Task.Run(() =>
             {
-                Candles = GetCandles(SelectedSymbol, SelectedTimeframe);
+                Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{SelectedSymbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
             });
         }
         #endregion
@@ -310,7 +300,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateLimitOrder(side, SelectedSymbol, QtyOrder, PriceOrder, "PostOnly", false, false);
+                OrderBase orderBase = Bybit.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", false, false);
                 if(orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -340,7 +330,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateMarketOrder(side, SelectedSymbol, QtyOrder, "ImmediateOrCancel", false, false);
+                OrderBase orderBase = Bybit.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", false, false);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -363,7 +353,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateLimitOrder(side, SelectedSymbol, QtyOrder, PriceOrder, "PostOnly", true, true);
+                OrderBase orderBase = Bybit.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", true, true);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -386,7 +376,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateMarketOrder(side, SelectedSymbol, QtyOrder, "ImmediateOrCancel", true, true);
+                OrderBase orderBase = Bybit.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", true, true);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -460,15 +450,15 @@ namespace LuckyCurrency.ViewModels
             Task.Run(() =>
             {
                 Symbols = Bybit.GetSymbolBase().result.FindAll(s => s.quote_currency == "USDT");
-                //CurrentSymbol = Symbols.Find(s => s.alias == SelectedSymbol);
+
                 PriceOrder = CurrentSymbol.price_filter.min_price;
                 QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
 
                 Balance = GetBalance("USDT");
-                Positions = GetPositions(SelectedSymbol);
-                Orders = GetOrders(SelectedSymbol, "New");
-                PositionsClosePnl = GetPositionsClosePnl(SelectedSymbol, "Trade");
-                Candles = GetCandles(SelectedSymbol, SelectedTimeframe);
+                Positions = GetPositions(CurrentSymbol.alias);
+                Orders = GetOrders(CurrentSymbol.alias, "New");
+                PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
+                Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
 
                 Bybit.NewMessage += GetNewMessage;
 
@@ -478,9 +468,9 @@ namespace LuckyCurrency.ViewModels
                 Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
                 Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{SelectedSymbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{SelectedSymbol}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{SelectedSymbol}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
+                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
 
                 WsRun = true;
             });
@@ -636,21 +626,21 @@ namespace LuckyCurrency.ViewModels
         {
             //Console.WriteLine(message);
 
-            if (message.Contains($"\"topic\":\"candle.{SelectedTimeframe}.{SelectedSymbol}\""))
+            if (message.Contains($"\"topic\":\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\""))
             {
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
                     NewCandle(message);
                 });
             }
-            if (message.Contains($"\"topic\":\"orderBookL2_25.{SelectedSymbol}\""))
+            if (message.Contains($"\"topic\":\"orderBookL2_25.{CurrentSymbol.alias}\""))
             {
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
                     NewOrderBook(message);
                 });
             }
-            if (message.Contains($"\"topic\":\"trade.{SelectedSymbol}\""))
+            if (message.Contains($"\"topic\":\"trade.{CurrentSymbol.alias}\""))
             {
                 App.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -857,7 +847,7 @@ namespace LuckyCurrency.ViewModels
             foreach (var pos in positionData)
             {
                 string longOrShort = pos.Side == "Buy" ? "Long" : "Short";
-                if (pos.Symbol == SelectedSymbol)
+                if (pos.Symbol == CurrentSymbol.alias)
                 {
                     Positions[Positions.IndexOf(Positions.First(p => p.Side == longOrShort))] = new Position(pos.Symbol, longOrShort, pos.Size, pos.Position_value, pos.Entry_price, pos.Liq_price, pos.Position_margin, pos.Realised_pnl);
                 }
@@ -871,7 +861,7 @@ namespace LuckyCurrency.ViewModels
 
             foreach(var order in orderWSDatas)
             {
-                if (order.symbol == SelectedSymbol)
+                if (order.symbol == CurrentSymbol.alias)
                 {
                     if (order.order_status == "New")
                     {

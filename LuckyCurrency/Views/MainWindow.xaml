@@ -30,25 +30,6 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             
-            <ComboBox Grid.Row="0" 
-                      SelectedValuePath="Content"
-                      SelectedValue="{Binding Path=SelectedSymbol}"
-                      IsEnabled="{Binding WsRun}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=ChangeSymbolCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <ComboBoxItem Content="BTCUSDT"/>
-                <ComboBoxItem Content="ETHUSDT"/>
-                <ComboBoxItem Content="BCHUSDT"/>
-                <ComboBoxItem Content="LTCUSDT"/>
-                <ComboBoxItem Content="LINKUSDT"/>
-                <ComboBoxItem Content="XTZUSDT"/>
-                <ComboBoxItem Content="ADAUSDT"/>
-                <ComboBoxItem Content="DOTUSDT"/>
-                <ComboBoxItem Content="UNIUSDT"/>
-            </ComboBox>
             <ComboBox Grid.Row="1"
                       SelectedValuePath="Content"
                       SelectedValue="{Binding Path=SelectedTimeframe}"
@@ -76,6 +57,12 @@
                 <mah:SplitButton.Icon>
                     <fa:ImageAwesome Icon="BarChartOutline" Width="15" Height="15"/>
                 </mah:SplitButton.Icon>
+                
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=ChangeSymbolCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </mah:SplitButton>
 
             <Button Grid.Row="3" VerticalAlignment="Bottom"
@@ -97,7 +84,7 @@
                             ChartAreaBackground="DarkGray">
                 <fc:CandleChart.LegendText>
                     <MultiBinding StringFormat="{}{0}/{1}">
-                        <Binding Path="SelectedSymbol"/>
+                        <Binding Path="CurrentSymbol.alias"/>
                         <Binding Path="SelectedTimeframe"/>
                     </MultiBinding>
                 </fc:CandleChart.LegendText>
