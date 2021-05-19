@@ -218,14 +218,19 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region Поля без привязок
-        public List<SymbolData> Symbols { get; private set; }
+        #region Symbols
+        private List<SymbolData> _symbols;
+        public List<SymbolData> Symbols
+        {
+            get => _symbols;
+            set => Set(ref _symbols, value);
+        }
         #endregion
 
         #endregion
 
         #region Команды
-        
+
         #region ChangeSymbolCommand
         public ICommand ChangeSymbolCommand { get; }
         private bool CanChangeSymbolCommandExecute(object p) => WsRun;
@@ -454,8 +459,8 @@ namespace LuckyCurrency.ViewModels
         {
             Task.Run(() =>
             {
-                Symbols = Bybit.GetSymbolBase().result;
-                CurrentSymbol = Symbols.Find(s => s.alias == SelectedSymbol);
+                Symbols = Bybit.GetSymbolBase().result.FindAll(s => s.quote_currency == "USDT");
+                //CurrentSymbol = Symbols.Find(s => s.alias == SelectedSymbol);
                 PriceOrder = CurrentSymbol.price_filter.min_price;
                 QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
 

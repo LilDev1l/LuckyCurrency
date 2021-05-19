@@ -26,6 +26,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             
@@ -64,7 +65,20 @@
                 <ComboBoxItem Content="4h"/>
                 <ComboBoxItem Content="D"/>
             </ComboBox>
-            <Button Grid.Row="2" VerticalAlignment="Bottom"
+
+            <mah:SplitButton Grid.Row="2" 
+                             Margin="5"
+                             SelectedValue="{Binding Path=CurrentSymbol}"
+                             DisplayMemberPath="alias"
+                             ItemsSource="{Binding Symbols}"
+                             SelectedIndex="0"
+                             Orientation="Vertical">
+                <mah:SplitButton.Icon>
+                    <fa:ImageAwesome Icon="BarChartOutline" Width="15" Height="15"/>
+                </mah:SplitButton.Icon>
+            </mah:SplitButton>
+
+            <Button Grid.Row="3" VerticalAlignment="Bottom"
                     Command="{Binding SwitchToLoginCommand}">Log Out</Button>
         </Grid>
         <Grid>
