@@ -74,6 +74,67 @@
                 <Setter Property="TextAlignment" Value="Left"/>
                 <Setter Property="Width" Value="120"/>
             </Style>
+            
+            <ControlTemplate x:Key="ButtonBuy" TargetType="{x:Type ButtonBase}">
+                <Grid>
+                    <mah:ClipBorder x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="#1fb064" CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    <mah:ClipBorder x:Name="DisabledVisualElement" Background="{DynamicResource MahApps.Brushes.Control.Disabled}" CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}" IsHitTestVisible="False" Opacity="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    <mah:ContentControlEx x:Name="PART_ContentPresenter" ContentCharacterCasing="{Binding (mah:ControlsHelper.ContentCharacterCasing), RelativeSource={RelativeSource TemplatedParent}}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" RecognizesAccessKey="{TemplateBinding mah:ControlsHelper.RecognizesAccessKey}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="#f7faf5">
+                        <mah:ContentControlEx.BorderBrush>
+                            <RadialGradientBrush>
+                                <GradientStop Color="Black" Offset="0"/>
+                                <GradientStop Color="White" Offset="1"/>
+                            </RadialGradientBrush>
+                        </mah:ContentControlEx.BorderBrush>
+                    </mah:ContentControlEx>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" TargetName="Border" Value="#1b8952"/>
+                        <Setter Property="BorderBrush" TargetName="Border" Value="{Binding (mah:ControlsHelper.MouseOverBorderBrush), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                        <Setter Property="BorderBrush" TargetName="Border" Value="{Binding (mah:ControlsHelper.FocusBorderBrush), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <Setter Property="BorderThickness" TargetName="Border" Value="{Binding (mah:ControlsHelper.FocusBorderThickness), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" TargetName="DisabledVisualElement" Value="0.7"/>
+                        <Setter Property="Opacity" TargetName="PART_ContentPresenter" Value="0.3"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="ButtonSell" TargetType="{x:Type ButtonBase}">
+                <Grid>
+                    <mah:ClipBorder x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="#e13e3e" CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    <mah:ClipBorder x:Name="DisabledVisualElement" Background="{DynamicResource MahApps.Brushes.Control.Disabled}" CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}" IsHitTestVisible="False" Opacity="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    <mah:ContentControlEx x:Name="PART_ContentPresenter" ContentCharacterCasing="{Binding (mah:ControlsHelper.ContentCharacterCasing), RelativeSource={RelativeSource TemplatedParent}}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" RecognizesAccessKey="{TemplateBinding mah:ControlsHelper.RecognizesAccessKey}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="#f7faf5">
+                        <mah:ContentControlEx.BorderBrush>
+                            <RadialGradientBrush>
+                                <GradientStop Color="Black" Offset="0"/>
+                                <GradientStop Color="White" Offset="1"/>
+                            </RadialGradientBrush>
+                        </mah:ContentControlEx.BorderBrush>
+                    </mah:ContentControlEx>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" TargetName="Border" Value="#af3335"/>
+                        <Setter Property="BorderBrush" TargetName="Border" Value="{Binding (mah:ControlsHelper.MouseOverBorderBrush), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                        <Setter Property="BorderBrush" TargetName="Border" Value="{Binding (mah:ControlsHelper.FocusBorderBrush), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <Setter Property="BorderThickness" TargetName="Border" Value="{Binding (mah:ControlsHelper.FocusBorderThickness), Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" TargetName="DisabledVisualElement" Value="0.7"/>
+                        <Setter Property="Opacity" TargetName="PART_ContentPresenter" Value="0.3"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+
+
         </ResourceDictionary>
 
        
