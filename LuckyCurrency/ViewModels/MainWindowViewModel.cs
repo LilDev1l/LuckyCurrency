@@ -74,7 +74,7 @@ namespace LuckyCurrency.ViewModels
         #endregion
 
         #region Таймфрейм
-        private string _selectedTimeframe = "15";
+        private string _selectedTimeframe;
         public string SelectedTimeframe
         {
             get => _selectedTimeframe;
@@ -215,6 +215,22 @@ namespace LuckyCurrency.ViewModels
         {
             get => _symbols;
             set => Set(ref _symbols, value);
+        }
+        #endregion
+
+        #region TimeFrames
+        private List<string> _timeFrames = new List<string>() { "1m",
+                                                                "15m",
+                                                                "30m",
+                                                                "1h",
+                                                                "4h",
+                                                                "D",
+                                                                "W",
+                                                                "M"};
+        public List<string> TimeFrames
+        {
+            get => _timeFrames;
+            set => Set(ref _timeFrames, value);
         }
         #endregion
 
@@ -512,15 +528,15 @@ namespace LuckyCurrency.ViewModels
             {
                 switch (timeframeL)
                 {
-                    case "1":
+                    case "1m":
                         return "1";
-                    case "3":
+                    case "3m":
                         return "3";
-                    case "5":
+                    case "5m":
                         return "5";
-                    case "15":
+                    case "15m":
                         return "15";
-                    case "30":
+                    case "30m":
                         return "30";
                     case "1h":
                         return "60";
