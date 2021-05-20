@@ -2257,7 +2257,7 @@ namespace FancyCandles
         //----------------------------------------------------------------------------------------------------------------------------------
         private void OnPanelCandlesContainerSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (!IsLoaded || e.NewSize.Width == 0 || CandlesSource.Count() == 0)
+            if (!IsLoaded || e.NewSize.Width == 0 || CandlesSource?.Count() == 0)
                 return;
 
             if (e.NewSize.Width != e.PreviousSize.Width)
