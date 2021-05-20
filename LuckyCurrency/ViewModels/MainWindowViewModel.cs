@@ -565,39 +565,6 @@ namespace LuckyCurrency.ViewModels
         #region public
         private ObservableCollection<ICandle> GetCandles(string pair, string timeframe)
         {
-            string ConvertInterval(string timeframeL)
-            {
-                switch (timeframeL)
-                {
-                    case "1m":
-                        return "1";
-                    case "3m":
-                        return "3";
-                    case "5m":
-                        return "5";
-                    case "15m":
-                        return "15";
-                    case "30m":
-                        return "30";
-                    case "1h":
-                        return "60";
-                    case "2h":
-                        return "120";
-                    case "4h":
-                        return "240";
-                    case "6h":
-                        return "360";
-                    case "D":
-                        return "D";
-                    case "W":
-                        return "W";
-                    case "M":
-                        return "M";
-                    default:
-                        throw new Exception("Неверный формат интервала");
-                }
-
-            }
             ICandle GetCandleFromLinearKline(LinearKlineData kline)
             {
                 DateTime openTime = new DateTime(kline.OpenTime * 10000000L + Bybit.Duration);
@@ -605,7 +572,7 @@ namespace LuckyCurrency.ViewModels
                 return new Candle(openTime, kline.Open, kline.High, kline.Low, kline.Close, (long)kline.Volume);
             }
 
-            LinearKlineBase linearKlineBase = Bybit.GetLinearKlineBase(pair, ConvertInterval(timeframe));
+            LinearKlineBase linearKlineBase = Bybit.GetLinearKlineBase(pair, timeframe);
             List<LinearKlineData> linearKlineData = linearKlineBase.Result;
 
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
@@ -923,13 +890,11 @@ namespace LuckyCurrency.ViewModels
                     if (order.order_status == "New")
                     {
                         Orders.Insert(0, new Order(order.order_id, order.symbol, order.side, order.order_type, order.price, order.qty, order.order_status, order.take_profit, order.stop_loss, order.create_time));
-                        CountOrder++;
                     }
 
                     if (order.order_status == "Cancelled" || order.order_status == "Filled")
                     {
                         Orders?.Remove(Orders.FirstOrDefault(ord => ord.Order_id == order.order_id));
-                        CountOrder--;
 
                         if(order.order_status == "Filled" && order.order_type == "Limit")
                         {
@@ -942,6 +907,7 @@ namespace LuckyCurrency.ViewModels
                     }
                 }
             }
+            CountOrder = Orders.Count;
         }
         #endregion
 

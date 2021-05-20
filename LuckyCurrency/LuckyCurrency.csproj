@@ -122,9 +122,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converter\OrderValue.cs" />
-    <Compile Include="Converter\TemplateConverter.cs" />
-    <Compile Include="Converter\ValuesToObject.cs" />
+    <Compile Include="Converter\OrderValueConverter.cs" />
+    <Compile Include="Converter\SimbolsAfterCommaConverter.cs" />
+    <Compile Include="Converter\TimeFrameConvert.cs" />
+    <Compile Include="Converter\ValuesToObjectConverter.cs" />
     <Compile Include="Hasher\PasswordHasher.cs" />
     <Compile Include="Models\DB\Account.cs" />
     <Compile Include="Models\DB\API_Key.cs" />

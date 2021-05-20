@@ -6,6 +6,7 @@
         xmlns:fc="clr-namespace:FancyCandles;assembly=FancyCandles"
         xmlns:vm="clr-namespace:LuckyCurrency.ViewModels"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:converter="clr-namespace:LuckyCurrency.Converter"
         xmlns:local="clr-namespace:LuckyCurrency"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
@@ -57,7 +58,7 @@
 
             <mah:SplitButton Grid.Row="2" 
                              Margin="0 3 3 0"
-                             SelectedValue="{Binding Path=SelectedTimeframe}"
+                             SelectedValue="{Binding SelectedTimeframe, Converter={converter:TimeFrameConvert}}"
                              ItemsSource="{Binding TimeFrames}"
                              SelectedIndex="1"
                              Orientation="Vertical">
@@ -114,7 +115,8 @@
                 </fc:CandleChart.LegendText>
             </fc:CandleChart>
 
-            <Grid Grid.Column="1" Grid.Row="0">
+            <Grid Grid.Column="1" Grid.Row="0"
+                  Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="2*"/>
@@ -502,11 +504,11 @@
                                         <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                     </DockPanel>
                                     <UniformGrid Margin="3 20 3 3">
-                                        <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Buy"
+                                        <Button Command="{Binding CreateOpenMarketOrderCommand}" CommandParameter="Buy"
                                                 Margin="3"
                                                 Content="Open Long"
                                                 Template="{DynamicResource ButtonBuy}"/>
-                                        <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Sell"
+                                        <Button Command="{Binding CreateOpenMarketOrderCommand}" CommandParameter="Sell"
                                                 Margin="3" 
                                                 Content="Open Short"
                                                 Template="{DynamicResource ButtonSell}"/>
@@ -562,11 +564,11 @@
                                     <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                 </DockPanel>
                                 <UniformGrid Margin="3 20 3 3">
-                                    <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Buy"
+                                    <Button Command="{Binding CreateCloseLimitOrderCommand}" CommandParameter="Buy"
                                                 Margin="3"
                                                 Content="Close Short"
                                                 Template="{DynamicResource ButtonBuy}"/>
-                                    <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Sell"
+                                    <Button Command="{Binding CreateCloseLimitOrderCommand}" CommandParameter="Sell"
                                                 Margin="3" 
                                                 Content="Close Long"
                                                 Template="{DynamicResource ButtonSell}"/>
@@ -603,11 +605,11 @@
                                     <TextBlock VerticalAlignment="Center">Order Value</TextBlock>
                                 </DockPanel>
                                 <UniformGrid Margin="3 20 3 3">
-                                    <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Buy"
+                                    <Button Command="{Binding CreateCloseMarketOrderCommand}" CommandParameter="Buy"
                                                 Margin="3"
                                                 Content="Close Short"
                                                 Template="{DynamicResource ButtonBuy}"/>
-                                    <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Sell"
+                                    <Button Command="{Binding CreateCloseMarketOrderCommand}" CommandParameter="Sell"
                                                 Margin="3" 
                                                 Content="Close Long"
                                                 Template="{DynamicResource ButtonSell}"/>

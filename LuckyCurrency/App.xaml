@@ -22,8 +22,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
-            <cnv:TemplateConverter x:Key="TemplateConverter"/>
-            <cnv:OrderValue x:Key="OrderValue"/>
+            <cnv:SimbolsAfterCommaConverter x:Key="TemplateConverter"/>
+            <cnv:OrderValueConverter x:Key="OrderValue"/>
 
             <Style x:Key="IsMouseOver"
                    TargetType="fa:ImageAwesome">

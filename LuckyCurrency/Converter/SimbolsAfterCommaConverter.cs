@@ -9,13 +9,13 @@ using System.Windows.Markup;
 
 namespace LuckyCurrency.Converter
 {
-    public class TemplateConverterExtension : MarkupExtension
+    public class SimbolsAfterCommaConverterExtension : MarkupExtension
     {
         public override object ProvideValue(IServiceProvider serviceProvider)
-            => new TemplateConverter();
+            => new SimbolsAfterCommaConverter();
     }
 
-    class TemplateConverter : IMultiValueConverter
+    class SimbolsAfterCommaConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,17 +8,23 @@ using System.Windows.Markup;
 
 namespace LuckyCurrency.Converter
 {
-    public class ValuesToObjectExtension : MarkupExtension
+    public class OrderValueConverterExtension : MarkupExtension
     {
         public override object ProvideValue(IServiceProvider serviceProvider)
-            => new ValuesToObject();
+            => new ValuesToObjectConverter();
     }
 
-    class ValuesToObject : IMultiValueConverter
+    class OrderValueConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return values.Clone();
+            if (values[0] is double priceOrder)
+            {
+                if (values[1] is double qtyOrder)
+                    if(values[2] is string quoteCurrency)
+                        return string.Format("{0:0.0000} {1}", priceOrder * qtyOrder, quoteCurrency);
+            }
+            return null;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)

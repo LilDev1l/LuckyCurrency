@@ -42,7 +42,7 @@
             <Button Margin="0 10"
                     Command="{Binding RegistrationCommand}">
                 <Button.CommandParameter>
-                    <MultiBinding Converter="{cnv:ValuesToObject}">
+                    <MultiBinding Converter="{cnv:ValuesToObjectConverter}">
                         <Binding ElementName="PasswordBox"/>
                         <Binding ElementName="PrivateAPI_Key"/>
                     </MultiBinding>
