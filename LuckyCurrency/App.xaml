@@ -133,6 +133,18 @@
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 
+            <Style x:Key="ChangeTheme" TargetType="{x:Type fa:ImageAwesome}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding CurrentTheme}" Value="Dark">
+                        <Setter Property="Icon" Value="SunOutline"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding CurrentTheme}" Value="Light">
+                        <Setter Property="Icon" Value="MoonOutline"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
 
 
         </ResourceDictionary>

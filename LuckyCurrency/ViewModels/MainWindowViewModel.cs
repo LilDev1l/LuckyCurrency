@@ -33,6 +33,7 @@ using ToastNotifications.Messages;
 using LuckyCurrency.Models.DB;
 using System.Windows;
 using LuckyCurrency.Views.Autorization;
+using ControlzEx.Theming;
 
 namespace LuckyCurrency.ViewModels
 {
@@ -46,6 +47,15 @@ namespace LuckyCurrency.ViewModels
         {
             get => _title;
             set => Set(ref _title, value);
+        }
+        #endregion
+
+        #region CurrentTheme
+        private string _currentTheme = "Light";
+        public string CurrentTheme
+        {
+            get => _currentTheme;
+            set => Set(ref _currentTheme, value);
         }
         #endregion
 
@@ -458,6 +468,24 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region ChangeThemeCommand
+        public ICommand ChangeThemeCommand { get; }
+        private bool CanChangeThemeCommandExecute(object p) => true;
+        private void OnChangeThemeCommandExecuted(object p)
+        {
+            if (CurrentTheme == "Light")
+            {
+                ThemeManager.Current.ChangeThemeBaseColor(App.Current, "Dark");
+                CurrentTheme = "Dark";
+            }
+            else
+            {
+                ThemeManager.Current.ChangeThemeBaseColor(App.Current, "Light");
+                CurrentTheme = "Light";
+            }
+        }
+        #endregion
+
         #region RunWSCommand 
         public ICommand RunWSCommand { get; }
         private bool CanRunWebSocketCommandExecute(object p) => true;
@@ -512,6 +540,8 @@ namespace LuckyCurrency.ViewModels
             CreateCloseMarketOrderCommand = new LambdaCommand(OnCreateCloseMarketOrderCommandExecuted, CanCreateCloseMarketOrderCommandExecute);
             CancelOrderCommand = new LambdaCommand(OnCancelOrderCommandExecuted, CanCancelOrderCommandExecute);
             ClosePositionCommand = new LambdaCommand(OnClosePositionCommandExecuted, CanClosePositionCommandExecute);
+
+            ChangeThemeCommand = new LambdaCommand(OnChangeThemeCommandExecuted, CanChangeThemeCommandExecute);
             #endregion
 
             Bybit.SetCultureUS();

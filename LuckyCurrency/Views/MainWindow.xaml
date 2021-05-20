@@ -69,14 +69,23 @@
                 </i:Interaction.Triggers>
             </mah:SplitButton>
 
-            <Button Grid.Row="3" 
-                    VerticalAlignment="Bottom"
-                    Command="{Binding SwitchToLoginCommand}">
-                <StackPanel>
-                    <fa:ImageAwesome Icon="SignOut" Width="18" Height="18"/>
-                    <TextBlock Text="Log Out"/>
-                </StackPanel>
-            </Button>
+            <StackPanel Grid.Row="4" 
+                        VerticalAlignment="Bottom">
+                <Button Margin="0 0 0 3"
+                        Command="{Binding ChangeThemeCommand}">
+                    <Button.Content>
+                        <StackPanel>
+                            <fa:ImageAwesome Width="18" Height="18" Style="{DynamicResource ChangeTheme}"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Command="{Binding SwitchToLoginCommand}">
+                    <StackPanel>
+                        <fa:ImageAwesome Icon="SignOut"  Width="18" Height="18"/>
+                        <TextBlock Text="Log Out"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </Grid>
         
         <Grid>
@@ -92,7 +101,9 @@
 
             <fc:CandleChart Grid.Column="0" Grid.Row="0"
                             CandlesSource="{Binding Path=Candles}"
-                            ChartAreaBackground="DarkGray">
+                            ChartAreaBackground="DarkGray"
+                            AxisTickColor="AliceBlue"
+                            >
                 <fc:CandleChart.LegendText>
                     <MultiBinding StringFormat="{}{0}/{1}">
                         <Binding Path="CurrentSymbol.alias"/>
@@ -599,11 +610,11 @@
                                 <UniformGrid Margin="3 20 3 3">
                                     <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Buy"
                                                 Margin="3"
-                                                Content="Open Long"
+                                                Content="Close Short"
                                                 Template="{DynamicResource ButtonBuy}"/>
                                     <Button Command="{Binding CreateOpenLimitOrderCommand}" CommandParameter="Sell"
                                                 Margin="3" 
-                                                Content="Open Short"
+                                                Content="Close Long"
                                                 Template="{DynamicResource ButtonSell}"/>
                                 </UniformGrid>
                             </StackPanel>
