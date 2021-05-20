@@ -59,12 +59,21 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
-        #region FontColorTheme
+        #region ForegroundColorTheme
         private string _fontColorTheme = "Black";
-        public string FontColorTheme
+        public string ForegroundColorTheme
         {
             get => _fontColorTheme;
             set => Set(ref _fontColorTheme, value);
+        }
+        #endregion
+
+        #region BackgroundColorTheme
+        private string _backgroundColorTheme = "White";
+        public string BackgroundColorTheme
+        {
+            get => _backgroundColorTheme;
+            set => Set(ref _backgroundColorTheme, value);
         }
         #endregion
 
@@ -486,13 +495,15 @@ namespace LuckyCurrency.ViewModels
             {
                 ThemeManager.Current.ChangeThemeBaseColor(App.Current, "Dark");
                 CurrentTheme = "Dark";
-                FontColorTheme = "White";
+                ForegroundColorTheme = "White";
+                BackgroundColorTheme = "Black";
             }
             else
             {
                 ThemeManager.Current.ChangeThemeBaseColor(App.Current, "Light");
                 CurrentTheme = "Light";
-                FontColorTheme = "Black";
+                ForegroundColorTheme = "Black";
+                BackgroundColorTheme = "White";
             }
         }
         #endregion

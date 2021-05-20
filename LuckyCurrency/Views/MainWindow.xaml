@@ -46,7 +46,7 @@
                              SelectedIndex="7"
                              Orientation="Vertical">
                 <mah:SplitButton.Icon>
-                    <fa:ImageAwesome Icon="BarChartOutline" Foreground="{Binding FontColorTheme}" Width="18" Height="18"/>
+                    <fa:ImageAwesome Icon="BarChartOutline" Foreground="{Binding ForegroundColorTheme}" Width="18" Height="18"/>
                 </mah:SplitButton.Icon>
                 
                 <i:Interaction.Triggers>
@@ -64,7 +64,7 @@
                              Orientation="Vertical">
 
                 <mah:SplitButton.Icon>
-                    <fa:ImageAwesome Icon="ClockOutline" Foreground="{Binding FontColorTheme}" Width="18" Height="18"/>
+                    <fa:ImageAwesome Icon="ClockOutline" Foreground="{Binding ForegroundColorTheme}" Width="18" Height="18"/>
                 </mah:SplitButton.Icon>
 
                 <i:Interaction.Triggers>
@@ -80,13 +80,13 @@
                         Command="{Binding ChangeThemeCommand}">
                     <Button.Content>
                         <StackPanel>
-                            <fa:ImageAwesome Foreground="{Binding FontColorTheme}" Width="18" Height="18" Style="{DynamicResource ChangeTheme}"/>
+                            <fa:ImageAwesome Foreground="{Binding ForegroundColorTheme}" Width="18" Height="18" Style="{DynamicResource ChangeTheme}"/>
                         </StackPanel>
                     </Button.Content>
                 </Button>
                 <Button Command="{Binding SwitchToLoginCommand}">
                     <StackPanel>
-                        <fa:ImageAwesome Icon="SignOut" Foreground="{Binding FontColorTheme}" Width="18" Height="18"/>
+                        <fa:ImageAwesome Icon="SignOut" Foreground="{Binding ForegroundColorTheme}" Width="18" Height="18"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -105,8 +105,20 @@
 
             <fc:CandleChart Grid.Column="0" Grid.Row="0"
                             CandlesSource="{Binding Path=Candles}"
-                            ChartAreaBackground="DarkGray"
-                            AxisTickColor="{Binding FontColorTheme}">
+                            ChartAreaBackground="{Binding BackgroundColorTheme}"
+                            AxisTickColor="{Binding ForegroundColorTheme}"
+                            IsHorizontalGridlinesEnabled="False"
+                            IsVerticalGridlinesEnabled="False"
+                            HideMinorVerticalGridlines="True">
+
+                <fc:CandleChart.CrossLinesBrush>
+                    <SolidColorBrush Color="#707275" Opacity="0.4"/>
+                </fc:CandleChart.CrossLinesBrush>
+
+                <fc:CandleChart.LegendForeground>
+                    <SolidColorBrush Color="#707275" Opacity="0.4"/>
+                </fc:CandleChart.LegendForeground>
+                    
                 <fc:CandleChart.LegendText>
                     <MultiBinding StringFormat="{}{0}/{1}">
                         <Binding Path="CurrentSymbol.alias"/>
