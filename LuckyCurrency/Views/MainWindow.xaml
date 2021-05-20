@@ -15,6 +15,10 @@
         WindowStartupLocation="CenterScreen"
         Height="550" Width="1100"
         MinHeight="550" MinWidth="1100">
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
     
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -41,7 +45,7 @@
                              SelectedIndex="7"
                              Orientation="Vertical">
                 <mah:SplitButton.Icon>
-                    <fa:ImageAwesome Icon="BarChartOutline" Width="18" Height="18"/>
+                    <fa:ImageAwesome Icon="BarChartOutline" Foreground="{Binding FontColorTheme}" Width="18" Height="18"/>
                 </mah:SplitButton.Icon>
                 
                 <i:Interaction.Triggers>
@@ -59,7 +63,7 @@
                              Orientation="Vertical">
 
                 <mah:SplitButton.Icon>
-                    <fa:ImageAwesome Icon="ClockOutline" Width="18" Height="18"/>
+                    <fa:ImageAwesome Icon="ClockOutline" Foreground="{Binding FontColorTheme}" Width="18" Height="18"/>
                 </mah:SplitButton.Icon>
 
                 <i:Interaction.Triggers>
@@ -75,14 +79,13 @@
                         Command="{Binding ChangeThemeCommand}">
                     <Button.Content>
                         <StackPanel>
-                            <fa:ImageAwesome Width="18" Height="18" Style="{DynamicResource ChangeTheme}"/>
+                            <fa:ImageAwesome Foreground="{Binding FontColorTheme}" Width="18" Height="18" Style="{DynamicResource ChangeTheme}"/>
                         </StackPanel>
                     </Button.Content>
                 </Button>
                 <Button Command="{Binding SwitchToLoginCommand}">
                     <StackPanel>
-                        <fa:ImageAwesome Icon="SignOut"  Width="18" Height="18"/>
-                        <TextBlock Text="Log Out"/>
+                        <fa:ImageAwesome Icon="SignOut" Foreground="{Binding FontColorTheme}" Width="18" Height="18"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -102,8 +105,7 @@
             <fc:CandleChart Grid.Column="0" Grid.Row="0"
                             CandlesSource="{Binding Path=Candles}"
                             ChartAreaBackground="DarkGray"
-                            AxisTickColor="AliceBlue"
-                            >
+                            AxisTickColor="{Binding FontColorTheme}">
                 <fc:CandleChart.LegendText>
                     <MultiBinding StringFormat="{}{0}/{1}">
                         <Binding Path="CurrentSymbol.alias"/>
@@ -125,7 +127,7 @@
                 <StackPanel Grid.Row="0" Grid.ColumnSpan="2"
                             Orientation="Horizontal"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <fa:ImageAwesome Height="8" Margin="0,0,8,0" Style="{StaticResource BuyOrSell}"/>
+                    <fa:ImageAwesome Height="8" Margin="0,0,8,0" Style="{StaticResource BuyOrSellLastTrade}"/>
                     <TextBlock FontWeight="Bold">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -139,9 +141,7 @@
                           Grid.Row="1" Grid.Column="0"
                           ItemsSource="{Binding Asks}"
                           AutoGenerateColumns="False"
-                          IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray"
-                          CellStyle="{StaticResource DataGridCellRight}">
+                          IsReadOnly="True">
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
@@ -159,7 +159,7 @@
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Foreground="Red" Header="Qty" Width="*"
+                        <DataGridTextColumn Header="Qty" Width="*"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
@@ -176,8 +176,7 @@
                 <DataGrid Grid.Row="1" Grid.Column="1"
                           ItemsSource="{Binding Bids}"
                           AutoGenerateColumns="False"
-                          IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                          IsReadOnly="True">
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
@@ -195,7 +194,7 @@
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Foreground="Green" Header="Qty" Width="*"
+                        <DataGridTextColumn Header="Qty" Width="*"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
@@ -211,10 +210,9 @@
                 <DataGrid Grid.Row="2" Grid.ColumnSpan="2"
                           ItemsSource="{Binding Trades}"
                           AutoGenerateColumns="False"
-                          IsReadOnly="True"
-                          VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                          IsReadOnly="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Price" Width="auto">
+                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrder}" Header="Price" Width="auto">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource TemplateConverter}">
                                     <Binding Path="Price"/>
@@ -224,7 +222,7 @@
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Qty" Width="*"
+                        <DataGridTextColumn Header="Qty" Width="*"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
@@ -236,7 +234,7 @@
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
                         
-                        <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrders}" Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"
+                        <DataGridTextColumn Header="Time" Width="*" Binding="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss}}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}"/>
                     </DataGrid.Columns>
@@ -278,8 +276,7 @@
                          Margin="0 10 0 0">
                     <DataGrid ItemsSource="{Binding Positions}"
                               AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                              IsReadOnly="True">
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
@@ -337,8 +334,7 @@
                     </TabItem.Header>
                     <DataGrid ItemsSource="{Binding Orders}"
                               AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                              IsReadOnly="True">
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
@@ -377,8 +373,7 @@
                          Margin="0 10 0 0">
                     <DataGrid ItemsSource="{Binding PositionsClosePnl}"
                               AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              VerticalGridLinesBrush ="DarkGray" AlternatingRowBackground="LightGray">
+                              IsReadOnly="True">
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>

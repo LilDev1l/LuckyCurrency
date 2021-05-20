@@ -7,7 +7,7 @@
              xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             StartupUri="Views/Autorization/Login.xaml">
+             StartupUri="Views/MainWindow.xaml">
     <!--dispatcherunhandledexception="application_dispatcherunhandledexception"-->
 
     <Application.Resources>
@@ -34,7 +34,7 @@
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="BuyOrSell">
+            <Style x:Key="BuyOrSellLastTrade">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding LastTrade.Side}" Value="Buy">
                         <Setter Property="fa:ImageAwesome.Icon" Value="chevronup"/>
@@ -47,7 +47,7 @@
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="BuyOrSellOrders">
+            <Style x:Key="BuyOrSellOrder">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=Side}" Value="Sell">
                         <Setter Property="DataGridTextColumn.Foreground"  Value="Red"/>
@@ -137,16 +137,13 @@
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding CurrentTheme}" Value="Dark">
                         <Setter Property="Icon" Value="SunOutline"/>
-                        <Setter Property="Foreground" Value="White"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding CurrentTheme}" Value="Light">
                         <Setter Property="Icon" Value="MoonOutline"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-
-
-
+            
         </ResourceDictionary>
 
        

@@ -59,6 +59,15 @@ namespace LuckyCurrency.ViewModels
         }
         #endregion
 
+        #region FontColorTheme
+        private string _fontColorTheme = "Black";
+        public string FontColorTheme
+        {
+            get => _fontColorTheme;
+            set => Set(ref _fontColorTheme, value);
+        }
+        #endregion
+
         #region Уведомления
         public Notifier Notifier { get; set; } = new Notifier(cfg =>
          {
@@ -477,11 +486,13 @@ namespace LuckyCurrency.ViewModels
             {
                 ThemeManager.Current.ChangeThemeBaseColor(App.Current, "Dark");
                 CurrentTheme = "Dark";
+                FontColorTheme = "White";
             }
             else
             {
                 ThemeManager.Current.ChangeThemeBaseColor(App.Current, "Light");
                 CurrentTheme = "Light";
+                FontColorTheme = "Black";
             }
         }
         #endregion
@@ -523,7 +534,7 @@ namespace LuckyCurrency.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(API_Key api_key)
+        public MainWindowViewModel()
         {
             #region Команды
             ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
@@ -545,8 +556,8 @@ namespace LuckyCurrency.ViewModels
             #endregion
 
             Bybit.SetCultureUS();
-            Bybit.SetAPI_Key(api_key.PublicKey);
-            Bybit.SetSecret_Key(api_key.SecretKey);
+            Bybit.SetAPI_Key("nMtZ68DOpAAVWrnJba");
+            Bybit.SetSecret_Key("5PKGos787uTBxbjZ7Tn7fcfbZanNbZQTecCa");
         }
 
         #region HTTP
