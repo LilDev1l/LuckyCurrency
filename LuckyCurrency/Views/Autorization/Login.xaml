@@ -10,6 +10,7 @@
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         ResizeMode="NoResize"
         WindowStyle="None"
+        BorderThickness="1"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="340">
