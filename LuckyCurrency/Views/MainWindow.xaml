@@ -291,10 +291,9 @@
                     <DataGrid ItemsSource="{Binding Positions}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True">
-                        
+
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
-                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
+                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
                             <DataGridTextColumn Header="Qty" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -304,7 +303,16 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Path=Position_value, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
+                            <DataGridTextColumn Header="Value" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding StringFormat="{}{0:0.0000} {1}">
+                                    <Binding Path="Position_value"/>
+                                    <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.quote_currency"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Entry Price" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -323,7 +331,6 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Position Margin" Width="auto" Binding="{Binding Path=Position_margin, StringFormat={}{0:0.0000}}"/>
                             <DataGridTemplateColumn Header="Action" Width="auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -351,8 +358,7 @@
                               IsReadOnly="True">
                         
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
-                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
+                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}" FontWeight="Bold" ElementStyle="{StaticResource BuyOrSellOrder}" />
                             <DataGridTextColumn Header="Qty" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -362,6 +368,7 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
+                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}" FontWeight="Bold" ElementStyle="{StaticResource BuyOrSellOrder}"/>
                             <DataGridTextColumn Header="Order Price" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -390,8 +397,7 @@
                               IsReadOnly="True">
                         
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}"/>
-                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}"/>
+                            <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
                             <DataGridTextColumn Header="Qty" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -401,6 +407,7 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
+                            <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
                             <DataGridTextColumn Header="Entry Price" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding Converter="{StaticResource TemplateConverter}">
@@ -419,7 +426,15 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Closed P&amp;L" Width="*" Binding="{Binding Path=Closed_pnl, StringFormat={}{0:0.0000}}"/>
+                            <DataGridTextColumn Header="Closed P&amp;L" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding StringFormat="{}{0:0.0000} {1}">
+                                        <Binding Path="Closed_pnl"/>
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
+                                             Path="DataContext.CurrentSymbol.quote_currency"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Trade Time" Width="auto" Binding="{Binding Path=Created_at, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                         </DataGrid.Columns>
                     </DataGrid>
