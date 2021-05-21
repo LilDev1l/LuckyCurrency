@@ -6,6 +6,7 @@
         xmlns:cnv="clr-namespace:LuckyCurrency.Converter"
         xmlns:local="clr-namespace:LuckyCurrency.Views.Autorization"
         xmlns:vm="clr-namespace:LuckyCurrency.ViewModels.Autorization"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"

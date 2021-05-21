@@ -20,13 +20,13 @@ namespace LuckyCurrency
 {
     public partial class MainWindow : MetroWindow
     {
-        public MainWindow()
+        public MainWindow(API_Key api_key)
         {
             InitializeComponent();
 
-/*            MainWindowViewModel vm = new MainWindowViewModel(api_key);
+            MainWindowViewModel vm = new MainWindowViewModel(api_key);
             DataContext = vm;
-            vm.Close = new Action(this.Close);*/
+            vm.Close = new Action(this.Close);
         }
     }
 }

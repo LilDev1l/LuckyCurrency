@@ -141,7 +141,7 @@ namespace LuckyCurrency.ViewModels.Autorization
 
         private MainWindow GetMainWindow(API_Key api_key)
         {
-            MainWindow clientMainWindow = new MainWindow();
+            MainWindow clientMainWindow = new MainWindow(api_key);
 
             return clientMainWindow;
         }
