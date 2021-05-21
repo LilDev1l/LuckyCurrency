@@ -17,8 +17,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
-            <RowDefinition Height="100"></RowDefinition>
-            <RowDefinition Height="250"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+            <RowDefinition Height="280"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -62,19 +62,20 @@
                     Width="210">
             
             <TextBlock FontSize="12"  HorizontalAlignment="Center" Text="{Binding InfoMessage}"></TextBlock>
-            <StackPanel Margin="0 10" >
+            <StackPanel Margin="0 5" >
                 <TextBlock>Login</TextBlock>
                 <TextBox x:Name="LoginBox" 
                          Text="{Binding Login}"
                          mah:TextBoxHelper.ClearTextButton="True"/>
             </StackPanel>
-            <StackPanel Margin="0 0 0 10">
+            <StackPanel Margin="0 5">
                 <TextBlock>Password</TextBlock>
                 <PasswordBox x:Name="PasswordBox"
                              Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"></PasswordBox>
             </StackPanel>
             <Button x:Name="EnterButton" 
-                    Margin="0 15"
+                    Margin="0 5"
+                    Width="100"
                     Command="{Binding LoginCommand }"
                     CommandParameter="{Binding ElementName=PasswordBox}"
                     >
@@ -84,9 +85,14 @@
             </Button>
         </StackPanel>
 
-        <Button Grid.Row="3"
-                Command="{Binding SwitchToRegistrationCommand}">
-            <TextBlock>Sign up</TextBlock>
-        </Button>
+
+        <TextBlock Grid.Row="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                        <Hyperlink Command="{Binding SwitchToRegistrationCommand}">
+                            Sign up
+                        </Hyperlink>
+        </TextBlock>
+
     </Grid>
 </Window>

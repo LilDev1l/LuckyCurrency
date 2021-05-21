@@ -7,40 +7,82 @@
         xmlns:local="clr-namespace:LuckyCurrency.Views.Autorization"
         xmlns:vm="clr-namespace:LuckyCurrency.ViewModels.Autorization"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         ResizeMode="NoResize"
+        WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="340">
     
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+            <RowDefinition Height="280"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center"
+        <Grid Grid.Row="0">
+            <Polygon Fill="Black" 
+                     Opacity="0.3"
+                     Points="97, 0
+                             105, 7
+                             235, 7
+                             243, 0"/>
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right">
+                <fa:ImageAwesome Icon="minuscircle" 
+                                 Width="18" Height="18" 
+                                 Margin="5 5 5 0" 
+                                 Style="{StaticResource IsMouseOver}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding Path=MinimizedCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </fa:ImageAwesome>
+                <fa:ImageAwesome Icon="timescircle"
+                                 Width="18" Height="18" 
+                                 Margin="5 5 5 0"
+                                 Style="{StaticResource IsMouseOver}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding Path=CloseCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </fa:ImageAwesome>
+            </StackPanel>
+        </Grid>
+
+        <TextBlock Grid.Row="1"
+                   FontSize="32" Margin="0 15" HorizontalAlignment="Center" Text="{Binding Title}"/>
+
+
+        <StackPanel Grid.Row="2" 
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    Margin="0 15"
                     Width="210">
-            <TextBlock FontSize="32" Margin="0 15" HorizontalAlignment="Center" Text="{Binding Title}"/>
             <TextBlock FontSize="12"  HorizontalAlignment="Center" Text="{Binding InfoMessage}"></TextBlock>
-            <StackPanel Margin="0 10" >
+            <StackPanel Margin="0 5" >
                 <TextBlock>Login</TextBlock>
                 <TextBox Text="{Binding Login}"></TextBox>
             </StackPanel>
-            <StackPanel Margin="0 10">
+            <StackPanel Margin="0 5">
                 <TextBlock>Password</TextBlock>
                 <PasswordBox x:Name="PasswordBox"></PasswordBox>
             </StackPanel>
-            <StackPanel Margin="0 10">
+            <StackPanel Margin="0 5">
                 <TextBlock>Public API Key</TextBlock>
                 <TextBox Text="{Binding PublicAPI_Key}"></TextBox>
             </StackPanel>
-            <StackPanel Margin="0 10">
+            <StackPanel Margin="0 5">
                 <TextBlock>Private API Key</TextBlock>
                 <PasswordBox x:Name="PrivateAPI_Key"></PasswordBox>
             </StackPanel>
 
-            <Button Margin="0 10"
+            <Button Margin="0 5"
+                    Width="100"
                     Command="{Binding RegistrationCommand}">
                 <Button.CommandParameter>
                     <MultiBinding Converter="{cnv:ValuesToObjectConverter}">
@@ -52,11 +94,15 @@
                     <TextBlock>Create account</TextBlock>
                 </Button.Content>
             </Button>
-            <StackPanel Margin="0 5">
-                <Button Command="{Binding SwitchToLoginCommand}">
-                    <TextBlock>Sign in</TextBlock>
-                </Button>
-            </StackPanel>
         </StackPanel>
+
+        <TextBlock Grid.Row="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+                        <Hyperlink Command="{Binding SwitchToLoginCommand}">
+                            Sign in
+                        </Hyperlink>
+        </TextBlock>
+
     </Grid>
 </Window>
