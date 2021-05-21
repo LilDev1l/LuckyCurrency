@@ -57,7 +57,7 @@ namespace LuckyCurrency.Converter
                 case "M":
                     return "M";
                 default:
-                    throw new Exception("Неверный формат интервала");
+                    throw new Exception("Invalid spacing format");
             }
 
         }

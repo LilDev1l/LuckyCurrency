@@ -139,6 +139,7 @@
     <Compile Include="Services\Auth\Authentication.cs" />
     <Compile Include="Services\Bybit.cs" />
     <Compile Include="Data\IDataService.cs" />
+    <Compile Include="Services\InternetAvailability.cs" />
     <Compile Include="Services\Models\BalanceWS\BalanceWSBase.cs" />
     <Compile Include="Services\Models\BalanceWS\BalanceWSData.cs" />
     <Compile Include="Services\Models\Balance\BalanceBase.cs" />

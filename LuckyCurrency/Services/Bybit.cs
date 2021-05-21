@@ -137,7 +137,7 @@ namespace LuckyCurrency.Services
                     case "M":
                         return 30 * 24 * 60 * 60;
                     default:
-                        throw new Exception("Неверный формат интервала");
+                        throw new Exception("Invalid spacing format");
                 }
 
             }
@@ -303,7 +303,7 @@ namespace LuckyCurrency.Services
                 case Time.Tick:
                     return timeServerSeconds * 10000000;
                 default:
-                    throw new Exception("Неверный формат времени");
+                    throw new Exception("Invalid time format");
             }
         }
 

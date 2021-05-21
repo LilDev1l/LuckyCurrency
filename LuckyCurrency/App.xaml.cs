@@ -15,8 +15,10 @@ namespace LuckyCurrency
     {
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
-            e.Handled = true;
+            Application.Current.Shutdown();
+            MessageBox.Show(e.Exception.InnerException.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
+            
+            //e.Handled = true;
         }
     }
 }

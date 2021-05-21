@@ -1,4 +1,5 @@
-﻿using LuckyCurrency.ViewModels.Authorization;
+﻿using LuckyCurrency.Services;
+using LuckyCurrency.ViewModels.Authorization;
 using System;
 using System.Windows;
 
@@ -11,6 +12,9 @@ namespace LuckyCurrency.Views.Authorization
     {
         public Login()
         {
+            if (!InternetAvailability.IsInternetAvailable())
+                throw new Exception("No internet connection");
+
             InitializeComponent();
 
             LoginViewModel vm = new LoginViewModel();
