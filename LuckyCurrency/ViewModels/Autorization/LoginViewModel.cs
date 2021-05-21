@@ -18,6 +18,10 @@ namespace LuckyCurrency.ViewModels.Autorization
 {
     class LoginViewModel : ViewModel
     {
+        private const string FIELDS_EMPTY = "Fields are not filled";
+        private const string INCORRECTLY = "Password or login entered incorrectly";
+
+
         private UnitOfWork _dbWorker;
 
         #region Models
@@ -45,7 +49,7 @@ namespace LuckyCurrency.ViewModels.Autorization
         public string Password
         {
             get => _password;
-            set => Set(ref _password, PasswordHasher.GetHash(value));
+            set => Set(ref _password, value);
         }
         #endregion
 
@@ -118,19 +122,19 @@ namespace LuckyCurrency.ViewModels.Autorization
         {
             if (IsFieldsNotEmpty())
             {
-                var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == Password);
+                var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == PasswordHasher.GetHash(Password));
                 if (user != null)
                 {
                     SwitchTo(GetMainWindow(_dbWorker.API_Keys.Get(user.Id)));
                 }
                 else
                 {
-                    InfoMessage = "Данные не верны!!!";
+                    InfoMessage = INCORRECTLY;
                 }
             }
             else
             {
-                InfoMessage = "Поля не заполнены!!!";
+                InfoMessage = FIELDS_EMPTY;
             }
         }
 

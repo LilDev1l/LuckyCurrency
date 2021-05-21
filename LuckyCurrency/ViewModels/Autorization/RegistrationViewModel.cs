@@ -18,8 +18,8 @@ namespace LuckyCurrency.ViewModels.Autorization
 {
     class RegistrationViewModel : ViewModel
     {
-        private const string DUPLICATE_USER_DATA = "Пользаватель с таким именем или логином уже существует!!!";
-        private const string FIELDS_EMPTY = "Заполнены не все поля!!!";
+        private const string DUPLICATE_USER_DATA = "A user with this login already exists";
+        private const string FIELDS_EMPTY = "Fields are not filled";
 
         private UnitOfWork _dbWorker;
 
@@ -48,7 +48,7 @@ namespace LuckyCurrency.ViewModels.Autorization
         public string Password
         {
             get => _password;
-            set => Set(ref _password, PasswordHasher.GetHash(value));
+            set => Set(ref _password, value);
         }
         #endregion
 
@@ -127,7 +127,7 @@ namespace LuckyCurrency.ViewModels.Autorization
                     User user = new User()
                     {
                         Login = this.Login,
-                        Password = this.Password
+                        Password = PasswordHasher.GetHash(this.Password)
                     };
                     _dbWorker.Users.Create(user);
                     _dbWorker.Save();
@@ -166,7 +166,7 @@ namespace LuckyCurrency.ViewModels.Autorization
 
         private bool IsFieldNotEmpty()
         {
-            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
+            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(PublicAPI_Key) && !string.IsNullOrEmpty(PrivateAPI_Key);
         }
 
         private bool DuplicateCheck()
