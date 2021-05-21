@@ -1,9 +1,9 @@
-﻿    <Application x:Class="LuckyCurrency.App"
+﻿<Application x:Class="LuckyCurrency.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cnv="clr-namespace:LuckyCurrency.Converter"
-             StartupUri="Views/Authorization/Login.xaml">
-    <!--dispatcherunhandledexception="application_dispatcherunhandledexception"-->
+             StartupUri="Views/Authorization/Login.xaml"
+             DispatcherUnhandledException="Application_DispatcherUnhandledException">
 
     <Application.Resources>
         <ResourceDictionary>
