@@ -273,7 +273,7 @@ namespace LuckyCurrency.ViewModels
         {
             Task.Run(() =>
             {
-                Bybit.ReconnectPublicWS();
+                BybitClient.ReconnectPublicWS();
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
@@ -282,9 +282,9 @@ namespace LuckyCurrency.ViewModels
                     Asks.Clear();
                 });
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
 
                 PriceOrder = CurrentSymbol.price_filter.min_price;
                 QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
@@ -304,7 +304,7 @@ namespace LuckyCurrency.ViewModels
             {
                 Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
             });
         }
         #endregion
@@ -344,7 +344,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", false, false);
+                OrderBase orderBase = BybitClient.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", false, false);
                 if(orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -374,7 +374,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", false, false);
+                OrderBase orderBase = BybitClient.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", false, false);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -397,7 +397,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", true, true);
+                OrderBase orderBase = BybitClient.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", true, true);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -420,7 +420,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is string side)
             {
-                OrderBase orderBase = Bybit.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", true, true);
+                OrderBase orderBase = BybitClient.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", true, true);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -443,7 +443,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is Order order)
             {
-                OrderBase orderBase = Bybit.CancelOrder(order.Symbol, order.Order_id);
+                OrderBase orderBase = BybitClient.CancelOrder(order.Symbol, order.Order_id);
                 if (orderBase.ret_code == 0)
                 {
                     Notifier.ShowSuccess($"Cancelled Successfully");
@@ -469,7 +469,7 @@ namespace LuckyCurrency.ViewModels
         {
             if (p is Position position)
             {
-                OrderBase orderBase = Bybit.CreateMarketOrder(position.Side == "Long" ? "Sell" : "Buy", position.Symbol, position.Size, "GoodTillCancel", true, true);
+                OrderBase orderBase = BybitClient.CreateMarketOrder(position.Side == "Long" ? "Sell" : "Buy", position.Symbol, position.Size, "GoodTillCancel", true, true);
                 if (orderBase.ret_code == 0)
                 {
                     OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
@@ -515,7 +515,7 @@ namespace LuckyCurrency.ViewModels
         {
             Task.Run(() =>
             {
-                Symbols = Bybit.GetSymbolBase().result.FindAll(s => s.quote_currency == "USDT");
+                Symbols = BybitClient.GetSymbolBase().result.FindAll(s => s.quote_currency == "USDT");
 
                 PriceOrder = CurrentSymbol.price_filter.min_price;
                 QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
@@ -526,17 +526,17 @@ namespace LuckyCurrency.ViewModels
                 PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
                 Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
 
-                Bybit.NewMessage += GetNewMessage;
+                BybitClient.NewMessage += GetNewMessage;
 
-                Bybit.RunBybitWS();
+                BybitClient.RunBybitWS();
 
-                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-                Bybit.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
 
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
-                Bybit.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
 
                 WsRun = true;
             });
@@ -566,9 +566,9 @@ namespace LuckyCurrency.ViewModels
             ChangeThemeCommand = new LambdaCommand(OnChangeThemeCommandExecuted, CanChangeThemeCommandExecute);
             #endregion
 
-            Bybit.SetCultureUS();
-            Bybit.SetAPI_Key(api_key.PublicKey);
-            Bybit.SetSecret_Key(api_key.SecretKey);
+            BybitClient.SetCultureUS();
+            BybitClient.SetAPI_Key(api_key.PublicKey);
+            BybitClient.SetSecret_Key(api_key.SecretKey);
         }
 
         #region HTTP
@@ -578,12 +578,12 @@ namespace LuckyCurrency.ViewModels
         {
             ICandle GetCandleFromLinearKline(LinearKlineData kline)
             {
-                DateTime openTime = new DateTime(kline.OpenTime * 10000000L + Bybit.Duration);
+                DateTime openTime = new DateTime(kline.OpenTime * 10000000L + BybitClient.Duration);
 
                 return new Candle(openTime, kline.Open, kline.High, kline.Low, kline.Close, (long)kline.Volume);
             }
 
-            LinearKlineBase linearKlineBase = Bybit.GetLinearKlineBase(pair, timeframe);
+            LinearKlineBase linearKlineBase = BybitClient.GetLinearKlineBase(pair, timeframe);
             List<LinearKlineData> linearKlineData = linearKlineBase.Result;
 
             ObservableCollection<ICandle> candles = new ObservableCollection<ICandle>();
@@ -599,14 +599,14 @@ namespace LuckyCurrency.ViewModels
         #region private
         private Balance GetBalance(string coin)
         {
-            BalanceBase currentBalanceBase = Bybit.GetBalanceBase(coin);
+            BalanceBase currentBalanceBase = BybitClient.GetBalanceBase(coin);
             BalanceData currentBalanceData = currentBalanceBase.Result.USDT;
 
             return new Balance(currentBalanceData.Wallet_balance, currentBalanceData.Available_balance);
         }
         private ObservableCollection<Position> GetPositions(string symbol)
         {
-            PositionBase positionBase = Bybit.GetPositionBase(symbol);
+            PositionBase positionBase = BybitClient.GetPositionBase(symbol);
             List<PositionData> positionData = positionBase.result;
 
             ObservableCollection<Position> positions = new ObservableCollection<Position>();
@@ -619,7 +619,7 @@ namespace LuckyCurrency.ViewModels
         }
         private ObservableCollection<Order> GetOrders(string symbol, string orderStatus = null)
         {
-            OrderBase orderBase = Bybit.GetOrderBase(symbol, orderStatus);
+            OrderBase orderBase = BybitClient.GetOrderBase(symbol, orderStatus);
             OrderPage orderPage = ((JObject)orderBase.result).ToObject<OrderPage>();
             List<OrderData> orderDatas = orderPage.data;
 
@@ -637,7 +637,7 @@ namespace LuckyCurrency.ViewModels
         }
         private static List<PositionClosePnl> GetPositionsClosePnl(string symbol, string exec_type = null)
         {
-            PositionClosePnlBase positionClosePnlBase = Bybit.GetPositionsClosePnlBase(symbol, exec_type);
+            PositionClosePnlBase positionClosePnlBase = BybitClient.GetPositionsClosePnlBase(symbol, exec_type);
             PositionClosePnlPage positionClosePnlPage = positionClosePnlBase.result;
             List<PositionClosePnlData> positionClosePnlDatas = positionClosePnlPage.data;
 
@@ -646,7 +646,7 @@ namespace LuckyCurrency.ViewModels
             {
                 foreach (var posClosePnl in positionClosePnlDatas)
                 {
-                    positionClosePnls.Add(new PositionClosePnl(posClosePnl.symbol, posClosePnl.side == "Buy" ? "Short" : "Long", posClosePnl.qty, posClosePnl.avg_entry_price, posClosePnl.avg_exit_price, posClosePnl.closed_pnl, posClosePnl.exec_type, new DateTime(posClosePnl.created_at * 10000000L + Bybit.Duration)));
+                    positionClosePnls.Add(new PositionClosePnl(posClosePnl.symbol, posClosePnl.side == "Buy" ? "Short" : "Long", posClosePnl.qty, posClosePnl.avg_entry_price, posClosePnl.avg_exit_price, posClosePnl.closed_pnl, posClosePnl.exec_type, new DateTime(posClosePnl.created_at * 10000000L + BybitClient.Duration)));
                 }
             }
 
@@ -747,7 +747,7 @@ namespace LuckyCurrency.ViewModels
 
             ICandle GetCandleFromLinearKlineWebSocket(LinearKlineWSData klineWS)
             {
-                DateTime openTime = new DateTime(klineWS.Start * 10000000L + Bybit.Duration);
+                DateTime openTime = new DateTime(klineWS.Start * 10000000L + BybitClient.Duration);
 
                 return new Candle(openTime, klineWS.Open, klineWS.High, klineWS.Low, klineWS.Close, (int)double.Parse(klineWS.Volume));
             }

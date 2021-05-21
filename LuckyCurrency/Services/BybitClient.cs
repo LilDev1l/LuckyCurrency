@@ -7,13 +7,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using IO.Swagger.Api;
+using Bybit.Api;
 using LuckyCurrency.Services.Models.LinearKline;
 using LuckyCurrency.Services.Models.LinearKlineWS;
 using LuckyCurrency.Services.Auth;
 using Newtonsoft.Json.Linq;
 using Websocket.Client;
-using IO.Swagger.Client;
+using Bybit.Client;
 using LuckyCurrency.Services.Models.Balance;
 using LuckyCurrency.Services.Models.ServerTime;
 using LuckyCurrency.Services.Models.Position;
@@ -23,7 +23,7 @@ using LuckyCurrency.Services.Models.PositionClosePnl;
 
 namespace LuckyCurrency.Services
 {
-    static class Bybit
+    static class BybitClient
     {
         private static WebsocketClient _wsPublic;
         private static WebsocketClient _wsPrivate;
@@ -43,7 +43,7 @@ namespace LuckyCurrency.Services
         }
 
         #region Статический конструктор
-        static Bybit()
+        static BybitClient()
         {
             Duration = GetTimeDuration();
         }

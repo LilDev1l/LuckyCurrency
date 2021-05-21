@@ -50,10 +50,6 @@
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="IO.Swagger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\IO.Swagger.dll</HintPath>
-    </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.5\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -137,7 +133,7 @@
     <Compile Include="Data\Repositories\AccountRepository.cs" />
     <Compile Include="Data\Repositories\API_KeyRepository.cs" />
     <Compile Include="Services\Auth\Authentication.cs" />
-    <Compile Include="Services\Bybit.cs" />
+    <Compile Include="Services\BybitClient.cs" />
     <Compile Include="Data\IDataService.cs" />
     <Compile Include="Services\InternetAvailability.cs" />
     <Compile Include="Services\Models\BalanceWS\BalanceWSBase.cs" />
@@ -252,6 +248,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bybit\Bybit.csproj">
+      <Project>{2fc808bf-158c-4579-aa6c-70d3fbf78cf0}</Project>
+      <Name>Bybit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FancyCandles\FancyCandles\FancyCandles.csproj">
       <Project>{f24d1444-a396-4881-ac6b-d438b97025ec}</Project>
       <Name>FancyCandles</Name>
