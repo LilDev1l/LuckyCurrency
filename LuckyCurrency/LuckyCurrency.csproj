@@ -177,14 +177,14 @@
     <Compile Include="Services\Models\Trade\TradeData.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="Data\Repositories\UserRepository.cs" />
-    <Compile Include="ViewModels\Autorization\LoginViewModel.cs" />
-    <Compile Include="ViewModels\Autorization\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\Authorization\LoginViewModel.cs" />
+    <Compile Include="ViewModels\Authorization\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Views\Autorization\Login.xaml.cs">
+    <Compile Include="Views\Authorization\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Autorization\Registration.xaml.cs">
+    <Compile Include="Views\Authorization\Registration.xaml.cs">
       <DependentUpon>Registration.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -196,11 +196,19 @@
     </Compile>
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
-    <Page Include="Views\Autorization\Login.xaml">
+    <Page Include="Resources\AuthorizationWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Autorization\Registration.xaml">
+    <Page Include="Resources\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Authorization\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Authorization\Registration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

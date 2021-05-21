@@ -1,9 +1,9 @@
-﻿using LuckyCurrency.ViewModels.Autorization;
+﻿using LuckyCurrency.ViewModels.Authorization;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LuckyCurrency.Views.Autorization
+namespace LuckyCurrency.Views.Authorization
 {
     /// <summary>
     /// Логика взаимодействия для Registration.xaml

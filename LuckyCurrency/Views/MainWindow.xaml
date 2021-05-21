@@ -1,5 +1,5 @@
 ﻿<mah:MetroWindow x:Class="LuckyCurrency.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"   
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -70,7 +70,7 @@
                 </i:Interaction.Triggers>
             </mah:SplitButton>
 
-            <StackPanel Grid.Row="4" 
+            <StackPanel Grid.Row="3" 
                         VerticalAlignment="Bottom">
                 <Button Margin="0 0 0 3"
                         Command="{Binding ChangeThemeCommand}">
@@ -123,7 +123,8 @@
                 </fc:CandleChart.LegendText>
             </fc:CandleChart>
 
-            <Grid Grid.Column="1" Grid.Row="0"
+            <Grid x:Name="OrderBook" 
+                  Grid.Column="1" Grid.Row="0"
                   Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
@@ -134,13 +135,14 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                
                 <StackPanel Grid.Row="0" Grid.ColumnSpan="2"
                             Orientation="Horizontal"
                             HorizontalAlignment="Center" VerticalAlignment="Center">
                     <fa:ImageAwesome Height="8" Margin="0,0,8,0" Style="{StaticResource BuyOrSellLastTrade}"/>
                     <TextBlock FontWeight="Bold">
                         <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource TemplateConverter}">
+                            <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                 <Binding Path="LastTrade.Price"/>
                                 <Binding Path="CurrentSymbol.price_scale"/>
                             </MultiBinding>
@@ -162,7 +164,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Red" Header="Price" Width="auto">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                     <Binding Path="Price"/>
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -173,7 +175,7 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                     <Binding Path="Quantity"/>
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
@@ -182,7 +184,6 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                
                 <DataGrid Grid.Row="1" Grid.Column="1"
                           ItemsSource="{Binding Bids}"
                           AutoGenerateColumns="False"
@@ -197,7 +198,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Foreground="Green" Header="Price">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                     <Binding Path="Price"/>
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -208,7 +209,7 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                     <Binding Path="Quantity"/>
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
@@ -224,7 +225,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn ElementStyle="{StaticResource BuyOrSellOrder}" Header="Price" Width="auto">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                     <Binding Path="Price"/>
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -236,7 +237,7 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderRight}"
                                             CellStyle="{StaticResource DataGridCellRight}">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                     <Binding Path="Size"/>
                                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
@@ -249,9 +250,11 @@
                                             CellStyle="{StaticResource DataGridCellRight}"/>
                     </DataGrid.Columns>
                 </DataGrid>
+                
             </Grid>
 
-            <Grid Grid.Row="1" Grid.Column="2">
+            <Grid x:Name="Balance" 
+                  Grid.Row="1" Grid.Column="2">
                 <GroupBox Header="Balance">
                     <StackPanel>
                         <DockPanel LastChildFill="True">
@@ -280,7 +283,8 @@
                 </GroupBox>
             </Grid>
 
-            <TabControl Grid.Row="1" Grid.Column="0"
+            <TabControl x:Name="PositionsAndOrders" 
+                        Grid.Row="1" Grid.Column="0"
                         Grid.ColumnSpan="2">
                 <TabItem Header="Positions"
                          Margin="0 10 0 0">
@@ -292,7 +296,7 @@
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
                             <DataGridTextColumn Header="Qty" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Size"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
@@ -311,7 +315,7 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Entry Price" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Entry_price"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -320,7 +324,7 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Liq. Price" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Liq_price"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -337,7 +341,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
-                <TabItem>
+                <TabItem x:Name="ActiveOrders">
                     <TabItem.Header>
                         <mah:Badged BadgePlacementMode="TopRight"
                                     Badge="{Binding CountOrder}"
@@ -357,7 +361,7 @@
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}" FontWeight="Bold" ElementStyle="{StaticResource BuyOrSellOrder}" />
                             <DataGridTextColumn Header="Qty" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Qty"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
@@ -367,7 +371,7 @@
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}" FontWeight="Bold" ElementStyle="{StaticResource BuyOrSellOrder}"/>
                             <DataGridTextColumn Header="Order Price" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Price"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -396,7 +400,7 @@
                             <DataGridTextColumn Header="Contracts" Width="*" Binding="{Binding Path=Symbol}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
                             <DataGridTextColumn Header="Qty" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Qty"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.lot_size_filter.qty_scale"/>
@@ -406,7 +410,7 @@
                             <DataGridTextColumn Header="Side" Width="auto" Binding="{Binding Path=Side}" FontWeight="Bold" ElementStyle="{StaticResource LongOrShortOrder}"/>
                             <DataGridTextColumn Header="Entry Price" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Avg_entry_price"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -415,7 +419,7 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Exit Price" Width="*">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding Converter="{StaticResource TemplateConverter}">
+                                    <MultiBinding Converter="{StaticResource SimbolsAfterCommaConverter}">
                                         <Binding Path="Avg_exit_price"/>
                                         <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=DataGrid}"
                                              Path="DataContext.CurrentSymbol.price_scale"/>
@@ -437,7 +441,8 @@
                 </TabItem>
             </TabControl>
 
-            <TabControl Grid.Row="0" Grid.Column="2">
+            <TabControl x:Name="CreateOrder" 
+                        Grid.Row="0" Grid.Column="2">
                 <TabItem Header="Open" Width="105">
                     <Grid>
                         <TabControl>
@@ -476,7 +481,7 @@
                                         <TextBlock DockPanel.Dock="Right" 
                                                    VerticalAlignment="Center">
                                             <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource OrderValue}">
+                                                <MultiBinding Converter="{StaticResource OrderValueConverter}">
                                                     <Binding Path="PriceOrder"/>
                                                     <Binding Path="QtyOrder"/>
                                                     <Binding Path="CurrentSymbol.quote_currency"/>
@@ -517,7 +522,7 @@
                                         <TextBlock DockPanel.Dock="Right" 
                                                    VerticalAlignment="Center">
                                             <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource OrderValue}">
+                                                <MultiBinding Converter="{StaticResource OrderValueConverter}">
                                                     <Binding Path="LastTrade.Price"/>
                                                     <Binding Path="QtyOrder"/>
                                                     <Binding Path="CurrentSymbol.quote_currency"/>
@@ -577,7 +582,7 @@
                                     <TextBlock DockPanel.Dock="Right" 
                                                    VerticalAlignment="Center">
                                         <TextBlock.Text>
-                                            <MultiBinding Converter="{StaticResource OrderValue}">
+                                            <MultiBinding Converter="{StaticResource OrderValueConverter}">
                                                 <Binding Path="PriceOrder"/>
                                                 <Binding Path="QtyOrder"/>
                                                 <Binding Path="CurrentSymbol.quote_currency"/>
@@ -618,7 +623,7 @@
                                     <TextBlock DockPanel.Dock="Right" 
                                                    VerticalAlignment="Center">
                                         <TextBlock.Text>
-                                            <MultiBinding Converter="{StaticResource OrderValue}">
+                                            <MultiBinding Converter="{StaticResource OrderValueConverter}">
                                                 <Binding Path="LastTrade.Price"/>
                                                 <Binding Path="QtyOrder"/>
                                                 <Binding Path="CurrentSymbol.quote_currency"/>

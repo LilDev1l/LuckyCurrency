@@ -32,7 +32,7 @@ using ToastNotifications.Position;
 using ToastNotifications.Messages;
 using LuckyCurrency.Models.DB;
 using System.Windows;
-using LuckyCurrency.Views.Autorization;
+using LuckyCurrency.Views.Authorization;
 using ControlzEx.Theming;
 
 namespace LuckyCurrency.ViewModels

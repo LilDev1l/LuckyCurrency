@@ -4,7 +4,7 @@ using LuckyCurrency.Infrastructure.Commands;
 using LuckyCurrency.Models.DB;
 using LuckyCurrency.Services;
 using LuckyCurrency.ViewModels.Base;
-using LuckyCurrency.Views.Autorization;
+using LuckyCurrency.Views.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace LuckyCurrency.ViewModels.Autorization
+namespace LuckyCurrency.ViewModels.Authorization
 {
     class LoginViewModel : ViewModel
     {
