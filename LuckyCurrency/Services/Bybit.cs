@@ -30,8 +30,8 @@ namespace LuckyCurrency.Services
         public static long Duration { get; set; } 
         public static event Action<string> NewMessage;
 
-        private static string _api_key = "nMtZ68DOpAAVWrnJba";
-        private static string _secret_key = "5PKGos787uTBxbjZ7Tn7fcfbZanNbZQTecCa";
+        private static string _api_key;
+        private static string _secret_key;
 
         public static void SetAPI_Key(string api_key)
         {
