@@ -10,11 +10,11 @@ using Newtonsoft.Json.Linq;
 using Bybit.Model;
 using Bybit.Api;
 using LuckyCurrency.Models;
-using LuckyCurrency.Models.DB;
 using System.Linq;
 using LuckyCurrency.Hasher;
 using LuckyCurrency.ViewModels;
 using MahApps.Metro.Controls;
+using LuckyCurrency.Data.Model;
 
 namespace LuckyCurrency
 {

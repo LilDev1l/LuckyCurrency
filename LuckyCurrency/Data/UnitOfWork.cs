@@ -1,5 +1,4 @@
 ﻿using LuckyCurrency.Data.Repositories;
-using LuckyCurrency.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;

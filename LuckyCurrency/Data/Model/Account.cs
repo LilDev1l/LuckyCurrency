@@ -6,16 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuckyCurrency.Models.DB
+namespace LuckyCurrency.Data.Model
 {
-    public class API_Key
+    public class Account
     {
         [Key]
-        [ForeignKey("Account")]
+        [ForeignKey("User")]
         public int Id { get; set; }
-        public string PublicKey { get; set; }
-        public string SecretKey { get; set; }
+        public API_Key API_Key { get; set; }
 
-        public Account Account { get; set; }
+        public User User { get; set; }
     }
 }

@@ -15,7 +15,6 @@ using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Position;
 using ToastNotifications.Messages;
-using LuckyCurrency.Models.DB;
 using System.Windows;
 using LuckyCurrency.Views.Authorization;
 using ControlzEx.Theming;
@@ -34,6 +33,7 @@ using Bybit.Model.OrderBook;
 using Bybit.Model.OrderBookSnapshot;
 using Bybit.Model.PositionWS;
 using Bybit.Model.OrderWS;
+using LuckyCurrency.Data.Model;
 
 namespace LuckyCurrency.ViewModels
 {

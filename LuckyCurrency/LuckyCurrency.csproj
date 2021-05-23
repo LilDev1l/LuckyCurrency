@@ -123,10 +123,10 @@
     <Compile Include="Converter\TimeFrameConvert.cs" />
     <Compile Include="Converter\ValuesToObjectConverter.cs" />
     <Compile Include="Hasher\PasswordHasher.cs" />
-    <Compile Include="Models\DB\Account.cs" />
-    <Compile Include="Models\DB\API_Key.cs" />
-    <Compile Include="Models\DB\ApplicationContext.cs" />
-    <Compile Include="Models\DB\User.cs" />
+    <Compile Include="Data\Model\Account.cs" />
+    <Compile Include="Data\Model\API_Key.cs" />
+    <Compile Include="Data\ApplicationContext.cs" />
+    <Compile Include="Data\Model\User.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\PositionClosePnl.cs" />
