@@ -125,7 +125,7 @@ namespace LuckyCurrency.ViewModels.Authorization
                 var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == PasswordHasher.GetHash(Password));
                 if (user != null)
                 {
-                    SwitchTo(GetMainWindow(_dbWorker.API_Keys.Get(user.Id)));
+                    SwitchTo(GetMainWindow(_dbWorker.API_Keys.GetById(user.Id)));
                 }
                 else
                 {

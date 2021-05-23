@@ -15,7 +15,7 @@ namespace LuckyCurrency.Data.Repositories
         {
             _db = db;
         }
-        public Account Create(Account entity)
+        public Account Insert(Account entity)
         {
             return _db.Accounts.Add(entity);
         }
@@ -34,7 +34,7 @@ namespace LuckyCurrency.Data.Repositories
             return flag;
         }
 
-        public Account Get(int id)
+        public Account GetById(int id)
         {
             return _db.Accounts.Find(id);
         }
@@ -52,11 +52,6 @@ namespace LuckyCurrency.Data.Repositories
             dest.User = entity.User;
 
             return dest;
-        }
-
-        public void Save()
-        {
-            _db.SaveChanges();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace LuckyCurrency.Data.Repositories
         {
             _db = db;
         }
-        public API_Key Create(API_Key entity)
+        public API_Key Insert(API_Key entity)
         {
             return _db.API_Keys.Add(entity);
         }
@@ -34,7 +34,7 @@ namespace LuckyCurrency.Data.Repositories
             return flag;
         }
 
-        public API_Key Get(int id)
+        public API_Key GetById(int id)
         {
             return _db.API_Keys.Find(id);
         }
@@ -53,11 +53,6 @@ namespace LuckyCurrency.Data.Repositories
             dest.Account = entity.Account;
 
             return dest;
-        }
-
-        public void Save()
-        {
-            _db.SaveChanges();
         }
     }
 }

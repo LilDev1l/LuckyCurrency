@@ -1,7 +1,7 @@
 ﻿using LuckyCurrency.Data;
+using LuckyCurrency.Data.Model;
 using LuckyCurrency.Hasher;
 using LuckyCurrency.Infrastructure.Commands;
-using LuckyCurrency.Models.DB;
 using LuckyCurrency.Services;
 using LuckyCurrency.ViewModels.Base;
 using LuckyCurrency.Views.Authorization;
@@ -129,7 +129,7 @@ namespace LuckyCurrency.ViewModels.Authorization
                         Login = this.Login,
                         Password = PasswordHasher.GetHash(this.Password)
                     };
-                    _dbWorker.Users.Create(user);
+                    _dbWorker.Users.Insert(user);
                     _dbWorker.Save();
 
                     Account account = new Account()
@@ -137,7 +137,7 @@ namespace LuckyCurrency.ViewModels.Authorization
                         Id = user.Id,
                         User = user
                     };
-                    _dbWorker.Accounts.Create(account);
+                    _dbWorker.Accounts.Insert(account);
                     _dbWorker.Save();
 
                     API_Key apiKey = new API_Key()
@@ -147,7 +147,7 @@ namespace LuckyCurrency.ViewModels.Authorization
                         SecretKey = this.PrivateAPI_Key,
                         Account = account
                     };
-                    _dbWorker.API_Keys.Create(apiKey);
+                    _dbWorker.API_Keys.Insert(apiKey);
                     _dbWorker.Save();
 
                     SwitchTo(new Login());

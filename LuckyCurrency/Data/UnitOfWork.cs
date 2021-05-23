@@ -9,7 +9,7 @@ namespace LuckyCurrency.Data
 {
     class UnitOfWork : IDisposable
     {
-        private ApplicationContext db = new ApplicationContext();
+        private ApplicationContext _db = new ApplicationContext();
         private UserRepository _userRepository;
         private AccountRepository _accountRepository;
         private API_KeyRepository _api_KeyRepository;
@@ -21,7 +21,7 @@ namespace LuckyCurrency.Data
             {
                 if (_userRepository == null)
                 {
-                    _userRepository = new UserRepository(db);
+                    _userRepository = new UserRepository(_db);
                 }
 
                 return _userRepository;
@@ -34,7 +34,7 @@ namespace LuckyCurrency.Data
             {
                 if (_accountRepository == null)
                 {
-                    _accountRepository = new AccountRepository(db);
+                    _accountRepository = new AccountRepository(_db);
                 }
 
                 return _accountRepository;
@@ -47,7 +47,7 @@ namespace LuckyCurrency.Data
             {
                 if (_api_KeyRepository == null)
                 {
-                    _api_KeyRepository = new API_KeyRepository(db);
+                    _api_KeyRepository = new API_KeyRepository(_db);
                 }
 
                 return _api_KeyRepository;
@@ -56,7 +56,7 @@ namespace LuckyCurrency.Data
 
         public void Save()
         {
-            db.SaveChanges();
+            _db.SaveChanges();
         }
 
         private bool disposed = false;
@@ -67,7 +67,7 @@ namespace LuckyCurrency.Data
             {
                 if (disposing)
                 {
-                    db.Dispose();
+                    _db.Dispose();
                 }
                 this.disposed = true;
             }

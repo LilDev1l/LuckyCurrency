@@ -10,14 +10,12 @@ namespace LuckyCurrency.Data
     {
         IEnumerable<T> GetAll();
 
-        T Get(int id);
+        T GetById(int id);
 
-        T Create(T entity);
+        T Insert(T entity);
 
         T Update(T oldEntity, T entity);
 
         bool Delete(int id);
-
-        void Save();
     }
 }
