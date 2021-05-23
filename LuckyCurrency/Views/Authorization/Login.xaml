@@ -14,7 +14,11 @@
         Title="{Binding Title}" 
         Style="{StaticResource AutorizationWindowStyle}">
 
-    <Grid>
+    <Window.InputBindings>
+        <KeyBinding Key="Enter" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=PasswordBox}"/>
+    </Window.InputBindings>
+
+            <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="80"></RowDefinition>

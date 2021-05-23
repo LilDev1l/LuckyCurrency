@@ -14,7 +14,18 @@
         Height="450" Width="340"
         Title="{Binding Title}"
         Style="{StaticResource AutorizationWindowStyle}">
-    
+
+    <Window.InputBindings>
+        <KeyBinding Key="Enter" Command="{Binding RegistrationCommand}">
+            <KeyBinding.CommandParameter>
+                <MultiBinding Converter="{cnv:ValuesToObjectConverter}">
+                    <Binding ElementName="PasswordBox"/>
+                    <Binding ElementName="PrivateAPI_Key"/>
+                </MultiBinding>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+    </Window.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
