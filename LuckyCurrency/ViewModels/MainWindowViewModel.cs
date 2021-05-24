@@ -266,6 +266,41 @@ namespace LuckyCurrency.ViewModels
 
         #region Команды
 
+        #region LoadedCommand 
+        public ICommand LoadedCommand { get; }
+        private bool CanLoadedCommandExecute(object p) => true;
+        private void OnLoadedCommandExecuted(object p)
+        {
+            Task.Run(() =>
+            {
+                Symbols = BybitClient.GetSymbolBase().result.FindAll(s => s.quote_currency == "USDT");
+
+                PriceOrder = CurrentSymbol.price_filter.min_price;
+                QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
+
+                Balance = GetBalance("USDT");
+                Positions = GetPositions(CurrentSymbol.alias);
+                Orders = GetOrders(CurrentSymbol.alias, "New");
+                PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
+                Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
+
+                BybitClient.NewMessage += GetNewMessage;
+
+                BybitClient.RunBybitWS();
+
+                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
+                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
+
+                WsRun = true;
+            });
+        }
+        #endregion
+
         #region ChangeSymbolCommand
         public ICommand ChangeSymbolCommand { get; }
         private bool CanChangeSymbolCommandExecute(object p) => WsRun;
@@ -308,19 +343,6 @@ namespace LuckyCurrency.ViewModels
             });
         }
         #endregion
-
-        #region SwitchToLoginCommand
-        public ICommand SwitchToLoginCommand { get; }
-        private bool CanSwitchToLoginCommandExecute(object p) => true;
-        private void OnSwitchToLoginCommandExecuted(object p)
-        {
-            BybitClient.ReconnectPrivateWS();
-            BybitClient.ReconnectPublicWS();
-            BybitClient.NewMessage -= GetNewMessage;
-            SwitchTo(new Login());
-        }
-        #endregion
-
         #region SelectedPriceCommand
         public ICommand SelectedPriceCommand { get; }
         private bool CanSelectedPriceCommandExecute(object p)
@@ -339,7 +361,6 @@ namespace LuckyCurrency.ViewModels
             }
         }
         #endregion
-
         #region CreateOpenLimitOrderCommand
         public ICommand CreateOpenLimitOrderCommand { get; }
         private bool CanCreateOpenLimitOrderCommandExecute(object p) => true;
@@ -488,7 +509,6 @@ namespace LuckyCurrency.ViewModels
             }
         }
         #endregion
-
         #region ChangeThemeCommand
         public ICommand ChangeThemeCommand { get; }
         private bool CanChangeThemeCommandExecute(object p) => true;
@@ -510,39 +530,26 @@ namespace LuckyCurrency.ViewModels
             }
         }
         #endregion
-
-        #region RunWSCommand 
-        public ICommand RunWSCommand { get; }
-        private bool CanRunWebSocketCommandExecute(object p) => true;
-        private void OnRunWebSocketCommandExecuted(object p)
+        #region SwitchToLoginCommand
+        public ICommand SwitchToLoginCommand { get; }
+        private bool CanSwitchToLoginCommandExecute(object p) => true;
+        private void OnSwitchToLoginCommandExecuted(object p)
         {
-            Task.Run(() =>
-            {
-                Symbols = BybitClient.GetSymbolBase().result.FindAll(s => s.quote_currency == "USDT");
+            BybitClient.ReconnectPrivateWS();
+            BybitClient.ReconnectPublicWS();
+            BybitClient.NewMessage -= GetNewMessage;
+            SwitchTo(new Login());
+        }
+        #endregion
 
-                PriceOrder = CurrentSymbol.price_filter.min_price;
-                QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
-
-                Balance = GetBalance("USDT");
-                Positions = GetPositions(CurrentSymbol.alias);
-                Orders = GetOrders(CurrentSymbol.alias, "New");
-                PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
-                Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
-
-                BybitClient.NewMessage += GetNewMessage;
-
-                BybitClient.RunBybitWS();
-
-                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
-
-                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
-                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
-                BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
-
-                WsRun = true;
-            });
+        #region ClosingCommand 
+        public ICommand ClosingCommand { get; }
+        private bool CanClosingCommandExecute(object p) => true;
+        private void OnClosingCommandExecuted(object p)
+        {
+            BybitClient.ReconnectPrivateWS();
+            BybitClient.ReconnectPublicWS();
+            BybitClient.NewMessage -= GetNewMessage;
         }
         #endregion
 
@@ -551,22 +558,21 @@ namespace LuckyCurrency.ViewModels
         public MainWindowViewModel(API_Key api_key)
         {
             #region Команды
+            LoadedCommand = new LambdaCommand(OnLoadedCommandExecuted, CanLoadedCommandExecute);
+
             ChangeSymbolCommand = new LambdaCommand(OnChangeSymbolCommandExecuted, CanChangeSymbolCommandExecute);
             ChangeTimeframeCommand = new LambdaCommand(OnChangeTimeframeCommandExecuted, CanChangeTimeframeCommandExecute);
-            RunWSCommand = new LambdaCommand(OnRunWebSocketCommandExecuted, CanRunWebSocketCommandExecute);
-
-            SwitchToLoginCommand = new LambdaCommand(OnSwitchToLoginCommandExecuted, CanSwitchToLoginCommandExecute);
-
             SelectedPriceCommand = new LambdaCommand(OnSelectedPriceCommandExecuted, CanSelectedPriceCommandExecute);
-
             CreateOpenLimitOrderCommand = new LambdaCommand(OnCreateOpenLimitOrderCommandExecuted, CanCreateOpenLimitOrderCommandExecute);
             CreateOpenMarketOrderCommand = new LambdaCommand(OnCreateOpenMarketOrderCommandExecuted, CanCreateOpenMarketOrderCommandExecute);
             CreateCloseLimitOrderCommand = new LambdaCommand(OnCreateCloseLimitOrderCommandExecuted, CanCreateCloseLimitOrderCommandExecute);
             CreateCloseMarketOrderCommand = new LambdaCommand(OnCreateCloseMarketOrderCommandExecuted, CanCreateCloseMarketOrderCommandExecute);
             CancelOrderCommand = new LambdaCommand(OnCancelOrderCommandExecuted, CanCancelOrderCommandExecute);
             ClosePositionCommand = new LambdaCommand(OnClosePositionCommandExecuted, CanClosePositionCommandExecute);
-
             ChangeThemeCommand = new LambdaCommand(OnChangeThemeCommandExecuted, CanChangeThemeCommandExecute);
+            SwitchToLoginCommand = new LambdaCommand(OnSwitchToLoginCommandExecuted, CanSwitchToLoginCommandExecute);
+
+            ClosingCommand = new LambdaCommand(OnClosingCommandExecuted, CanClosingCommandExecute);
             #endregion
 
             BybitClient.SetCultureUS();

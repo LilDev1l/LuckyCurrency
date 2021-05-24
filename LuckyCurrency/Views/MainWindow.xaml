@@ -19,7 +19,10 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding Path=RunWSCommand}"/>
+            <i:InvokeCommandAction Command="{Binding Path=LoadedCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding Path=ClosingCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
