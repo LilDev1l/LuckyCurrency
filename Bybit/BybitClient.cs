@@ -9,10 +9,7 @@ using Bybit.Model.ServerTime2;
 using Bybit.Model.Symbol;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Websocket.Client;
@@ -54,11 +51,13 @@ namespace Bybit
             _wsPrivate = new WebsocketClient(new Uri($"wss://stream.bytick.com/realtime_private?api_key={_api_key}&expires={expires}&signature={signature}"));
             _wsPublic.MessageReceived.Subscribe(message =>
             {
-                NewMessage(message.Text);
+                if (NewMessage != null)
+                    NewMessage(message.Text);
             });
             _wsPrivate.MessageReceived.Subscribe(message =>
             {
-                NewMessage(message.Text);
+                if (NewMessage != null)
+                    NewMessage(message.Text);
             });
             _wsPublic.Start();
             _wsPrivate.Start();

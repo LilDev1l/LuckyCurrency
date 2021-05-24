@@ -1,6 +1,7 @@
 ﻿using LuckyCurrency.Data.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,6 +54,14 @@ namespace LuckyCurrency.Data.Repositories
             dest.Account = entity.Account;
 
             return dest;
+        }
+
+        public API_Key GetAPI_Key(string login, string password)
+        {
+            SqlParameter loginP = new SqlParameter("@login", login);
+            SqlParameter passwordP = new SqlParameter("@password", password);
+
+            return _db.Database.SqlQuery<API_Key>("SELECT * FROM GetAPI_Key (@login, @password)", loginP, passwordP).FirstOrDefault();
         }
     }
 }

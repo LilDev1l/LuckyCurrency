@@ -21,7 +21,6 @@ namespace LuckyCurrency.ViewModels.Authorization
         private const string FIELDS_EMPTY = "Fields are not filled";
         private const string INCORRECTLY = "Password or login entered incorrectly";
 
-
         private UnitOfWork _dbWorker;
 
         #region Models
@@ -90,7 +89,23 @@ namespace LuckyCurrency.ViewModels.Authorization
         {
             var passBox = p as PasswordBox;
             Password = passBox.Password;
-            LoginFunc();
+
+            if (IsFieldsNotEmpty())
+            {
+                var api_key = _dbWorker.Users.GetAPI_Key(Login, PasswordHasher.GetHash(Password));
+                if (api_key != null)
+                {
+                    SwitchTo(GetMainWindow(api_key));
+                }
+                else
+                {
+                    InfoMessage = INCORRECTLY;
+                }
+            }
+            else
+            {
+                InfoMessage = FIELDS_EMPTY;
+            }
         }
         #endregion
 
@@ -118,29 +133,9 @@ namespace LuckyCurrency.ViewModels.Authorization
             _dbWorker = new UnitOfWork();
         }
 
-        private void LoginFunc()
-        {
-            if (IsFieldsNotEmpty())
-            {
-                var user = _dbWorker.Users.GetAll().FirstOrDefault(s => s.Login == Login && s.Password == PasswordHasher.GetHash(Password));
-                if (user != null)
-                {
-                    SwitchTo(GetMainWindow(_dbWorker.API_Keys.GetById(user.Id)));
-                }
-                else
-                {
-                    InfoMessage = INCORRECTLY;
-                }
-            }
-            else
-            {
-                InfoMessage = FIELDS_EMPTY;
-            }
-        }
-
         private bool IsFieldsNotEmpty()
         {
-            return !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(Login);
+            return Password != null && Login != null;
         }
 
         private MainWindow GetMainWindow(API_Key api_key)

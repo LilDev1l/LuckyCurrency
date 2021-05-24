@@ -314,6 +314,9 @@ namespace LuckyCurrency.ViewModels
         private bool CanSwitchToLoginCommandExecute(object p) => true;
         private void OnSwitchToLoginCommandExecuted(object p)
         {
+            BybitClient.ReconnectPrivateWS();
+            BybitClient.ReconnectPublicWS();
+            BybitClient.NewMessage -= GetNewMessage;
             SwitchTo(new Login());
         }
         #endregion
