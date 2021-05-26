@@ -11,7 +11,6 @@ using Bybit.Model;
 using Bybit.Api;
 using LuckyCurrency.Models;
 using System.Linq;
-using LuckyCurrency.Hasher;
 using LuckyCurrency.ViewModels;
 using MahApps.Metro.Controls;
 using LuckyCurrency.Data.Model;

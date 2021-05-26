@@ -127,11 +127,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converter\OrderValueConverter.cs" />
-    <Compile Include="Converter\SimbolsAfterCommaConverter.cs" />
-    <Compile Include="Converter\TimeFrameConvert.cs" />
-    <Compile Include="Converter\ValuesToObjectConverter.cs" />
-    <Compile Include="Hasher\PasswordHasher.cs" />
+    <Compile Include="Сonverters\OrderValueConverter.cs" />
+    <Compile Include="Сonverters\SimbolsAfterCommaConverter.cs" />
+    <Compile Include="Сonverters\TimeFrameConvert.cs" />
+    <Compile Include="Сonverters\ValuesToObjectConverter.cs" />
+    <Compile Include="Infrastructure\PasswordHasher.cs" />
     <Compile Include="Data\Model\Account.cs" />
     <Compile Include="Data\Model\API_Key.cs" />
     <Compile Include="Data\ApplicationContext.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Data\Repositories\AccountRepository.cs" />
     <Compile Include="Data\Repositories\API_KeyRepository.cs" />
     <Compile Include="Data\IDataService.cs" />
-    <Compile Include="Services\InternetAvailability.cs" />
+    <Compile Include="Infrastructure\InternetAvailability.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="Data\Repositories\UserRepository.cs" />
     <Compile Include="ViewModels\Authorization\LoginViewModel.cs" />
@@ -188,7 +188,6 @@
   <ItemGroup>
     <Compile Include="Models\Candle.cs" />
     <Compile Include="Models\CurrentBalance.cs" />
-    <Compile Include="Models\Model.cs" />
     <Compile Include="Models\OrderBook.cs" />
     <Compile Include="Models\Trade.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

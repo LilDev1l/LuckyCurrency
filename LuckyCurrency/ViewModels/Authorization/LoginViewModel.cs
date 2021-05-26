@@ -1,8 +1,7 @@
 ﻿using LuckyCurrency.Data;
 using LuckyCurrency.Data.Model;
-using LuckyCurrency.Hasher;
+using LuckyCurrency.Infrastructure;
 using LuckyCurrency.Infrastructure.Commands;
-using LuckyCurrency.Services;
 using LuckyCurrency.ViewModels.Base;
 using LuckyCurrency.Views.Authorization;
 using System;

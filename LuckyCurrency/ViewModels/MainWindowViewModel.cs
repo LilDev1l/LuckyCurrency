@@ -1,4 +1,5 @@
-﻿using LuckyCurrency.ViewModels.Base;
+﻿#region Using
+using LuckyCurrency.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,6 +35,7 @@ using Bybit.Model.OrderBookSnapshot;
 using Bybit.Model.PositionWS;
 using Bybit.Model.OrderWS;
 using LuckyCurrency.Data.Model;
+#endregion
 
 namespace LuckyCurrency.ViewModels
 {

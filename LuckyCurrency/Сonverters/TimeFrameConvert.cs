@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace LuckyCurrency.Converter
+namespace LuckyCurrency.Converters
 {
     public class TimeFrameConvertExtension : MarkupExtension
     {

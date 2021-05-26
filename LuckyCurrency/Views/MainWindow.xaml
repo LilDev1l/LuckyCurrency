@@ -6,7 +6,7 @@
         xmlns:fc="clr-namespace:FancyCandles;assembly=FancyCandles"
         xmlns:vm="clr-namespace:LuckyCurrency.ViewModels"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:converter="clr-namespace:LuckyCurrency.Converter"
+        xmlns:converter="clr-namespace:LuckyCurrency.Converters"
         xmlns:local="clr-namespace:LuckyCurrency"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:cmd="clr-namespace:LuckyCurrency.Infrastructure.Commands"

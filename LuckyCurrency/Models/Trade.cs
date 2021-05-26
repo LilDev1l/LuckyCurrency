@@ -23,16 +23,4 @@ namespace LuckyCurrency.Models
             Side = side;
         }
     }
-    enum Side
-    { 
-        Buy,
-        Sell
-    }
-    enum TickDirection
-    {
-        PlusTick,
-        ZeroPlusTick,
-        MinusTick,
-        ZeroMinusTick
-    }
 }
