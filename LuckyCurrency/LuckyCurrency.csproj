@@ -8,7 +8,7 @@
     <ProjectGuid>{ED41AC47-FB6B-47E5-8E32-B2C0C2298DFF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>LuckyCurrency</RootNamespace>
-    <AssemblyName>LuckyCurrency</AssemblyName>
+    <AssemblyName>добавил</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -36,6 +36,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>LuckyCurrency.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
@@ -218,6 +221,9 @@
       <Project>{f24d1444-a396-4881-ac6b-d438b97025ec}</Project>
       <Name>FancyCandles</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LuckyCurrency.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
