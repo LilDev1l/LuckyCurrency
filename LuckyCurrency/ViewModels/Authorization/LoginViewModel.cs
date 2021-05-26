@@ -70,7 +70,7 @@ namespace LuckyCurrency.ViewModels.Authorization
         private bool CanCloseCommandExecute(object p) => true;
         private void OnCloseCommandExecuted(object p)
         {
-            App.Current.MainWindow.Close();
+            CurrentWindow.Close();
         }
         #endregion
         #region MinimizedCommand
@@ -78,7 +78,7 @@ namespace LuckyCurrency.ViewModels.Authorization
         private bool CanMinimizedCommandExecute(object p) => true;
         private void OnMinimizedCommandExecuted(object p)
         {
-            App.Current.MainWindow.WindowState = WindowState.Minimized;
+            CurrentWindow.WindowState = WindowState.Minimized;
         }
         #endregion
 
@@ -127,6 +127,7 @@ namespace LuckyCurrency.ViewModels.Authorization
             MinimizedCommand = new LambdaCommand(OnMinimizedCommandExecuted, CanMinimizedCommandExecute);
 
             LoginCommand = new LambdaCommand(OnLoginCommandExecuted, CanLoginCommandExecute);
+
             SwitchToRegistrationCommand = new LambdaCommand(OnSwitchToRegistrationCommandExecuted, CanSwitchToRegistrationCommandExecute);
             #endregion
 
@@ -135,7 +136,7 @@ namespace LuckyCurrency.ViewModels.Authorization
 
         private bool IsFieldsNotEmpty()
         {
-            return Password != null && Login != null;
+            return !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(Login);
         }
 
         private MainWindow GetMainWindow(API_Key api_key)

@@ -83,6 +83,23 @@ namespace LuckyCurrency.ViewModels.Authorization
 
         #region Команды
 
+        #region CloseCommand
+        public ICommand CloseCommand { get; }
+        private bool CanCloseCommandExecute(object p) => true;
+        private void OnCloseCommandExecuted(object p)
+        {
+            CurrentWindow.Close();
+        }
+        #endregion
+        #region MinimizedCommand
+        public ICommand MinimizedCommand { get; }
+        private bool CanMinimizedCommandExecute(object p) => true;
+        private void OnMinimizedCommandExecuted(object p)
+        {
+            CurrentWindow.WindowState = WindowState.Minimized;
+        }
+        #endregion
+
         #region RegistrationCommand
         public ICommand RegistrationCommand { get; }
         private bool CanRegistrationCommandExecute(object p) => true;
@@ -111,7 +128,11 @@ namespace LuckyCurrency.ViewModels.Authorization
         public RegistrationViewModel()
         {
             #region Команды
+            CloseCommand = new LambdaCommand(OnCloseCommandExecuted, CanCloseCommandExecute);
+            MinimizedCommand = new LambdaCommand(OnMinimizedCommandExecuted, CanMinimizedCommandExecute);
+
             RegistrationCommand = new LambdaCommand(OnRegistrationCommandExecuted, CanRegistrationCommandExecute);
+
             SwitchToLoginCommand = new LambdaCommand(OnSwitchToLoginCommandExecuted, CanSwitchToLoginCommandExecute);
             #endregion
 

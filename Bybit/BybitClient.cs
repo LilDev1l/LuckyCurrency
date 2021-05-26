@@ -1,5 +1,6 @@
 ﻿using Bybit.Api;
 using Bybit.Client;
+using Bybit.Model.API_Key;
 using Bybit.Model.Balance;
 using Bybit.Model.LinearKline;
 using Bybit.Model.Order;
@@ -34,6 +35,7 @@ namespace Bybit
         {
             _secret_key = secret_key;
         }
+
 
         #region Статический конструктор
         static BybitClient()
@@ -163,6 +165,31 @@ namespace Bybit
 
         #endregion
         #region private
+
+        #region IsTrueAPI_Key
+        public static bool IsTrueAPI_Key()
+        {
+            API_KeyBase result = GetAPI_KeyBase();
+
+            return result.ret_code == 0;
+        }
+        #endregion
+
+        #region API_Key
+        public static API_KeyBase GetAPI_KeyBase()
+        {
+            long timestamp = GetTimeServer(Time.MiliSeconds);
+            Configuration.Default.AddApiKey("api_key", _api_key);
+            Configuration.Default.AddApiKey("sign", Authentication.CreateSignature(_secret_key, $"api_key={_api_key}&timestamp={timestamp}"));
+            Configuration.Default.AddApiKey("timestamp", timestamp.ToString());
+
+            var apiInstance = new APIkeyApi();
+            JObject result = (JObject)apiInstance.APIkeyInfo();
+            Console.WriteLine(result);
+
+            return result.ToObject<API_KeyBase>();
+        }
+        #endregion
 
         #region Balance
         public static BalanceBase GetBalanceBase(string coin)

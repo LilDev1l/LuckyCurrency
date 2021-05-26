@@ -288,22 +288,28 @@ namespace LuckyCurrency.ViewModels
                 PriceOrder = CurrentSymbol.price_filter.min_price;
                 QtyOrder = CurrentSymbol.lot_size_filter.min_trading_qty;
 
-                Balance = GetBalance("USDT");
-                Positions = GetPositions(CurrentSymbol.alias);
-                Orders = GetOrders(CurrentSymbol.alias, "New");
-                PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
                 Candles = GetCandles(CurrentSymbol.alias, SelectedTimeframe);
-
                 BybitClient.NewMessage += GetNewMessage;
-
                 BybitClient.RunBybitWS();
-                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
-                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
-                BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
-
                 BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"candle.{SelectedTimeframe}.{CurrentSymbol.alias}\"]}}");
                 BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"orderBookL2_25.{CurrentSymbol.alias}\"]}}");
                 BybitClient.SendPublicWS($"{{\"op\":\"subscribe\",\"args\":[\"trade.{CurrentSymbol.alias}\"]}}");
+
+                if (BybitClient.IsTrueAPI_Key())
+                {
+                    Balance = GetBalance("USDT");
+                    Positions = GetPositions(CurrentSymbol.alias);
+                    Orders = GetOrders(CurrentSymbol.alias, "New");
+                    PositionsClosePnl = GetPositionsClosePnl(CurrentSymbol.alias, "Trade");
+
+                    BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
+                    BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
+                    BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
+                }
+                else
+                {
+                    Notifier.ShowError($"Invalid api_key");
+                }
 
                 WsRun = true;
             });

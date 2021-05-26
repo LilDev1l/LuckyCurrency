@@ -14,7 +14,6 @@ namespace LuckyCurrency.ViewModels.Base
     abstract class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Action Close { get; set; }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
@@ -43,10 +42,11 @@ namespace LuckyCurrency.ViewModels.Base
             return true;
         }
 
+        public Window CurrentWindow { get; set; }
         protected void SwitchTo(Window window)
         {
             window.Show();
-            Close?.Invoke();
+            CurrentWindow.Close();
         }
     }
 }

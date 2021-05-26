@@ -90,7 +90,8 @@
             </StackPanel>
             <StackPanel Margin="0 5">
                 <TextBlock>Private API Key</TextBlock>
-                <TextBox x:Name="PrivateAPI_Key"></TextBox>
+                <PasswordBox x:Name="PrivateAPI_Key"
+                             Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"/>
             </StackPanel>
 
             <Button Margin="0 5"

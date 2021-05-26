@@ -16,7 +16,7 @@ namespace LuckyCurrency.Views.Authorization
 
             RegistrationViewModel vm = new RegistrationViewModel();
             DataContext = vm;
-            vm.Close = new Action(this.Close);
+            vm.CurrentWindow = this;
         }
     }
 }

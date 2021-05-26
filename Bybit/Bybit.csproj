@@ -124,6 +124,8 @@ Contact: support@bybit.com
     <Compile Include="Model\AnnouncementInfo.cs" />
     <Compile Include="Model\APIKeyBase.cs" />
     <Compile Include="Model\APIKeyInfo.cs" />
+    <Compile Include="Model\API_Key\API_KeyBase.cs" />
+    <Compile Include="Model\API_Key\API_KeyData.cs" />
     <Compile Include="Model\BalanceWS\BalanceWSBase.cs" />
     <Compile Include="Model\BalanceWS\BalanceWSData.cs" />
     <Compile Include="Model\Balance\BalanceBase.cs" />

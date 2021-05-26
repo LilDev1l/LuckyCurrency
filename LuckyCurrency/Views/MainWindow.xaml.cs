@@ -26,7 +26,7 @@ namespace LuckyCurrency
 
             MainWindowViewModel vm = new MainWindowViewModel(api_key);
             DataContext = vm;
-            vm.Close = new Action(this.Close);
+            vm.CurrentWindow = this;
         }
     }
 }
