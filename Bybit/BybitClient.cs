@@ -80,7 +80,7 @@ namespace Bybit
         }
         public static void ReconnectPublicWS()
         {
-            _wsPublic.Reconnect();
+            _wsPublic?.Reconnect();
         }
         #endregion
         #region private
@@ -90,7 +90,7 @@ namespace Bybit
         }
         public static void ReconnectPrivateWS()
         {
-            _wsPrivate.Reconnect();
+            _wsPrivate?.Reconnect();
         }
         #endregion
 

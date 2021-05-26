@@ -79,26 +79,36 @@ namespace LuckyCurrency.ViewModels
 
         #region Уведомления
         public Notifier Notifier { get; set; } = new Notifier(cfg =>
-         {
-             Window window = null;
-             foreach(var win in App.Current.Windows)
-             {
-                 if (win is MainWindow main)
-                     window = main;
-             }
+        {
+            Window window = null;
+            WindowCollection windowCollection = null;
 
-             cfg.PositionProvider = new WindowPositionProvider(
-                 parentWindow: window,
-                 corner: Corner.BottomRight,
-                 offsetX: 5,
-                 offsetY: 0);
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                windowCollection = App.Current.Windows;
+            });
 
-             cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                 notificationLifetime: TimeSpan.FromSeconds(3),
-                 maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+            foreach (var win in windowCollection)
+            {
+                if (win is MainWindow main)
+                    window = main;
+            }
 
-             cfg.Dispatcher = App.Current.Dispatcher;
-         });
+            cfg.PositionProvider = new WindowPositionProvider(
+            parentWindow: window,
+            corner: Corner.BottomRight,
+            offsetX: 5,
+            offsetY: 0);
+
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+            notificationLifetime: TimeSpan.FromSeconds(3),
+            maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                cfg.Dispatcher = App.Current.Dispatcher;
+            });
+        });
         #endregion
 
         #region Таймфрейм
@@ -287,7 +297,6 @@ namespace LuckyCurrency.ViewModels
                 BybitClient.NewMessage += GetNewMessage;
 
                 BybitClient.RunBybitWS();
-
                 BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"wallet\"]}");
                 BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"position\"]}");
                 BybitClient.SendPrivateWS("{\"op\":\"subscribe\",\"args\":[\"order\"]}");
@@ -366,29 +375,32 @@ namespace LuckyCurrency.ViewModels
         private bool CanCreateOpenLimitOrderCommandExecute(object p) => true;
         private void OnCreateOpenLimitOrderCommandExecuted(object p)
         {
-            if (p is string side)
+            Task.Run(() =>
             {
-                OrderBase orderBase = BybitClient.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", false, false);
-                if(orderBase.ret_code == 0)
+                if (p is string side)
                 {
-                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
-                    if(orderData.side == "Buy")
-                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be bought at {orderData.price} price.");
-                    else
-                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be sold at {orderData.price} price.");
-                }
-                else
-                {
-                    if (orderBase.ret_code == 130021)
+                    OrderBase orderBase = BybitClient.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", false, false);
+                    if (orderBase.ret_code == 0)
                     {
-                        Notifier.ShowError($"Order submission failed\n\norder cost not available");
+                        OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                        if (orderData.side == "Buy")
+                            Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be bought at {orderData.price} price.");
+                        else
+                            Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be sold at {orderData.price} price.");
                     }
                     else
                     {
-                        Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                        if (orderBase.ret_code == 130021)
+                        {
+                            Notifier.ShowError($"Order submission failed\n\norder cost not available");
+                        }
+                        else
+                        {
+                            Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                        }
                     }
                 }
-            }
+            });
         }
         #endregion
         #region CreateOpenMarketOrderCommand
@@ -396,22 +408,25 @@ namespace LuckyCurrency.ViewModels
         private bool CanCreateOpenMarketOrderCommandExecute(object p) => true;
         private void OnCreateOpenMarketOrderCommandExecuted(object p)
         {
-            if (p is string side)
+            Task.Run(() =>
             {
-                OrderBase orderBase = BybitClient.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", false, false);
-                if (orderBase.ret_code == 0)
+                if (p is string side)
                 {
-                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
-                    if (orderData.side == "Buy")
-                        Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    OrderBase orderBase = BybitClient.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", false, false);
+                    if (orderBase.ret_code == 0)
+                    {
+                        OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                        if (orderData.side == "Buy")
+                            Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                        else
+                            Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    }
                     else
-                        Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    {
+                        Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                    }
                 }
-                else
-                {
-                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
-                }
-            }
+            });
         }
         #endregion
         #region CreateCloseLimitOrderCommand
@@ -419,22 +434,25 @@ namespace LuckyCurrency.ViewModels
         private bool CanCreateCloseLimitOrderCommandExecute(object p) => true;
         private void OnCreateCloseLimitOrderCommandExecuted(object p)
         {
-            if (p is string side)
+            Task.Run(() =>
             {
-                OrderBase orderBase = BybitClient.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", true, true);
-                if (orderBase.ret_code == 0)
+                if (p is string side)
                 {
-                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
-                    if (orderData.side == "Buy")
-                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be bought at {orderData.price} price.");
+                    OrderBase orderBase = BybitClient.CreateLimitOrder(side, CurrentSymbol.alias, QtyOrder, PriceOrder, "PostOnly", true, true);
+                    if (orderBase.ret_code == 0)
+                    {
+                        OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                        if (orderData.side == "Buy")
+                            Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be bought at {orderData.price} price.");
+                        else
+                            Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be sold at {orderData.price} price.");
+                    }
                     else
-                        Notifier.ShowSuccess($"Order Submitted Successfully\n\n{orderData.qty} {CurrentSymbol.base_currency} contracts will be sold at {orderData.price} price.");
+                    {
+                        Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                    }
                 }
-                else
-                {
-                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
-                }
-            }
+            });
         }
         #endregion
         #region CreateCloseMarketOrderCommand
@@ -442,22 +460,25 @@ namespace LuckyCurrency.ViewModels
         private bool CanCreateCloseMarketOrderCommandExecute(object p) => true;
         private void OnCreateCloseMarketOrderCommandExecuted(object p)
         {
-            if (p is string side)
+            Task.Run(() =>
             {
-                OrderBase orderBase = BybitClient.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", true, true);
-                if (orderBase.ret_code == 0)
+                if (p is string side)
                 {
-                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
-                    if (orderData.side == "Buy")
-                        Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    OrderBase orderBase = BybitClient.CreateMarketOrder(side, CurrentSymbol.alias, QtyOrder, "ImmediateOrCancel", true, true);
+                    if (orderBase.ret_code == 0)
+                    {
+                        OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                        if (orderData.side == "Buy")
+                            Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                        else
+                            Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    }
                     else
-                        Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    {
+                        Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                    }
                 }
-                else
-                {
-                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
-                }
-            }
+            });
         }
         #endregion
         #region CancelOrderCommand
@@ -465,18 +486,21 @@ namespace LuckyCurrency.ViewModels
         private bool CanCancelOrderCommandExecute(object p) => true;
         private void OnCancelOrderCommandExecuted(object p)
         {
-            if (p is Order order)
+            Task.Run(() =>
             {
-                OrderBase orderBase = BybitClient.CancelOrder(order.Symbol, order.Order_id);
-                if (orderBase.ret_code == 0)
+                if (p is Order order)
                 {
-                    Notifier.ShowSuccess($"Cancelled Successfully");
+                    OrderBase orderBase = BybitClient.CancelOrder(order.Symbol, order.Order_id);
+                    if (orderBase.ret_code == 0)
+                    {
+                        Notifier.ShowSuccess($"Cancelled Successfully");
+                    }
+                    else
+                    {
+                        Notifier.ShowError($"{orderBase.ret_msg}");
+                    }
                 }
-                else
-                {
-                    Notifier.ShowError($"{orderBase.ret_msg}");
-                }
-            }
+            });
         }
         #endregion
         #region ClosePositionCommand
@@ -491,22 +515,25 @@ namespace LuckyCurrency.ViewModels
         }
         private void OnClosePositionCommandExecuted(object p)
         {
-            if (p is Position position)
+            Task.Run(() =>
             {
-                OrderBase orderBase = BybitClient.CreateMarketOrder(position.Side == "Long" ? "Sell" : "Buy", position.Symbol, position.Size, "GoodTillCancel", true, true);
-                if (orderBase.ret_code == 0)
+                if (p is Position position)
                 {
-                    OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
-                    if (orderData.side == "Buy")
-                        Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    OrderBase orderBase = BybitClient.CreateMarketOrder(position.Side == "Long" ? "Sell" : "Buy", position.Symbol, position.Size, "GoodTillCancel", true, true);
+                    if (orderBase.ret_code == 0)
+                    {
+                        OrderData orderData = ((JObject)orderBase.result).ToObject<OrderData>();
+                        if (orderData.side == "Buy")
+                            Notifier.ShowSuccess($"Your entire order has been failed\n\nBought {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                        else
+                            Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    }
                     else
-                        Notifier.ShowSuccess($"Your entire order has been failed\n\nSold {orderData.qty} {CurrentSymbol.base_currency} contracts at market price.");
+                    {
+                        Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
+                    }
                 }
-                else
-                {
-                    Notifier.ShowError($"Order submission failed\n\n{orderBase.ret_msg}");
-                }
-            }
+            });
         }
         #endregion
         #region ChangeThemeCommand
@@ -532,7 +559,7 @@ namespace LuckyCurrency.ViewModels
         #endregion
         #region SwitchToLoginCommand
         public ICommand SwitchToLoginCommand { get; }
-        private bool CanSwitchToLoginCommandExecute(object p) => true;
+        private bool CanSwitchToLoginCommandExecute(object p) => WsRun;
         private void OnSwitchToLoginCommandExecuted(object p)
         {
             BybitClient.ReconnectPrivateWS();
