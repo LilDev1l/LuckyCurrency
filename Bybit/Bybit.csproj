@@ -80,7 +80,7 @@ Contact: support@bybit.com
       <HintPath Condition="Exists('..\..\vendor')">..\..\vendor\RestSharp.105.1.0\lib\net45\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="Websocket.Client, Version=4.3.0.0, Culture=neutral, PublicKeyToken=ae648c6d12f59b1b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Websocket.Client.4.3.30\lib\netstandard2.0\Websocket.Client.dll</HintPath>
+      <HintPath>..\packages\Websocket.Client.4.3.32\lib\netstandard2.0\Websocket.Client.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

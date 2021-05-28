@@ -11,7 +11,7 @@ namespace LuckyCurrency.Models
         public double H { get; set; }
         public double L { get; set; }
         public double C { get; set; }
-        public long V { get; set; }
+        public double V { get; set; }
 
         public Candle(DateTime t, double O, double H, double L, double C, long V)
         {
