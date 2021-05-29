@@ -711,6 +711,7 @@ namespace LuckyCurrency.ViewModels
                 {
                     NewCandle(message);
                 });
+                return;
             }
             if (message.Contains($"\"topic\":\"orderBookL2_25.{CurrentSymbol.alias}\""))
             {
@@ -718,6 +719,7 @@ namespace LuckyCurrency.ViewModels
                 {
                     NewOrderBook(message);
                 });
+                return;
             }
             if (message.Contains($"\"topic\":\"trade.{CurrentSymbol.alias}\""))
             {
@@ -725,6 +727,7 @@ namespace LuckyCurrency.ViewModels
                 {
                     NewTrade(message);
                 });
+                return;
             }
             if (message.Contains($"\"topic\":\"wallet\""))
             {
@@ -732,6 +735,7 @@ namespace LuckyCurrency.ViewModels
                 {
                     NewCurrentBalance(message);
                 });
+                return;
             }
             if (message.Contains($"\"topic\":\"position\""))
             {
@@ -739,6 +743,7 @@ namespace LuckyCurrency.ViewModels
                 {
                     NewPosition(message);
                 });
+                return;
             }
             if (message.Contains($"\"topic\":\"order\""))
             {
@@ -746,6 +751,7 @@ namespace LuckyCurrency.ViewModels
                 {
                     NewOrder(message);
                 });
+                return;
             }
         }
 
