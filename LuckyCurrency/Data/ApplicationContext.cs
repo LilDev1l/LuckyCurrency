@@ -17,7 +17,7 @@ namespace LuckyCurrency.Data
         public DbSet<API_Key> API_Keys { get; set; }
     }
 
-    class MyContextInitializer : DropCreateDatabaseAlways<ApplicationContext>
+    class MyContextInitializer : CreateDatabaseIfNotExists<ApplicationContext>
     {
         protected override void Seed(ApplicationContext db)
         {
