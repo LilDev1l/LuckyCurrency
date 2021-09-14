@@ -11,3 +11,5 @@ Entity, MVVM, WPF
 
 ![Registration window](images/registration_window.png)
 
+![Main window](images/main_window.png)
+
