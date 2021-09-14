@@ -28,3 +28,6 @@ Entity, MVVM, WPF
 После закрытия позиции (открытой рыночным ордером выше), мы можем посмотреть информацию о ней во вкладке «Closed P&L»
 
 ![Closed position information](images/closed_position_Information.png)
+
+## Есть вопросы?
+Если у вас есть какие-либо вопросы или предложения, не стесняйтесь - переходите во вкладку [Issues](https://github.com/LilDev1l/LuckyCurrency/issues).
