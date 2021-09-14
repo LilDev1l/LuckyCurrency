@@ -17,4 +17,4 @@ Entity, MVVM, WPF
 
 ![Market sell order](images/market_sell_order.png)
 
-![Closed position information](images/closed_position_information.png)
+![Closed position information](images/closed_position_Information.png)
