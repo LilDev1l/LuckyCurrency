@@ -13,3 +13,8 @@ Entity, MVVM, WPF
 
 ![Main window](images/main_window.png)
 
+![Limit buy order](images/limit_buy_order.png)
+
+![Market sell order](images/market_sell_order.png)
+
+![Closed position information](images/closed_position_Information.png)
